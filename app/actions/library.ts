@@ -108,25 +108,29 @@ export async function archiveGameFromLibrary(gameId: number) {
 }
 
 export async function checkGameInLibrary(gameId: number) {
-  const userId = await getUserId();
-  const existing = db.prepare("SELECT gameId FROM UserGame WHERE userId = ? AND gameId = ?").get(userId, gameId);
+  const user = await getUser();
+  if (!user) return false;
+  const existing = db.prepare("SELECT gameId FROM UserGame WHERE userId = ? AND gameId = ?").get(user.id, gameId);
   return !!existing;
 }
 
 export async function getLibraryGames() {
-  const userId = await getUserId();
-  const games = db.prepare("SELECT * FROM UserGame WHERE userId = ? ORDER BY createdAt DESC").all(userId) as any[];
+  const user = await getUser();
+  if (!user) return [];
+  const games = db.prepare("SELECT * FROM UserGame WHERE userId = ? ORDER BY createdAt DESC").all(user.id) as any[];
   return games;
 }
 
 export async function getGameLibraryData(gameId: number) {
-  const userId = await getUserId();
-  return db.prepare("SELECT * FROM UserGame WHERE userId = ? AND gameId = ?").get(userId, gameId);
+  const user = await getUser();
+  if (!user) return null;
+  return db.prepare("SELECT * FROM UserGame WHERE userId = ? AND gameId = ?").get(user.id, gameId);
 }
 
 export async function getGameModalData(gameId: number) {
-  const userId = await getUserId();
-  const libraryData = db.prepare("SELECT * FROM UserGame WHERE userId = ? AND gameId = ?").get(userId, gameId);
+  const user = await getUser();
+  if (!user) return null;
+  const libraryData = db.prepare("SELECT * FROM UserGame WHERE userId = ? AND gameId = ?").get(user.id, gameId);
   const gameInfo = await fetchGameDetails(gameId);
   return {
     libraryData,
@@ -140,7 +144,8 @@ export async function getGameModalData(gameId: number) {
 }
 
 export async function getGameTimeline(gameId: number) {
-  const userId = await getUserId();
-  const events = db.prepare("SELECT * FROM TimelineEvent WHERE userId = ? AND gameId = ? ORDER BY createdAt DESC").all(userId, gameId) as any[];
+  const user = await getUser();
+  if (!user) return [];
+  const events = db.prepare("SELECT * FROM TimelineEvent WHERE userId = ? AND gameId = ? ORDER BY createdAt DESC").all(user.id, gameId) as any[];
   return events;
 }
