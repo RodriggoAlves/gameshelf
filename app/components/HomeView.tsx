@@ -1,0 +1,126 @@
+"use client";
+import Link from "next/link";
+import Image from "next/image";
+import { useRef, useEffect } from "react";
+import styles from "../page.module.css";
+import { Game } from "../../lib/api";
+import { useI18n } from "../contexts/I18nContext";
+import QuickAddButton from "./QuickAddButton";
+
+export default function HomeView({ popularGames, libraryIds }: { popularGames: Game[], libraryIds: number[] }) {
+  const { t } = useI18n();
+  const carouselRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const carousel = carouselRef.current;
+    if (!carousel) return;
+    
+    let animationId: number;
+    let isPaused = false;
+    
+    const scroll = () => {
+      if (!isPaused) {
+        carousel.scrollLeft += 1; // Velocidade do scroll
+        
+        // Quando chegar perto do fim, reseta para o começo para efeito infinito
+        if (carousel.scrollLeft >= carousel.scrollWidth - carousel.clientWidth - 1) {
+          carousel.scrollLeft = 0;
+        }
+      }
+      animationId = requestAnimationFrame(scroll);
+    };
+
+    animationId = requestAnimationFrame(scroll);
+
+    const pause = () => { isPaused = true; };
+    const play = () => { isPaused = false; };
+
+    carousel.addEventListener("mouseenter", pause);
+    carousel.addEventListener("mouseleave", play);
+    carousel.addEventListener("touchstart", pause);
+    carousel.addEventListener("touchend", play);
+
+    return () => {
+      cancelAnimationFrame(animationId);
+      carousel.removeEventListener("mouseenter", pause);
+      carousel.removeEventListener("mouseleave", play);
+      carousel.removeEventListener("touchstart", pause);
+      carousel.removeEventListener("touchend", play);
+    };
+  }, []);
+
+  return (
+    <div className={styles.container}>
+      <main className={styles.main}>
+        <section className={styles.hero}>
+          <h1 className={styles.title}>{t.home.title_line1}<br />{t.home.title_line2}</h1>
+          <p className={styles.subtitle}>
+            {t.home.subtitle}
+          </p>
+          <Link href="/library" className={styles.ctaButton}>{t.home.cta}</Link>
+        </section>
+
+        <section className={styles.featured}>
+          <h2 className={styles.sectionTitle}>{t.home.featured_title}</h2>
+          <div className={styles.carousel} ref={carouselRef}>
+            {popularGames.map((game) => (
+              <Link href={`/game/${game.id}`} key={game.id} className={styles.gameCard}>
+                <QuickAddButton gameId={game.id} isSavedInitial={libraryIds.includes(game.id)} />
+                <div className={styles.gameImagePlaceholder} style={{ position: 'relative', width: '100%', height: '100%', minHeight: '300px' }}>
+                  {game.background_image ? (
+                    <Image 
+                      src={game.background_image} 
+                      alt={game.name} 
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 300px"
+                      style={{ objectFit: 'cover' }} 
+                    />
+                  ) : null}
+                </div>
+                <div className={styles.gameInfo}>
+                  <h3 className={styles.gameTitle}>{game.name}</h3>
+                  <div className={styles.gameMeta}>
+                    <span className={styles.gameYear}>{new Date(game.released).getFullYear()}</span>
+                    <span className={styles.gameRating}>{Math.round(game.rating)} / 100</span>
+                  </div>
+                  <div className={styles.gameGenres}>
+                    {game.genres?.slice(0, 2).map(g => g.name).join(', ') || 'Sem gênero'}
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        <section className={styles.bentoSection}>
+          <div className={styles.bentoHeader}>
+            <h2>Elevando a sua experiência gamer</h2>
+            <p>Tudo o que você precisa para gerenciar sua vida nos videogames, com um design premium.</p>
+          </div>
+          <div className={styles.bentoGrid}>
+            <div className={`${styles.bentoCard} ${styles.bentoLarge}`}>
+              <svg className={styles.bentoIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" /></svg>
+              <h3>O maior banco de dados do mundo</h3>
+              <p>Conectado diretamente à IGDB da Twitch. Descubra lançamentos, clássicos e jogos obscuros. Se um jogo existe, ele está aqui, com capas em alta resolução e detalhes super precisos.</p>
+            </div>
+            <div className={styles.bentoCard}>
+              <svg className={styles.bentoIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" /></svg>
+              <h3>Seu Backlog Organizado</h3>
+              <p>Chega de esquecer o que você estava jogando. Crie listas, marque favoritos e acompanhe seu progresso de verdade.</p>
+            </div>
+            <div className={styles.bentoCard}>
+              <svg className={styles.bentoIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg>
+              <h3>Comunidade e Avaliações</h3>
+              <p>Dê a sua nota definitiva, escreva reviews e veja o que os outros jogadores estão achando dos últimos lançamentos.</p>
+            </div>
+            <div className={`${styles.bentoCard} ${styles.bentoLarge}`}>
+              <svg className={styles.bentoIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+              <h3>Estatísticas em Tempo Real</h3>
+              <p>Acompanhe quantas horas você já jogou, seus gêneros favoritos e veja o seu perfil gamer evoluir a cada jogo zerado. Tudo de forma minimalista.</p>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  );
+}

@@ -1,0 +1,50 @@
+.starContainer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.star {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.1);
+  font-size: 26px;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  transition: all 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.star.active {
+  color: #f1c40f; /* Ouro Clássico */
+  text-shadow: 0 0 12px rgba(241, 196, 15, 0.4);
+}
+
+.star:hover {
+  transform: scale(1.1);
+}
+
+.star:active {
+  transform: scale(0.9);
+}
+
+.clearBtn {
+  background: rgba(255, 255, 255, 0.05);
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 16px;
+  cursor: pointer;
+  margin-left: 12px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.clearBtn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+}
