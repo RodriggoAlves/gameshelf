@@ -431,3 +431,49 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+@media (max-width: 768px) {
+  .content {
+    padding: 6rem 1rem 2rem;
+  }
+  
+  .topSection {
+    margin-bottom: 3rem;
+  }
+  
+  .coverWrapper {
+    width: 200px;
+    height: 280px;
+  }
+  
+  .title {
+    font-size: 2.5rem;
+  }
+  
+  .metaRow {
+    flex-wrap: wrap;
+  }
+  
+  .actions {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .primaryButton, .secondaryButton {
+    width: 100%;
+    text-align: center;
+  }
+  
+  .screenshotGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .infoCard {
+    padding: 1.5rem;
+  }
+  
+  .modalContent {
+    width: 95%;
+    padding: 20px;
+  }
+}

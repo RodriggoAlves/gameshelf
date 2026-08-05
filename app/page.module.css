@@ -281,3 +281,41 @@
     grid-column: span 1;
   }
 }
+
+@media (max-width: 768px) {
+  .main {
+    padding: 1.5rem 1rem;
+  }
+
+  .title {
+    font-size: 3rem;
+    letter-spacing: -1px;
+    margin-bottom: 1rem;
+  }
+
+  .subtitle {
+    font-size: 1.1rem;
+    padding: 0 1rem;
+  }
+
+  .hero {
+    padding: 2rem 0;
+    margin-bottom: 2rem;
+  }
+
+  .gameCard {
+    flex: 0 0 240px;
+  }
+
+  .gameImagePlaceholder {
+    height: 320px;
+  }
+  
+  .bentoCard {
+    padding: 2rem 1.5rem;
+  }
+  
+  .bentoHeader h2 {
+    font-size: 2rem;
+  }
+}

@@ -158,3 +158,33 @@
   opacity: 0.8;
   outline: 1px solid rgba(255, 255, 255, 0.3);
 }
+
+@media (max-width: 768px) {
+  .badgesGrid {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 8px;
+  }
+  
+  .badgeCard {
+    padding: 8px;
+  }
+  
+  .badgeIconWrapper {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .badgeName {
+    font-size: 0.7rem;
+  }
+  
+  .xpRingContainer {
+    width: 120px;
+    height: 120px;
+  }
+  
+  .xpAvatar {
+    width: 90px;
+    height: 90px;
+  }
+}
