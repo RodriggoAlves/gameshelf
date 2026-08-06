@@ -16,7 +16,6 @@ export function Header() {
         <Link href="/search">{t.nav.search}</Link>
         <Link href="/library">{t.nav.library}</Link>
         <Link href="/profile">{t.nav.profile}</Link>
-        <Link href="/roadmap" style={{ color: '#2ecc71', fontWeight: 'bold' }}>Roadmap</Link>
       </nav>
       <LanguageSwitcher />
     </header>

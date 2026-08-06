@@ -6,6 +6,40 @@ import styles from "../page.module.css";
 import { Game } from "../../lib/api";
 import { useI18n } from "../contexts/I18nContext";
 import QuickAddButton from "./QuickAddButton";
+import * as LucideIcons from "lucide-react";
+
+const features = [
+  {
+    title: "Sistema Social & Feed de Amigos",
+    description: "Acompanhe seus amigos em tempo real. Veja quando platinarem um jogo ou adicionarem uma review, curta e comente nas atividades deles para deixar a plataforma viva.",
+    icon: "Users",
+    status: "Em Breve"
+  },
+  {
+    title: "Reviews & Rankings Comunitários",
+    description: "Torne-se um crítico reconhecido! O Zerey terá um agregador de notas da comunidade, permitindo ler análises de outros jogadores e ver o cobiçado Top 100 da plataforma.",
+    icon: "Star",
+    status: "Planejado"
+  },
+  {
+    title: "Coleções Customizadas",
+    description: "Crie suas próprias listas como 'Minha Maratona de Resident Evil' ou 'Melhores RPGs do PS2', e exiba-as em destaque no seu Hub de Perfil.",
+    icon: "ListVideo",
+    status: "Planejado"
+  },
+  {
+    title: "Desafios Zerey",
+    description: "Eventos sazonais e desafios da comunidade. Ex: 'Termine 3 jogos de terror no mês do Halloween' para ganhar Badges exclusivas e limite de tempo.",
+    icon: "Trophy",
+    status: "Ideação"
+  },
+  {
+    title: "Integração HLTB (HowLongToBeat)",
+    description: "Veja imediatamente o tempo médio que as pessoas levam para zerar o jogo antes mesmo de adicioná-lo à sua biblioteca.",
+    icon: "Clock",
+    status: "Pesquisa"
+  }
+];
 
 export default function HomeView({ popularGames, libraryIds }: { popularGames: Game[], libraryIds: number[] }) {
   const { t } = useI18n();
@@ -118,6 +152,36 @@ export default function HomeView({ popularGames, libraryIds }: { popularGames: G
               <h3>Estatísticas em Tempo Real</h3>
               <p>Acompanhe quantas horas você já jogou, seus gêneros favoritos e veja o seu perfil gamer evoluir a cada jogo zerado. Tudo de forma minimalista.</p>
             </div>
+          </div>
+        </section>
+
+        <section className={styles.roadmapSection} style={{ marginTop: '5rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <div className={styles.bentoHeader} style={{ marginBottom: '3rem' }}>
+            <h2>O Futuro do Zerey</h2>
+            <p>Estamos apenas começando. Veja o que está no nosso horizonte.</p>
+          </div>
+
+          <div className="roadmap-timeline" style={{ display: 'flex', flexDirection: 'column', gap: '2rem', maxWidth: '800px', width: '100%' }}>
+            {features.map((feat, index) => {
+              const IconComp = (LucideIcons as any)[feat.icon] || LucideIcons.Rocket;
+              
+              return (
+                <div key={index} className="roadmap-card" style={{ display: 'flex', gap: '1.5rem', background: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.05)', borderRadius: '16px', padding: '2rem', alignItems: 'flex-start' }}>
+                  <div style={{ background: 'rgba(46, 204, 113, 0.1)', padding: '1rem', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(46, 204, 113, 0.2)' }}>
+                    <IconComp size={28} style={{ color: '#2ecc71' }} />
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                      <h3 style={{ fontSize: '1.4rem', fontWeight: 'bold', margin: 0, color: '#fff' }}>{feat.title}</h3>
+                      <span style={{ fontSize: '0.75rem', fontWeight: 'bold', padding: '4px 10px', borderRadius: '20px', textTransform: 'uppercase', letterSpacing: '1px', background: 'rgba(46, 204, 113, 0.2)', color: '#2ecc71', border: '1px solid rgba(46, 204, 113, 0.3)' }}>
+                        {feat.status}
+                      </span>
+                    </div>
+                    <p style={{ color: '#aaa', lineHeight: 1.5, margin: 0 }}>{feat.description}</p>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </section>
       </main>
