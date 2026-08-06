@@ -396,25 +396,88 @@
 }
 
 .roadmapTimeline {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  max-width: 1000px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem 0;
+}
+
+.roadmapTimeline::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  background: linear-gradient(to bottom, #00f0ff, #b026ff);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
+  border-radius: 4px;
+}
+
+.roadmapNode {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   width: 100%;
 }
 
+.leftNode {
+  flex-direction: row-reverse;
+}
+
+.roadmapCenter {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+}
+
+.roadmapDot {
+  width: 24px;
+  height: 24px;
+  background: #111;
+  border: 4px solid #00f0ff;
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.6);
+  transition: all 0.3s ease;
+}
+
+.roadmapNode:hover .roadmapDot {
+  background: #b026ff;
+  border-color: #b026ff;
+  box-shadow: 0 0 30px rgba(176, 38, 255, 0.8);
+}
+
 .roadmapCard {
+  width: 45%;
   display: flex;
   gap: 1.5rem;
   background: rgba(10, 10, 15, 0.6);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(0, 240, 255, 0.1);
-  border-left: 4px solid #00f0ff;
   border-radius: 16px;
   padding: 2rem;
   align-items: flex-start;
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+}
+
+.leftNode .roadmapCard {
+  border-right: 4px solid #00f0ff;
+}
+
+.rightNode .roadmapCard {
+  border-left: 4px solid #00f0ff;
 }
 
 .roadmapCard::before {
@@ -429,10 +492,17 @@
   transition: transform 0.5s ease;
 }
 
-.roadmapCard:hover {
+.roadmapNode:hover .roadmapCard {
   transform: translateY(-5px);
-  box-shadow: 0 10px 40px rgba(0, 240, 255, 0.15);
-  border-left: 4px solid #b026ff;
+  box-shadow: 0 10px 40px rgba(176, 38, 255, 0.15);
+}
+
+.leftNode:hover .roadmapCard {
+  border-right-color: #b026ff;
+}
+
+.rightNode:hover .roadmapCard {
+  border-left-color: #b026ff;
 }
 
 .roadmapCard:hover::before {
@@ -523,8 +593,28 @@
 }
 
 @media (max-width: 900px) {
-  .roadmapTimeline {
-    grid-template-columns: 1fr;
+  .roadmapTimeline::before {
+    left: 20px;
+  }
+  .roadmapCenter {
+    left: 20px;
+  }
+  .roadmapNode {
+    justify-content: flex-end;
+  }
+  .leftNode {
+    flex-direction: row;
+  }
+  .roadmapCard {
+    width: calc(100% - 60px);
+    margin-left: auto;
+  }
+  .leftNode .roadmapCard {
+    border-right: none;
+    border-left: 4px solid #00f0ff;
+  }
+  .leftNode:hover .roadmapCard {
+    border-left-color: #b026ff;
   }
 }
 

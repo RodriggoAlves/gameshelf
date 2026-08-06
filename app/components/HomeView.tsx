@@ -173,18 +173,23 @@ export default function HomeView({ popularGames, libraryIds }: { popularGames: G
               const IconComp = (LucideIcons as any)[feat.icon] || LucideIcons.Rocket;
               
               return (
-                <div key={index} className={styles.roadmapCard}>
-                  <div className={styles.roadmapIconWrapper}>
-                    <IconComp size={28} className={styles.roadmapIcon} />
+                <div key={index} className={`${styles.roadmapNode} ${index % 2 === 0 ? styles.leftNode : styles.rightNode}`}>
+                  <div className={styles.roadmapCenter}>
+                    <div className={styles.roadmapDot}></div>
                   </div>
-                  <div className={styles.roadmapContent}>
-                    <div className={styles.roadmapCardHeader}>
-                      <h3 className={styles.roadmapCardTitle}>{feat.title}</h3>
-                      <span className={styles.roadmapBadge} data-status={feat.status}>
-                        {feat.status}
-                      </span>
+                  <div className={styles.roadmapCard}>
+                    <div className={styles.roadmapIconWrapper}>
+                      <IconComp size={28} className={styles.roadmapIcon} />
                     </div>
-                    <p className={styles.roadmapDesc}>{feat.description}</p>
+                    <div className={styles.roadmapContent}>
+                      <div className={styles.roadmapCardHeader}>
+                        <h3 className={styles.roadmapCardTitle}>{feat.title}</h3>
+                        <span className={styles.roadmapBadge} data-status={feat.status}>
+                          {feat.status}
+                        </span>
+                      </div>
+                      <p className={styles.roadmapDesc}>{feat.description}</p>
+                    </div>
                   </div>
                 </div>
               );
