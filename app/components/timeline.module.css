@@ -1,15 +1,5 @@
 .timelineContainer {
-  margin-top: 30px;
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 24px;
-}
-
-.title {
-  margin: 0 0 20px 0;
-  font-size: 1.2rem;
-  color: white;
+  margin-top: 1rem;
 }
 
 .timeline {
@@ -19,7 +9,7 @@
 
 .eventRow {
   display: flex;
-  gap: 16px;
+  gap: 20px;
   position: relative;
 }
 
@@ -27,39 +17,39 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 12px;
+  width: 2px;
+  background: rgba(255, 255, 255, 0.1); /* The continuous line */
+  position: relative;
+  margin-left: 6px;
 }
 
 .node {
-  width: 10px;
-  height: 10px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
-  background: var(--primary-color, #2ecc71);
+  background: #141414; /* Netflix bg */
+  border: 2px solid #e50914; /* Netflix red accent */
+  position: absolute;
+  top: 4px;
+  left: -6px;
   z-index: 2;
-  margin-top: 5px;
-  box-shadow: 0 0 10px rgba(46, 204, 113, 0.5);
-}
-
-.line {
-  width: 2px;
-  flex: 1;
-  background: rgba(255, 255, 255, 0.1);
-  margin-top: 4px;
-  margin-bottom: 4px;
 }
 
 .content {
-  padding-bottom: 20px;
+  padding-bottom: 30px;
   flex: 1;
+  padding-top: 1px;
 }
 
 .text {
-  color: white;
-  font-size: 0.95rem;
+  color: #fff;
+  font-size: 1.05rem;
+  font-weight: 500;
+  line-height: 1.4;
 }
 
 .date {
-  color: var(--text-secondary);
-  font-size: 0.8rem;
-  margin-top: 4px;
+  color: #808080;
+  font-size: 0.9rem;
+  margin-top: 6px;
 }

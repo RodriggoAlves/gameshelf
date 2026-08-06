@@ -29,20 +29,14 @@ export default async function GamePage(props: { params: Promise<{ id: string }> 
 
   return (
     <div className={styles.container}>
-      <div className={styles.heroBackground}>
-        {bgImage && <img src={bgImage} alt="" className={styles.bgImg} />}
-        <div className={styles.overlay} />
-      </div>
+      <div className={styles.heroSection}>
+        <div className={styles.heroBackground}>
+          {bgImage && <img src={bgImage} alt="" className={styles.bgImg} />}
+          <div className={styles.vignetteTop} />
+          <div className={styles.vignetteBottom} />
+        </div>
 
-      <div className={styles.content}>
-        <div className={styles.topSection}>
-          <div className={styles.coverWrapper}>
-             {game.background_image ? (
-               <img src={game.background_image} alt={game.name} className={styles.coverImage} />
-             ) : (
-               <div className={styles.noCover}>Sem Capa</div>
-             )}
-          </div>
+        <div className={styles.heroContent}>
           <div className={styles.gameInfo}>
             <h1 className={styles.title}>{game.name}</h1>
             <div className={styles.metaRow}>
@@ -51,12 +45,12 @@ export default async function GamePage(props: { params: Promise<{ id: string }> 
               )}
               <span className={styles.year}>{new Date(game.released).getFullYear()}</span>
               {game.rating > 0 && (
-                <span className={styles.ratingBadge}>{Math.round(game.rating)} / 100</span>
+                <span className={styles.ratingBadge}>{Math.round(game.rating)}%</span>
               )}
             </div>
             
             <div className={styles.tagsContainer}>
-              {game.genres.map(g => (
+              {game.genres.map((g: any) => (
                 <span key={g.id} className={styles.tag}>{g.name}</span>
               ))}
             </div>
@@ -87,13 +81,20 @@ export default async function GamePage(props: { params: Promise<{ id: string }> 
             <div className={styles.actions}>
               <LibraryButton gameId={game.id} isSavedInitial={isSaved} />
             </div>
-
-            <GameTimeline events={events} />
           </div>
         </div>
+      </div>
 
+      <div className={styles.content}>
         <div className={styles.detailsSection}>
           <div className={styles.mainColumn}>
+            
+            {events && events.length > 0 && (
+              <div className={styles.timelineSection}>
+                <h2>Sua Jornada</h2>
+                <GameTimeline events={events} />
+              </div>
+            )}
             
             {userData && userData.review && (
               <div className={styles.diarySection}>

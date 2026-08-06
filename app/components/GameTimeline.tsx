@@ -26,13 +26,11 @@ export default function GameTimeline({ events }: { events: any[] }) {
 
   return (
     <div className={styles.timelineContainer}>
-      <h3 className={styles.title}>Sua Jornada</h3>
       <div className={styles.timeline}>
         {events.map((event, idx) => (
           <div key={event.id || idx} className={styles.eventRow}>
             <div className={styles.nodeWrapper}>
               <div className={styles.node}></div>
-              {idx !== events.length - 1 && <div className={styles.line}></div>}
             </div>
             <div className={styles.content}>
               <div className={styles.text}>{getEventText(event)}</div>
