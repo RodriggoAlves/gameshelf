@@ -37,24 +37,57 @@
 
 @media (max-width: 768px) {
   .header {
-    flex-direction: column;
     padding: 1rem;
-    gap: 1rem;
+    justify-content: space-between;
   }
   
   .nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
     width: 100%;
-    overflow-x: auto;
-    padding-bottom: 5px;
-    gap: 1.5rem;
-    justify-content: flex-start;
-    -webkit-overflow-scrolling: touch;
-    white-space: nowrap;
-    /* Hide scrollbar for a cleaner look */
-    scrollbar-width: none;
+    background-color: rgba(10, 10, 10, 0.95);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0.8rem 1rem 1.2rem;
+    justify-content: space-around;
+    z-index: 100;
+    margin: 0;
+    gap: 0;
   }
   
-  .nav::-webkit-scrollbar {
-    display: none;
+  .nav a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.65rem;
+    color: var(--text-secondary);
+  }
+  
+  .nav a svg {
+    width: 24px;
+    height: 24px;
+    opacity: 0.8;
+    transition: all 0.2s ease;
+  }
+  
+  .nav a:hover svg, .nav a:active svg {
+    opacity: 1;
+    transform: translateY(-2px);
+    color: #b026ff;
+  }
+}
+
+/* Base styles for SVG icons (Desktop) */
+.nav a svg {
+  display: none; /* Hide on desktop by default */
+}
+
+@media (max-width: 768px) {
+  .nav a svg {
+    display: block; /* Show on mobile */
   }
 }

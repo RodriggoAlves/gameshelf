@@ -58,3 +58,9 @@ ul {
   flex-direction: column;
   min-height: 100vh;
 }
+
+@media (max-width: 768px) {
+  .app-wrapper {
+    padding-bottom: 70px;
+  }
+}
