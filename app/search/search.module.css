@@ -7,10 +7,14 @@
 
 .title {
   font-size: 3rem;
-  font-weight: 700;
+  font-weight: 900;
   margin-bottom: 2rem;
   text-align: center;
+  background: linear-gradient(to right, #fff, var(--accent-cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   letter-spacing: -1px;
+  text-transform: uppercase;
 }
 
 .searchForm {
@@ -24,37 +28,46 @@
   flex: 1;
   padding: 1.25rem 1.5rem;
   border-radius: 9999px;
-  border: 1px solid var(--border-color);
-  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(0, 240, 255, 0.1);
+  background: rgba(10, 10, 15, 0.6);
+  backdrop-filter: blur(12px);
   color: var(--text-primary);
   font-size: 1.1rem;
   outline: none;
-  transition: border-color var(--transition-fast), background var(--transition-fast);
+  transition: all 0.3s ease;
 }
 
 .searchInput:focus {
-  border-color: rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--accent-cyan);
+  background: rgba(0, 240, 255, 0.05);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
 }
 
 .searchButton {
-  background-color: var(--text-primary);
-  color: var(--bg-primary);
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+  color: #fff;
   padding: 0 2.5rem;
   border-radius: 9999px;
-  font-weight: 600;
+  font-weight: 800;
   font-size: 1.1rem;
-  transition: transform var(--transition-fast), opacity var(--transition-fast);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(176, 38, 255, 0.4);
+  transition: all 0.3s ease;
 }
 
-.searchButton:hover {
-  transform: scale(0.95);
-  opacity: 0.8;
+.searchButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 240, 255, 0.6);
+  background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));
 }
 
 .searchButton:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+  filter: grayscale(1);
 }
 
 .noResults {
@@ -70,23 +83,26 @@
 }
 
 .gameCard {
-  background-color: var(--bg-tertiary);
-  border-radius: var(--border-radius-lg);
+  background: rgba(10, 10, 15, 0.6);
+  backdrop-filter: blur(10px);
+  border-radius: var(--border-radius-md);
   overflow: hidden;
-  border: 1px solid var(--border-color);
-  transition: transform var(--transition-fast), border-color var(--transition-fast);
+  border: 1px solid rgba(0, 240, 255, 0.1);
+  transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .gameCard:hover {
-  transform: scale(1.02);
-  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-5px);
+  border-color: var(--accent-purple);
+  box-shadow: 0 8px 30px rgba(176, 38, 255, 0.2);
 }
 
 .gameImage {
   height: 320px;
-  background-color: rgba(255,255,255,0.02);
+  background-color: rgba(10, 10, 15, 0.8);
 }
 
 .gameInfo {

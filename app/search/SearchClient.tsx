@@ -52,7 +52,7 @@ export default function SearchClient({ initialQuery, initialResults, libraryIds 
 
       {initialResults.length > 0 && (
         <>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '1.5rem', color: 'var(--text-secondary)' }}>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '1.5rem', color: 'var(--accent-cyan)', textTransform: 'uppercase', letterSpacing: '1px' }}>
             {initialQuery ? `Resultados para "${initialQuery}"` : "Em alta agora"}
           </h2>
           <div className={styles.searchGrid}>
