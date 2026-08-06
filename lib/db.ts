@@ -1,14 +1,14 @@
 import { Pool } from 'pg';
 
 if (!process.env.DATABASE_URL) {
-  throw new Error('DATABASE_URL environment variable is missing.');
+  console.warn('⚠️ WARNING: DATABASE_URL environment variable is missing. Database connection will fail if queried.');
 }
 
 // Em ambiente Serverless/Next.js, é importante não criar múltiplos pools
 const globalForPg = global as unknown as { pgPool: Pool };
 
 const pool = globalForPg.pgPool || new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: process.env.DATABASE_URL || 'postgresql://dummy:dummy@localhost:5432/dummy',
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : undefined
 });
 
@@ -116,8 +116,10 @@ const initDb = async () => {
   }
 };
 
-// Executa a inicialização
-initDb().catch(console.error);
+// Executa a inicialização apenas se tivermos a URL real
+if (process.env.DATABASE_URL) {
+  initDb().catch(console.error);
+}
 
 export const db = {
   query: (text: string, params?: any[]) => pool.query(text, params),
