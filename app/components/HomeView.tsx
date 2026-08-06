@@ -46,41 +46,8 @@ export default function HomeView({ popularGames, libraryIds }: { popularGames: G
   const carouselRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const carousel = carouselRef.current;
-    if (!carousel) return;
-    
-    let animationId: number;
-    let isPaused = false;
-    
-    const scroll = () => {
-      if (!isPaused) {
-        carousel.scrollLeft += 1; // Velocidade do scroll
-        
-        // Quando chegar perto do fim, reseta para o começo para efeito infinito
-        if (carousel.scrollLeft >= carousel.scrollWidth - carousel.clientWidth - 1) {
-          carousel.scrollLeft = 0;
-        }
-      }
-      animationId = requestAnimationFrame(scroll);
-    };
-
-    animationId = requestAnimationFrame(scroll);
-
-    const pause = () => { isPaused = true; };
-    const play = () => { isPaused = false; };
-
-    carousel.addEventListener("mouseenter", pause);
-    carousel.addEventListener("mouseleave", play);
-    carousel.addEventListener("touchstart", pause);
-    carousel.addEventListener("touchend", play);
-
-    return () => {
-      cancelAnimationFrame(animationId);
-      carousel.removeEventListener("mouseenter", pause);
-      carousel.removeEventListener("mouseleave", play);
-      carousel.removeEventListener("touchstart", pause);
-      carousel.removeEventListener("touchend", play);
-    };
+    // A animação automática via JS foi removida para dar lugar ao scroll-snap nativo do CSS,
+    // que proporciona uma experiência muito melhor no mobile (snap suave e nativo).
   }, []);
 
   return (

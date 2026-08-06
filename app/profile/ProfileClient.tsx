@@ -5,6 +5,7 @@ import { updateUserProfile, logout } from "../actions/auth";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useI18n } from "../contexts/I18nContext";
+import { LanguageSwitcher } from "../components/LanguageSwitcher";
 import styles from "./profile.module.css";
 
 const PRESET_AVATARS = [
@@ -76,9 +77,12 @@ export default function ProfileClient({ initialUser, stats, favorites = [], rece
           <p style={{ color: '#888', marginTop: '4px' }}>Nível {stats.level} • {stats.xp} XP</p>
         </div>
 
-        <button onClick={handleLogout} style={{ background: 'transparent', border: '1px solid #e74c3c', color: '#e74c3c', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>
-          {t.profile.logout}
-        </button>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'flex-end' }}>
+          <LanguageSwitcher />
+          <button onClick={handleLogout} style={{ background: 'transparent', border: '1px solid #e74c3c', color: '#e74c3c', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>
+            {t.profile.logout}
+          </button>
+        </div>
       </div>
 
       <div className={styles.statsRow}>

@@ -106,6 +106,8 @@
   padding-bottom: 1.5rem;
   -ms-overflow-style: none;
   scrollbar-width: none;
+  scroll-snap-type: x mandatory;
+  scroll-padding-left: 0;
 }
 
 .carousel::-webkit-scrollbar {
@@ -119,6 +121,8 @@
   border: 1px solid var(--border-color);
   transition: transform var(--transition-fast), border-color var(--transition-fast);
   flex: 0 0 280px;
+  position: relative;
+  scroll-snap-align: start;
 }
 
 .gameCard:hover {
@@ -304,7 +308,8 @@
   }
 
   .gameCard {
-    flex: 0 0 240px;
+    flex: 0 0 75vw;
+    scroll-snap-align: center;
   }
 
   .gameImagePlaceholder {
