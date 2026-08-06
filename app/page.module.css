@@ -235,7 +235,8 @@
   background: rgba(10, 10, 15, 0.6);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(0, 240, 255, 0.1);
-  border-radius: var(--border-radius-lg);
+  border-left: 4px solid #00f0ff;
+  border-radius: 16px;
   padding: 3rem 2.5rem;
   display: flex;
   flex-direction: column;
@@ -247,7 +248,7 @@
 
 .bentoCard:hover {
   transform: translateY(-5px);
-  border-color: var(--accent-purple);
+  border-left-color: #b026ff;
   box-shadow: 0 10px 40px rgba(176, 38, 255, 0.15);
 }
 
@@ -272,11 +273,35 @@
   grid-column: span 2;
 }
 
-.bentoIcon {
-  width: 48px;
-  height: 48px;
+.bentoIconWrapper {
+  background: rgba(0, 240, 255, 0.1);
+  padding: 1rem;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+  transition: all 0.3s ease;
   margin-bottom: 1.5rem;
-  color: var(--accent-primary);
+  width: max-content;
+}
+
+.bentoCard:hover .bentoIconWrapper {
+  background: rgba(176, 38, 255, 0.1);
+  border-color: rgba(176, 38, 255, 0.3);
+  box-shadow: 0 0 15px rgba(176, 38, 255, 0.2);
+}
+
+.bentoIcon {
+  width: 28px;
+  height: 28px;
+  color: #00f0ff;
+  transition: color 0.3s ease;
+}
+
+.bentoCard:hover .bentoIcon {
+  color: #b026ff;
 }
 
 .bentoCard h3 {
