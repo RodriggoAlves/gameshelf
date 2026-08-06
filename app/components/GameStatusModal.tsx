@@ -134,7 +134,24 @@ export default function GameStatusModal({
       <div className={styles.modal} onClick={stopProp}>
         
         {isLoading || !gameMeta ? (
-          <div style={{ padding: '80px', textAlign: 'center', color: '#888' }}>Conectando com os servidores Zerey...</div>
+          <div className={styles.modalContent} style={{ padding: '40px 20px', minHeight: '400px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+               <div style={{ width: '80px', height: '120px', background: 'rgba(255,255,255,0.05)', borderRadius: '8px', animation: 'pulse 1.5s infinite ease-in-out' }}></div>
+               <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                 <div style={{ width: '60%', height: '24px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', animation: 'pulse 1.5s infinite ease-in-out' }}></div>
+                 <div style={{ width: '40%', height: '16px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', animation: 'pulse 1.5s infinite ease-in-out' }}></div>
+               </div>
+            </div>
+            <div style={{ width: '100%', height: '60px', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', marginTop: '20px', animation: 'pulse 1.5s infinite ease-in-out' }}></div>
+            <div style={{ width: '100%', height: '100px', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', animation: 'pulse 1.5s infinite ease-in-out' }}></div>
+            <style>{`
+              @keyframes pulse {
+                0% { opacity: 1; }
+                50% { opacity: 0.5; }
+                100% { opacity: 1; }
+              }
+            `}</style>
+          </div>
         ) : (
           <>
             {/* HERO BACKGROUND */}
