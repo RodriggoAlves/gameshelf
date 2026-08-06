@@ -13,12 +13,12 @@ export default async function ProfilePage() {
   }
 
   // Fetch all user games for XP and Stats
-  const userGames = db.prepare("SELECT * FROM UserGame WHERE userId = ? ORDER BY updatedAt DESC").all(user.id) as any[];
+  const userGames = await db.all('SELECT * FROM "UserGame" WHERE "userId" = $1 ORDER BY "updatedAt" DESC', [user.id]);
   
   // Calculate basic stats manually or from userGames
-  const completed = userGames.filter(g => ['Zerey', 'Platinado', '100%'].includes(g.status)).length;
-  const playtime = userGames.reduce((acc, g) => acc + (g.playtime || 0), 0);
-  const reviewsCount = userGames.filter(g => g.review && g.review.trim().length > 0).length;
+  const completed = userGames.filter((g: any) => ['Zerey', 'Platinado', '100%'].includes(g.status)).length;
+  const playtime = userGames.reduce((acc: number, g: any) => acc + (g.playtime || 0), 0);
+  const reviewsCount = userGames.filter((g: any) => g.review && g.review.trim().length > 0).length;
 
   const { level, xp, nextLevelXp, progressPercent } = calculateLevelAndXP(userGames);
 
@@ -34,7 +34,7 @@ export default async function ProfilePage() {
   };
 
   // Fetch all sessions for Heatmap and Badges
-  const sessions = db.prepare("SELECT * FROM PlaySession WHERE userId = ?").all(user.id) as any[];
+  const sessions = await db.all('SELECT * FROM "PlaySession" WHERE "userId" = $1', [user.id]);
   
   // Fetch details for ALL unique games to get Genres (for Radar and Badges)
   const allGameIds = Array.from(new Set(userGames.map(g => g.gameId)));

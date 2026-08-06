@@ -13,14 +13,14 @@ async function getUserId(): Promise<string> {
 
 export async function toggleGameInLibrary(gameId: number) {
   const userId = await getUserId();
-  const existing = db.prepare("SELECT gameId FROM UserGame WHERE userId = ? AND gameId = ?").get(userId, gameId);
+  const existing = await db.get('SELECT "gameId" FROM "UserGame" WHERE "userId" = $1 AND "gameId" = $2', [userId, gameId]);
   if (existing) {
-    db.prepare("DELETE FROM UserGame WHERE userId = ? AND gameId = ?").run(userId, gameId);
+    await db.run('DELETE FROM "UserGame" WHERE "userId" = $1 AND "gameId" = $2', [userId, gameId]);
     revalidatePath(`/game/${gameId}`);
     revalidatePath(`/library`);
     return { added: false };
   } else {
-    db.prepare("INSERT INTO UserGame (userId, gameId, status) VALUES (?, ?, ?)").run(userId, gameId, "Quero Jogar");
+    await db.run('INSERT INTO "UserGame" ("userId", "gameId", status) VALUES ($1, $2, $3)', [userId, gameId, "Quero Jogar"]);
     revalidatePath(`/game/${gameId}`);
     revalidatePath(`/library`);
     revalidatePath(`/profile`);
@@ -52,34 +52,34 @@ export async function addGameToLibrary(gameId: number, rawData: { status: string
   }
   const data = parseResult.data;
   const userId = await getUserId();
-  const existing = db.prepare("SELECT * FROM UserGame WHERE userId = ? AND gameId = ?").get(userId, gameId) as any;
+  const existing = await db.get('SELECT * FROM "UserGame" WHERE "userId" = $1 AND "gameId" = $2', [userId, gameId]);
   const isFav = data.isFavorite ? 1 : 0;
   
-  const logEvent = (eventType: string, oldV: string, newV: string) => {
-    db.prepare("INSERT INTO TimelineEvent (userId, gameId, eventType, oldValue, newValue) VALUES (?, ?, ?, ?, ?)").run(userId, gameId, eventType, oldV, newV);
+  const logEvent = async (eventType: string, oldV: string, newV: string) => {
+    await db.run('INSERT INTO "TimelineEvent" ("userId", "gameId", "eventType", "oldValue", "newValue") VALUES ($1, $2, $3, $4, $5)', [userId, gameId, eventType, oldV, newV]);
   };
 
   if (!existing) {
-    db.prepare(`
-      INSERT INTO UserGame (userId, gameId, status, rating, progress, isFavorite, platform, startDate, endDate, playtime, ownership, storefront, containsSpoilers, review) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `).run(userId, gameId, data.status, data.rating || null, data.progress || 0, isFav, data.platform || "", data.startDate || null, data.endDate || null, data.playtime || 0, data.ownership || "", data.storefront || "", data.containsSpoilers ? 1 : 0, data.review || "");
+    await db.run(`
+      INSERT INTO "UserGame" ("userId", "gameId", status, rating, progress, "isFavorite", platform, "startDate", "endDate", playtime, ownership, storefront, "containsSpoilers", review) 
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+    `, [userId, gameId, data.status, data.rating || null, data.progress || 0, isFav, data.platform || "", data.startDate || null, data.endDate || null, data.playtime || 0, data.ownership || "", data.storefront || "", data.containsSpoilers ? 1 : 0, data.review || ""]);
     
-    logEvent("ADDED", "", data.status);
-    if (data.rating) logEvent("RATING_UPDATED", "", data.rating.toString());
-    if (data.progress && data.progress > 0) logEvent("PROGRESS_UPDATED", "0", data.progress.toString());
-    if (isFav) logEvent("FAVORITED", "", "");
+    await logEvent("ADDED", "", data.status);
+    if (data.rating) await logEvent("RATING_UPDATED", "", data.rating.toString());
+    if (data.progress && data.progress > 0) await logEvent("PROGRESS_UPDATED", "0", data.progress.toString());
+    if (isFav) await logEvent("FAVORITED", "", "");
   } else {
-    if (existing.status !== data.status) logEvent("STATUS_CHANGED", existing.status, data.status);
-    if ((existing.rating || 0) !== (data.rating || 0)) logEvent("RATING_UPDATED", existing.rating?.toString() || "", data.rating?.toString() || "");
-    if ((existing.progress || 0) !== (data.progress || 0)) logEvent("PROGRESS_UPDATED", existing.progress?.toString() || "0", data.progress?.toString() || "0");
-    if (existing.isFavorite !== isFav) logEvent(isFav ? "FAVORITED" : "UNFAVORITED", "", "");
-    if (existing.platform !== data.platform) logEvent("PLATFORM_CHANGED", existing.platform || "", data.platform || "");
+    if (existing.status !== data.status) await logEvent("STATUS_CHANGED", existing.status, data.status);
+    if ((existing.rating || 0) !== (data.rating || 0)) await logEvent("RATING_UPDATED", existing.rating?.toString() || "", data.rating?.toString() || "");
+    if ((existing.progress || 0) !== (data.progress || 0)) await logEvent("PROGRESS_UPDATED", existing.progress?.toString() || "0", data.progress?.toString() || "0");
+    if (existing.isFavorite !== isFav) await logEvent(isFav ? "FAVORITED" : "UNFAVORITED", "", "");
+    if (existing.platform !== data.platform) await logEvent("PLATFORM_CHANGED", existing.platform || "", data.platform || "");
 
-    db.prepare(`
-      UPDATE UserGame SET status = ?, rating = ?, progress = ?, isFavorite = ?, platform = ?, startDate = ?, endDate = ?, playtime = ?, ownership = ?, storefront = ?, containsSpoilers = ?, review = ?, updatedAt = CURRENT_TIMESTAMP
-      WHERE userId = ? AND gameId = ?
-    `).run(data.status, data.rating || null, data.progress || 0, isFav, data.platform || "", data.startDate || null, data.endDate || null, data.playtime || 0, data.ownership || "", data.storefront || "", data.containsSpoilers ? 1 : 0, data.review || "", userId, gameId);
+    await db.run(`
+      UPDATE "UserGame" SET status = $1, rating = $2, progress = $3, "isFavorite" = $4, platform = $5, "startDate" = $6, "endDate" = $7, playtime = $8, ownership = $9, storefront = $10, "containsSpoilers" = $11, review = $12, "updatedAt" = CURRENT_TIMESTAMP
+      WHERE "userId" = $13 AND "gameId" = $14
+    `, [data.status, data.rating || null, data.progress || 0, isFav, data.platform || "", data.startDate || null, data.endDate || null, data.playtime || 0, data.ownership || "", data.storefront || "", data.containsSpoilers ? 1 : 0, data.review || "", userId, gameId]);
   }
   revalidatePath(`/game/${gameId}`);
   revalidatePath(`/library`);
@@ -89,8 +89,8 @@ export async function addGameToLibrary(gameId: number, rawData: { status: string
 
 export async function removeGameFromLibrary(gameId: number) {
   const userId = await getUserId();
-  db.prepare("DELETE FROM UserGame WHERE userId = ? AND gameId = ?").run(userId, gameId);
-  db.prepare("DELETE FROM TimelineEvent WHERE userId = ? AND gameId = ?").run(userId, gameId);
+  await db.run('DELETE FROM "UserGame" WHERE "userId" = $1 AND "gameId" = $2', [userId, gameId]);
+  await db.run('DELETE FROM "TimelineEvent" WHERE "userId" = $1 AND "gameId" = $2', [userId, gameId]);
   revalidatePath(`/game/${gameId}`);
   revalidatePath(`/library`);
   revalidatePath(`/profile`);
@@ -99,8 +99,8 @@ export async function removeGameFromLibrary(gameId: number) {
 
 export async function archiveGameFromLibrary(gameId: number) {
   const userId = await getUserId();
-  db.prepare("UPDATE UserGame SET isArchived = 1, updatedAt = CURRENT_TIMESTAMP WHERE userId = ? AND gameId = ?").run(userId, gameId);
-  db.prepare("INSERT INTO TimelineEvent (userId, gameId, eventType, oldValue, newValue) VALUES (?, ?, ?, ?, ?)").run(userId, gameId, "ARCHIVED", "", "");
+  await db.run('UPDATE "UserGame" SET "isArchived" = 1, "updatedAt" = CURRENT_TIMESTAMP WHERE "userId" = $1 AND "gameId" = $2', [userId, gameId]);
+  await db.run('INSERT INTO "TimelineEvent" ("userId", "gameId", "eventType", "oldValue", "newValue") VALUES ($1, $2, $3, $4, $5)', [userId, gameId, "ARCHIVED", "", ""]);
   revalidatePath(`/game/${gameId}`);
   revalidatePath(`/library`);
   revalidatePath(`/profile`);
@@ -110,31 +110,31 @@ export async function archiveGameFromLibrary(gameId: number) {
 export async function checkGameInLibrary(gameId: number) {
   const user = await getUser();
   if (!user) return false;
-  const existing = db.prepare("SELECT gameId FROM UserGame WHERE userId = ? AND gameId = ?").get(user.id, gameId);
+  const existing = await db.get('SELECT "gameId" FROM "UserGame" WHERE "userId" = $1 AND "gameId" = $2', [user.id, gameId]);
   return !!existing;
 }
 
 export async function getLibraryGames() {
   const user = await getUser();
   if (!user) return [];
-  const games = db.prepare("SELECT * FROM UserGame WHERE userId = ? ORDER BY createdAt DESC").all(user.id) as any[];
+  const games = await db.all('SELECT * FROM "UserGame" WHERE "userId" = $1 ORDER BY "createdAt" DESC', [user.id]);
   return games;
 }
 
 export async function getGameLibraryData(gameId: number) {
   const user = await getUser();
   if (!user) return null;
-  return db.prepare("SELECT * FROM UserGame WHERE userId = ? AND gameId = ?").get(user.id, gameId);
+  return await db.get('SELECT * FROM "UserGame" WHERE "userId" = $1 AND "gameId" = $2', [user.id, gameId]);
 }
 
 export async function getGameModalData(gameId: number) {
   const user = await getUser();
   if (!user) return null;
-  const libraryData = db.prepare("SELECT * FROM UserGame WHERE userId = ? AND gameId = ?").get(user.id, gameId);
+  const libraryData = await db.get('SELECT * FROM "UserGame" WHERE "userId" = $1 AND "gameId" = $2', [user.id, gameId]);
   const gameInfo = await fetchGameDetails(gameId);
   return {
     libraryData,
-    platforms: gameInfo?.platforms?.map(p => p.platform.name) || [],
+    platforms: gameInfo?.platforms?.map((p: any) => p.platform.name) || [],
     game: gameInfo ? {
       name: gameInfo.name,
       cover: gameInfo.background_image,
@@ -146,6 +146,6 @@ export async function getGameModalData(gameId: number) {
 export async function getGameTimeline(gameId: number) {
   const user = await getUser();
   if (!user) return [];
-  const events = db.prepare("SELECT * FROM TimelineEvent WHERE userId = ? AND gameId = ? ORDER BY createdAt DESC").all(user.id, gameId) as any[];
+  const events = await db.all('SELECT * FROM "TimelineEvent" WHERE "userId" = $1 AND "gameId" = $2 ORDER BY "createdAt" DESC', [user.id, gameId]);
   return events;
 }

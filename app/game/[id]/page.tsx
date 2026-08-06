@@ -21,7 +21,7 @@ export default async function GamePage(props: { params: Promise<{ id: string }> 
   const { getUser } = await import("../../actions/auth");
   const user = await getUser();
   const db = (await import("../../../lib/db")).default;
-  const userData = (isSaved && user) ? db.prepare("SELECT * FROM UserGame WHERE userId = ? AND gameId = ?").get(user.id, game.id) as any : null;
+  const userData = (isSaved && user) ? await db.get('SELECT * FROM "UserGame" WHERE "userId" = $1 AND "gameId" = $2', [user.id, game.id]) : null;
 
   const bgImage = game.screenshots && game.screenshots.length > 0 
     ? game.screenshots[0] 

@@ -95,8 +95,8 @@ export async function register(username: string, email: string, password: string
 
   // Anti-enumeration: verificar username e email separadamente para dar feedback
   // mas usando mensagem genérica para não expor quais existem
-  const existingUser = db.prepare("SELECT id FROM User WHERE username = ?").get(username);
-  const existingEmail = db.prepare("SELECT id FROM User WHERE email = ?").get(email);
+  const existingUser = await db.get('SELECT id FROM "User" WHERE username = $1', [username]);
+  const existingEmail = await db.get('SELECT id FROM "User" WHERE email = $1', [email]);
   if (existingUser || existingEmail) {
     // Mensagem genérica para prevenir enumeração de usuários
     return { error: "Não foi possível criar a conta. Verifique os dados informados ou tente outro username/e-mail." };
@@ -106,9 +106,8 @@ export async function register(username: string, email: string, password: string
   const passwordHash = hashPassword(password);
   
   try {
-    db.prepare("INSERT INTO User (id, username, email, passwordHash) VALUES (?, ?, ?, ?)").run(userId, username, email, passwordHash);
+    await db.run('INSERT INTO "User" (id, username, email, "passwordHash") VALUES ($1, $2, $3, $4)', [userId, username, email, passwordHash]);
   } catch (err) {
-    db.exec("ROLLBACK");
     console.error(err);
     return { error: "Erro ao criar usuário." };
   }
@@ -116,13 +115,10 @@ export async function register(username: string, email: string, password: string
   // Instead of creating session immediately, generate verification token
   const token = crypto.randomUUID();
   const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(); // 24 hours
-  db.prepare("INSERT INTO AccountVerification (id, userId, expiresAt) VALUES (?, ?, ?)").run(token, userId, expiresAt);
+  await db.run('INSERT INTO "AccountVerification" (id, "userId", "expiresAt") VALUES ($1, $2, $3)', [token, userId, expiresAt]);
 
   // Send verification email asynchronously
   try {
-    // Configuração do transporter (Nodemailer)
-    // VULN-16 WARNING: Para produção, configure um domínio próprio e registros DNS (SPF, DKIM, DMARC)
-    // para evitar que os e-mails caiam na caixa de spam ou sejam marcados como spoofing.
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -181,7 +177,7 @@ export async function login(usernameOrEmail: string, password: string) {
     return { error: "Muitas tentativas de login. Aguarde 1 minuto." };
   }
 
-  const user = db.prepare("SELECT * FROM User WHERE username = ? OR email = ?").get(usernameOrEmail, usernameOrEmail) as any;
+  const user = await db.get('SELECT * FROM "User" WHERE username = $1 OR email = $2', [usernameOrEmail, usernameOrEmail]);
   
   if (!user || !verifyPassword(password, user.passwordHash)) {
     return { error: "Credenciais inválidas." };
@@ -199,7 +195,7 @@ export async function verifyAccount(token: string) {
   if (!token) return { error: "Token não fornecido." };
 
   // VULN-11: Consumir token atomicamente — DELETE RETURNING previne race condition
-  const record = db.prepare("DELETE FROM AccountVerification WHERE id = ? RETURNING *").get(token) as any;
+  const record = await db.get('DELETE FROM "AccountVerification" WHERE id = $1 RETURNING *', [token]);
   if (!record) {
     return { error: "Link de verificação inválido ou já utilizado." };
   }
@@ -209,7 +205,7 @@ export async function verifyAccount(token: string) {
   }
 
   try {
-    db.prepare("UPDATE User SET isVerified = 1 WHERE id = ?").run(record.userId);
+    await db.run('UPDATE "User" SET "isVerified" = 1 WHERE id = $1', [record.userId]);
     
     // Automatically log the user in after verification
     await createSession(record.userId);
@@ -224,7 +220,7 @@ export async function logout() {
   const cookieStore = await cookies();
   const sessionId = cookieStore.get(SESSION_COOKIE)?.value;
   if (sessionId) {
-    db.prepare("DELETE FROM Session WHERE id = ?").run(sessionId);
+    await db.run('DELETE FROM "Session" WHERE id = $1', [sessionId]);
   }
   cookieStore.delete(SESSION_COOKIE);
 }
@@ -234,7 +230,7 @@ async function createSession(userId: string) {
   // Expira em 7 dias (reduzido de 30 para mitigar session hijacking)
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
   
-  db.prepare("INSERT INTO Session (id, userId, expiresAt) VALUES (?, ?, ?)").run(sessionId, userId, expiresAt);
+  await db.run('INSERT INTO "Session" (id, "userId", "expiresAt") VALUES ($1, $2, $3)', [sessionId, userId, expiresAt]);
   
   const cookieStore = await cookies();
   cookieStore.set(SESSION_COOKIE, sessionId, {
@@ -253,21 +249,21 @@ export async function getUser() {
 
   // VULN-26: Limpeza de sessões expiradas (10% de chance a cada request para não impactar performance)
   if (Math.random() < 0.1) {
-    db.prepare("DELETE FROM Session WHERE expiresAt < datetime('now')").run();
-    db.prepare("DELETE FROM PasswordReset WHERE expiresAt < datetime('now')").run();
-    db.prepare("DELETE FROM AccountVerification WHERE expiresAt < datetime('now')").run();
+    await db.run("DELETE FROM \"Session\" WHERE \"expiresAt\" < NOW()");
+    await db.run("DELETE FROM \"PasswordReset\" WHERE \"expiresAt\" < NOW()");
+    await db.run("DELETE FROM \"AccountVerification\" WHERE \"expiresAt\" < NOW()");
   }
 
-  const session = db.prepare("SELECT * FROM Session WHERE id = ?").get(sessionId) as any;
+  const session = await db.get('SELECT * FROM "Session" WHERE id = $1', [sessionId]);
   if (!session) return null;
 
   if (new Date(session.expiresAt) < new Date()) {
-    db.prepare("DELETE FROM Session WHERE id = ?").run(sessionId);
+    await db.run('DELETE FROM "Session" WHERE id = $1', [sessionId]);
     cookieStore.delete(SESSION_COOKIE);
     return null;
   }
 
-  const user = db.prepare("SELECT id, username, avatarUrl, coverUrl FROM User WHERE id = ?").get(session.userId) as any;
+  const user = await db.get('SELECT id, username, "avatarUrl", "coverUrl" FROM "User" WHERE id = $1', [session.userId]);
   return user || null;
 }
 
@@ -280,13 +276,13 @@ export async function updateUserProfile(data: { avatarUrl?: string; coverUrl?: s
     if (!isValidImageUrl(data.avatarUrl)) {
       return { error: "URL de avatar inválida. Use apenas URLs HTTPS de imagens." };
     }
-    db.prepare("UPDATE User SET avatarUrl = ? WHERE id = ?").run(data.avatarUrl, user.id);
+    await db.run('UPDATE "User" SET "avatarUrl" = $1 WHERE id = $2', [data.avatarUrl, user.id]);
   }
   if (data.coverUrl !== undefined) {
     if (!isValidImageUrl(data.coverUrl)) {
       return { error: "URL de capa inválida. Use apenas URLs HTTPS de imagens." };
     }
-    db.prepare("UPDATE User SET coverUrl = ? WHERE id = ?").run(data.coverUrl, user.id);
+    await db.run('UPDATE "User" SET "coverUrl" = $1 WHERE id = $2', [data.coverUrl, user.id]);
   }
   return { success: true };
 }
@@ -299,7 +295,7 @@ export async function requestPasswordReset(email: string) {
     return { error: "Muitas solicitações. Tente novamente mais tarde." };
   }
   
-  const user = db.prepare("SELECT * FROM User WHERE email = ?").get(email) as any;
+  const user = await db.get('SELECT * FROM "User" WHERE email = $1', [email]);
   if (!user) {
     // Para evitar User Enumeration, retornamos sucesso mesmo se o e-mail não existir.
     return { success: true };
@@ -308,7 +304,7 @@ export async function requestPasswordReset(email: string) {
   const token = crypto.randomUUID();
   const expiresAt = new Date(Date.now() + 15 * 60 * 1000).toISOString(); // 15 minutos
   
-  db.prepare("INSERT INTO PasswordReset (id, userId, expiresAt) VALUES (?, ?, ?)").run(token, user.id, expiresAt);
+  await db.run('INSERT INTO "PasswordReset" (id, "userId", "expiresAt") VALUES ($1, $2, $3)', [token, user.id, expiresAt]);
 
   const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -358,7 +354,7 @@ export async function resetPassword(token: string, newPassword: string) {
   if (!/[0-9]/.test(newPassword)) return { error: "A senha deve conter ao menos um número." };
 
   // VULN-11: Consumir token atomicamente
-  const resetRecord = db.prepare("DELETE FROM PasswordReset WHERE id = ? RETURNING *").get(token) as any;
+  const resetRecord = await db.get('DELETE FROM "PasswordReset" WHERE id = $1 RETURNING *', [token]);
   if (!resetRecord) {
     return { error: "Link inválido ou já utilizado." };
   }
@@ -369,16 +365,19 @@ export async function resetPassword(token: string, newPassword: string) {
 
   const passwordHash = hashPassword(newPassword);
   
+  const client = await db.pool.connect();
   try {
-    db.exec("BEGIN TRANSACTION");
-    db.prepare("UPDATE User SET passwordHash = ? WHERE id = ?").run(passwordHash, resetRecord.userId);
+    await client.query("BEGIN");
+    await client.query('UPDATE "User" SET "passwordHash" = $1 WHERE id = $2', [passwordHash, resetRecord.userId]);
     // VULN-07: Invalidar TODAS as sessões do usuário ao trocar a senha
-    db.prepare("DELETE FROM Session WHERE userId = ?").run(resetRecord.userId);
-    db.exec("COMMIT");
+    await client.query('DELETE FROM "Session" WHERE "userId" = $1', [resetRecord.userId]);
+    await client.query("COMMIT");
     return { success: true };
   } catch (err) {
-    db.exec("ROLLBACK");
+    await client.query("ROLLBACK");
     console.error(err);
     return { error: "Erro ao atualizar a senha." };
+  } finally {
+    client.release();
   }
 }

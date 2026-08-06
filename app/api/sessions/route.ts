@@ -40,39 +40,47 @@ export async function POST(req: Request) {
     const { gameId, sessionDate, durationMinutes, isCompletionDay } = parseResult.data;
 
     // Verificar se o jogo está na biblioteca do usuário
-    const existing = db.prepare(
-      "SELECT gameId FROM UserGame WHERE userId = ? AND gameId = ?"
-    ).get(userId, gameId);
+    const existing = await db.get(
+      'SELECT "gameId" FROM "UserGame" WHERE "userId" = $1 AND "gameId" = $2', [userId, gameId]
+    );
     if (!existing) {
       return NextResponse.json({ error: "Jogo não encontrado na biblioteca" }, { status: 404 });
     }
 
-    // Registrar Sessão
-    const stmt = db.prepare(`
-      INSERT INTO PlaySession (userId, gameId, sessionDate, durationMinutes, isCompletionDay)
-      VALUES (?, ?, ?, ?, ?)
-    `);
-    stmt.run(userId, gameId, sessionDate, durationMinutes, isCompletionDay ? 1 : 0);
+    const client = await db.pool.connect();
+    try {
+      await client.query("BEGIN");
+      
+      // Registrar Sessão
+      await client.query(`
+        INSERT INTO "PlaySession" ("userId", "gameId", "sessionDate", "durationMinutes", "isCompletionDay")
+        VALUES ($1, $2, $3, $4, $5)
+      `, [userId, gameId, sessionDate, durationMinutes, isCompletionDay ? 1 : 0]);
 
-    // Atualizar tempo total no jogo
-    const updateTime = db.prepare(`
-      UPDATE UserGame SET playtime = playtime + ? WHERE userId = ? AND gameId = ?
-    `);
-    updateTime.run(durationMinutes, userId, gameId);
+      // Atualizar tempo total no jogo
+      await client.query(`
+        UPDATE "UserGame" SET playtime = playtime + $1 WHERE "userId" = $2 AND "gameId" = $3
+      `, [durationMinutes, userId, gameId]);
 
-    // Se completou, define como Zerey
-    if (isCompletionDay) {
-      const updateStatus = db.prepare(`
-        UPDATE UserGame SET status = 'Zerey', endDate = CURRENT_TIMESTAMP WHERE userId = ? AND gameId = ?
-      `);
-      updateStatus.run(userId, gameId);
+      // Se completou, define como Zerey
+      if (isCompletionDay) {
+        await client.query(`
+          UPDATE "UserGame" SET status = 'Zerey', "endDate" = CURRENT_TIMESTAMP WHERE "userId" = $1 AND "gameId" = $2
+        `, [userId, gameId]);
 
-      // Adiciona na timeline
-      const insertTimeline = db.prepare(`
-        INSERT INTO TimelineEvent (userId, gameId, eventType, oldValue, newValue)
-        VALUES (?, ?, 'STATUS_CHANGED', 'Jogando', 'Zerey')
-      `);
-      insertTimeline.run(userId, gameId);
+        // Adiciona na timeline
+        await client.query(`
+          INSERT INTO "TimelineEvent" ("userId", "gameId", "eventType", "oldValue", "newValue")
+          VALUES ($1, $2, 'STATUS_CHANGED', 'Jogando', 'Zerey')
+        `, [userId, gameId]);
+      }
+      
+      await client.query("COMMIT");
+    } catch (err) {
+      await client.query("ROLLBACK");
+      throw err;
+    } finally {
+      client.release();
     }
 
     return NextResponse.json({ success: true });
@@ -94,10 +102,10 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: "Muitas requisições. Aguarde." }, { status: 429 });
     }
 
-    const stmt = db.prepare(`
-      SELECT * FROM PlaySession WHERE userId = ? ORDER BY sessionDate DESC
-    `);
-    const sessions = stmt.all(userId);
+    const sessions = await db.all(`
+      SELECT * FROM "PlaySession" WHERE "userId" = $1 ORDER BY "sessionDate" DESC
+    `, [userId]);
+    
     return NextResponse.json(sessions);
   } catch (err: any) {
     if (err.message === 'Unauthorized') {

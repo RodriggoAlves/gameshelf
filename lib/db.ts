@@ -1,127 +1,146 @@
-import Database from 'better-sqlite3';
-import path from 'path';
-import fs from 'fs';
+import { Pool } from 'pg';
 
-const dataDir = path.join(process.cwd(), 'data');
-if (!fs.existsSync(dataDir)) {
-  fs.mkdirSync(dataDir, { recursive: true });
+if (!process.env.DATABASE_URL) {
+  throw new Error('DATABASE_URL environment variable is missing.');
 }
 
-const db = new Database(path.join(dataDir, 'zerey.db'));
+// Em ambiente Serverless/Next.js, é importante não criar múltiplos pools
+const globalForPg = global as unknown as { pgPool: Pool };
 
-// Initialize database schema
-db.exec(`
-  CREATE TABLE IF NOT EXISTS User (
-    id TEXT PRIMARY KEY,
-    username TEXT UNIQUE,
-    email TEXT,
-    passwordHash TEXT,
-    avatarUrl TEXT,
-    coverUrl TEXT,
-    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
-  );
+const pool = globalForPg.pgPool || new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : undefined
+});
 
-  CREATE TABLE IF NOT EXISTS Session (
-    id TEXT PRIMARY KEY,
-    userId TEXT,
-    expiresAt DATETIME,
-    FOREIGN KEY (userId) REFERENCES User(id) ON DELETE CASCADE
-  );
+if (process.env.NODE_ENV !== 'production') globalForPg.pgPool = pool;
 
-  CREATE TABLE IF NOT EXISTS UserGame (
-    userId TEXT,
-    gameId INTEGER,
-    status TEXT DEFAULT 'Quero Jogar',
-    priority TEXT DEFAULT 'Sem prioridade',
-    rating INTEGER,
-    review TEXT,
-    progress INTEGER DEFAULT 0,
-    playtime INTEGER DEFAULT 0,
-    startDate DATETIME,
-    endDate DATETIME,
-    isArchived INTEGER DEFAULT 0,
-    isFavorite INTEGER DEFAULT 0,
-    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (userId, gameId)
-  );
+// Vamos executar a criação das tabelas para manter o funcionamento original
+// Mas lembrando que o ideal em Postgres é usar migrations (ex: Prisma, Drizzle, etc)
+const initDb = async () => {
+  const client = await pool.connect();
+  try {
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS "User" (
+        id TEXT PRIMARY KEY,
+        username TEXT UNIQUE,
+        email TEXT,
+        passwordHash TEXT,
+        avatarUrl TEXT,
+        coverUrl TEXT,
+        createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        isVerified INTEGER DEFAULT 0
+      );
 
-  CREATE TABLE IF NOT EXISTS Tag (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    userId TEXT,
-    name TEXT,
-    color TEXT
-  );
+      CREATE TABLE IF NOT EXISTS "Session" (
+        id TEXT PRIMARY KEY,
+        userId TEXT,
+        expiresAt TIMESTAMP,
+        FOREIGN KEY (userId) REFERENCES "User"(id) ON DELETE CASCADE
+      );
 
-  CREATE TABLE IF NOT EXISTS GameTag (
-    userId TEXT,
-    gameId INTEGER,
-    tagId INTEGER,
-    PRIMARY KEY (userId, gameId, tagId),
-    FOREIGN KEY (tagId) REFERENCES Tag(id) ON DELETE CASCADE
-  );
+      CREATE TABLE IF NOT EXISTS "UserGame" (
+        userId TEXT,
+        gameId INTEGER,
+        status TEXT DEFAULT 'Quero Jogar',
+        priority TEXT DEFAULT 'Sem prioridade',
+        rating INTEGER,
+        review TEXT,
+        progress INTEGER DEFAULT 0,
+        playtime INTEGER DEFAULT 0,
+        startDate TIMESTAMP,
+        endDate TIMESTAMP,
+        isArchived INTEGER DEFAULT 0,
+        isFavorite INTEGER DEFAULT 0,
+        platform TEXT DEFAULT '',
+        ownership TEXT DEFAULT '',
+        storefront TEXT DEFAULT '',
+        containsSpoilers INTEGER DEFAULT 0,
+        createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (userId, gameId)
+      );
 
-  CREATE TABLE IF NOT EXISTS TimelineEvent (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    userId TEXT,
-    gameId INTEGER,
-    eventType TEXT,
-    oldValue TEXT,
-    newValue TEXT,
-    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
-  );
+      CREATE TABLE IF NOT EXISTS "Tag" (
+        id SERIAL PRIMARY KEY,
+        userId TEXT,
+        name TEXT,
+        color TEXT
+      );
 
-  CREATE TABLE IF NOT EXISTS PlaySession (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    userId TEXT,
-    gameId INTEGER,
-    sessionDate TEXT,
-    durationMinutes INTEGER,
-    isCompletionDay INTEGER DEFAULT 0,
-    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
-  );
+      CREATE TABLE IF NOT EXISTS "GameTag" (
+        userId TEXT,
+        gameId INTEGER,
+        tagId INTEGER,
+        PRIMARY KEY (userId, gameId, tagId),
+        FOREIGN KEY (tagId) REFERENCES "Tag"(id) ON DELETE CASCADE
+      );
 
-  CREATE TABLE IF NOT EXISTS PasswordReset (
-    id TEXT PRIMARY KEY,
-    userId TEXT,
-    expiresAt DATETIME,
-    FOREIGN KEY (userId) REFERENCES User(id) ON DELETE CASCADE
-  );
+      CREATE TABLE IF NOT EXISTS "TimelineEvent" (
+        id SERIAL PRIMARY KEY,
+        userId TEXT,
+        gameId INTEGER,
+        eventType TEXT,
+        oldValue TEXT,
+        newValue TEXT,
+        createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
 
-  CREATE TABLE IF NOT EXISTS AccountVerification (
-    id TEXT PRIMARY KEY,
-    userId TEXT,
-    expiresAt DATETIME,
-    FOREIGN KEY (userId) REFERENCES User(id) ON DELETE CASCADE
-  );
-`);
+      CREATE TABLE IF NOT EXISTS "PlaySession" (
+        id SERIAL PRIMARY KEY,
+        userId TEXT,
+        gameId INTEGER,
+        sessionDate TEXT,
+        durationMinutes INTEGER,
+        isCompletionDay INTEGER DEFAULT 0,
+        createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
 
-try {
-  db.exec('ALTER TABLE User ADD COLUMN isVerified INTEGER DEFAULT 0');
-} catch (e) {}
+      CREATE TABLE IF NOT EXISTS "PasswordReset" (
+        id TEXT PRIMARY KEY,
+        userId TEXT,
+        expiresAt TIMESTAMP,
+        FOREIGN KEY (userId) REFERENCES "User"(id) ON DELETE CASCADE
+      );
 
-try {
-  db.exec('ALTER TABLE UserGame ADD COLUMN isFavorite INTEGER DEFAULT 0');
-} catch (e) {}
+      CREATE TABLE IF NOT EXISTS "AccountVerification" (
+        id TEXT PRIMARY KEY,
+        userId TEXT,
+        expiresAt TIMESTAMP,
+        FOREIGN KEY (userId) REFERENCES "User"(id) ON DELETE CASCADE
+      );
+    `);
+  } catch (err) {
+    console.error('Error initializing PostgreSQL schema:', err);
+  } finally {
+    client.release();
+  }
+};
 
-try {
-  db.exec('ALTER TABLE UserGame ADD COLUMN platform TEXT DEFAULT ""');
-} catch (e) {}
+// Executa a inicialização (em produção real não faríamos isso no runtime)
+initDb().catch(console.error);
 
-try {
-  db.exec('ALTER TABLE UserGame ADD COLUMN ownership TEXT DEFAULT ""');
-} catch (e) {}
-
-try {
-  db.exec('ALTER TABLE UserGame ADD COLUMN storefront TEXT DEFAULT ""');
-} catch (e) {}
-
-try {
-  db.exec('ALTER TABLE UserGame ADD COLUMN containsSpoilers INTEGER DEFAULT 0');
-} catch (e) {}
-
-try {
-  db.exec('ALTER TABLE User ADD COLUMN email TEXT');
-} catch (e) {}
+// Wrapper para simular de forma aproximada o funcionamento antigo para facilitar a migração
+export const db = {
+  query: (text: string, params?: any[]) => pool.query(text, params),
+  
+  // Para query unica que retorna uma linha
+  get: async <T = any>(text: string, params?: any[]): Promise<T | undefined> => {
+    const res = await pool.query(text, params);
+    return res.rows[0];
+  },
+  
+  // Para query unica que retorna várias linhas
+  all: async <T = any>(text: string, params?: any[]): Promise<T[]> => {
+    const res = await pool.query(text, params);
+    return res.rows;
+  },
+  
+  // Para executar sem retornar as linhas (INSERT, UPDATE)
+  run: async (text: string, params?: any[]) => {
+    return pool.query(text, params);
+  },
+  
+  pool
+};
 
 export default db;
