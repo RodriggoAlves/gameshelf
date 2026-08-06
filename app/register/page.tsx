@@ -54,16 +54,22 @@ export default function RegisterPage() {
       return;
     }
 
-    const res = await register(username, email, password);
-    if (res.error) {
-      setError(res.error);
+    try {
+      const res = await register(username, email, password);
+      if (res.error) {
+        setError(res.error);
+        setLoading(false);
+      } else if (res.requireVerification) {
+        setVerificationSent(true);
+        setLoading(false);
+      } else {
+        router.push("/profile");
+        router.refresh();
+      }
+    } catch (err) {
+      console.error(err);
+      setError("Ocorreu um erro interno. Tente novamente ou verifique suas credenciais.");
       setLoading(false);
-    } else if (res.requireVerification) {
-      setVerificationSent(true);
-      setLoading(false);
-    } else {
-      router.push("/profile");
-      router.refresh();
     }
   }
 

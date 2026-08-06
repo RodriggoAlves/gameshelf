@@ -43,7 +43,15 @@ export default function GameStatusModal({
   useEffect(() => {
     setMounted(true);
     getGameModalData(gameId).then((data: any) => {
-      setAvailablePlatforms(data.platforms);
+      if (!data) {
+        // Se a resposta for nula (ex: usuário não logado ou sessão expirada)
+        setIsLoading(false);
+        onClose(); // Fecha o modal ou redireciona
+        window.location.href = "/login";
+        return;
+      }
+      
+      setAvailablePlatforms(data.platforms || []);
       setGameMeta(data.game);
       if (data.libraryData) {
         setStatus(data.libraryData.status || "Quero Jogar");
@@ -59,11 +67,15 @@ export default function GameStatusModal({
         setReview(data.libraryData.review || "");
         setContainsSpoilers(!!data.libraryData.containsSpoilers);
       } else {
-        if (data.platforms.length > 0) {
+        if (data.platforms && data.platforms.length > 0) {
           setPlatform(data.platforms[0]);
         }
       }
       setIsLoading(false);
+    }).catch((err) => {
+      console.error(err);
+      setIsLoading(false);
+      onClose();
     });
   }, [gameId]);
 

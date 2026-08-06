@@ -14,23 +14,29 @@ async function getClientIP(): Promise<string> {
   return hdrs.get('x-forwarded-for')?.split(',')[0]?.trim() || hdrs.get('x-real-ip') || 'unknown';
 }
 
-// Password hashing helper — VULN-13: Using stronger scrypt params (N=32768)
 function hashPassword(password: string): string {
   const salt = crypto.randomBytes(16).toString("hex");
-  const hash = crypto.scryptSync(password, salt, 64, { N: 32768, r: 8, p: 2 }).toString("hex");
+  const hash = crypto.scryptSync(password, salt, 64, { N: 16384, r: 8, p: 2 }).toString("hex");
   return `${salt}:${hash}`;
 }
 
-// Password verification helper
 function verifyPassword(password: string, storedHash: string): boolean {
   const [salt, hash] = storedHash.split(":");
   const hashBuffer = Buffer.from(hash, "hex");
-  // Tenta com params novos primeiro, fallback para params antigos
+  
   try {
-    const verifyBuffer = crypto.scryptSync(password, salt, 64, { N: 32768, r: 8, p: 2 });
+    // Current default N = 16384
+    const verifyBuffer = crypto.scryptSync(password, salt, 64, { N: 16384, r: 8, p: 2 });
     if (crypto.timingSafeEqual(hashBuffer, verifyBuffer)) return true;
   } catch {}
-  // Fallback: params padrão do Node para senhas criadas antes da migração
+  
+  try {
+    // Older N = 32768
+    const verifyBuffer32 = crypto.scryptSync(password, salt, 64, { N: 32768, r: 8, p: 2 });
+    if (crypto.timingSafeEqual(hashBuffer, verifyBuffer32)) return true;
+  } catch {}
+  
+  // Fallback: params padrão do Node para senhas antigas
   const verifyBufferLegacy = crypto.scryptSync(password, salt, 64);
   return crypto.timingSafeEqual(hashBuffer, verifyBufferLegacy);
 }
