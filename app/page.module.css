@@ -56,11 +56,14 @@
 
 .title {
   font-size: 5rem;
-  font-weight: 700;
+  font-weight: 900;
   line-height: 1.05;
   margin-bottom: 1.5rem;
-  color: var(--text-primary);
+  background: linear-gradient(to right, #fff, var(--accent-cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   letter-spacing: -2.5px;
+  text-transform: uppercase;
 }
 
 .subtitle {
@@ -73,19 +76,26 @@
 }
 
 .ctaButton {
-  background-color: var(--text-primary);
-  color: var(--bg-primary);
+  background: rgba(10, 10, 15, 0.6);
+  backdrop-filter: blur(12px);
+  color: var(--accent-cyan);
   padding: 1rem 2.25rem;
   border-radius: 9999px;
   font-size: 1.1rem;
-  font-weight: 600;
-  transition: opacity var(--transition-fast), transform var(--transition-fast);
+  font-weight: 800;
+  border: 2px solid var(--accent-cyan);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+  transition: all 0.3s ease;
   display: inline-block;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .ctaButton:hover {
-  opacity: 0.8;
-  transform: scale(0.98);
+  background: rgba(0, 240, 255, 0.15);
+  transform: translateY(-3px);
+  box-shadow: 0 0 25px rgba(0, 240, 255, 0.5);
+  color: #fff;
 }
 
 .featured {
@@ -116,18 +126,20 @@
 
 .gameCard {
   background-color: var(--bg-tertiary);
+  backdrop-filter: blur(10px);
   border-radius: var(--border-radius-lg);
   overflow: hidden;
   border: 1px solid var(--border-color);
-  transition: transform var(--transition-fast), border-color var(--transition-fast);
+  transition: all 0.3s ease;
   flex: 0 0 280px;
   position: relative;
   scroll-snap-align: start;
 }
 
 .gameCard:hover {
-  transform: scale(1.02);
-  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-5px);
+  border-color: var(--accent-purple);
+  box-shadow: 0 8px 30px rgba(176, 38, 255, 0.2);
 }
 
 .gameImagePlaceholder {
@@ -199,12 +211,13 @@
 
 .bentoHeader h2 {
   font-size: 2.5rem;
-  font-weight: 800;
+  font-weight: 900;
   margin-bottom: 1rem;
-  background: linear-gradient(to right, #fff, var(--accent-primary));
+  background: linear-gradient(to right, #fff, var(--accent-cyan));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   letter-spacing: -1px;
+  text-transform: uppercase;
 }
 
 .bentoHeader p {
@@ -219,8 +232,9 @@
 }
 
 .bentoCard {
-  background: linear-gradient(145deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
-  border: 1px solid rgba(255,255,255,0.05);
+  background: rgba(10, 10, 15, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 240, 255, 0.1);
   border-radius: var(--border-radius-lg);
   padding: 3rem 2.5rem;
   display: flex;
@@ -228,29 +242,30 @@
   justify-content: center;
   position: relative;
   overflow: hidden;
-  transition: transform 0.3s ease, border-color 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .bentoCard:hover {
   transform: translateY(-5px);
-  border-color: rgba(99, 102, 241, 0.4);
+  border-color: var(--accent-purple);
+  box-shadow: 0 10px 40px rgba(176, 38, 255, 0.15);
 }
 
 .bentoCard::before {
   content: '';
   position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 60%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, transparent, rgba(176, 38, 255, 0.05), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
   pointer-events: none;
 }
 
 .bentoCard:hover::before {
-  opacity: 1;
+  transform: translateX(100%);
 }
 
 .bentoLarge {

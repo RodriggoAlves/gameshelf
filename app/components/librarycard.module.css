@@ -1,20 +1,21 @@
 .card {
   display: flex;
   flex-direction: column;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
+  background: rgba(10, 10, 15, 0.6);
+  backdrop-filter: blur(10px);
+  border-radius: var(--border-radius-md);
   overflow: hidden;
   text-decoration: none;
   color: white;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: all 0.3s ease;
   position: relative;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(0, 240, 255, 0.1);
 }
 
 .card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 30px rgba(176, 38, 255, 0.2);
+  border-color: var(--accent-purple);
 }
 
 .favoriteBadge {

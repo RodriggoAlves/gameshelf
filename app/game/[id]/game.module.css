@@ -121,11 +121,12 @@
   align-items: center;
   gap: 1.5rem;
   margin-bottom: 2rem;
-  background: rgba(0,0,0,0.4);
+  background: rgba(10, 10, 15, 0.6);
+  backdrop-filter: blur(12px);
   padding: 12px 20px;
-  border-radius: 8px;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--border-radius-md);
+  border: 1px solid rgba(0, 240, 255, 0.1);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.1);
 }
 
 .statusBadge {
@@ -173,19 +174,25 @@
 }
 
 .secondaryButton {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(10, 10, 15, 0.6);
+  backdrop-filter: blur(12px);
+  color: var(--accent-cyan);
+  border: 2px solid var(--accent-cyan);
   padding: 1.25rem 2.5rem;
   border-radius: 9999px;
   font-size: 1.1rem;
-  font-weight: 700;
-  transition: opacity var(--transition-fast), transform var(--transition-fast), background-color var(--transition-fast);
+  font-weight: 800;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
 }
 
 .secondaryButton:hover {
-  background-color: rgba(255, 255, 255, 0.15);
-  transform: scale(0.98);
+  background: rgba(0, 240, 255, 0.15);
+  transform: translateY(-3px);
+  box-shadow: 0 0 25px rgba(0, 240, 255, 0.5);
+  color: #fff;
 }
 
 .detailsSection {
@@ -238,10 +245,12 @@
 }
 
 .infoCard {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(10, 10, 15, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 240, 255, 0.1);
   border-radius: var(--border-radius-lg);
   padding: 2.5rem;
+  box-shadow: 0 5px 20px rgba(0, 240, 255, 0.05);
 }
 
 .infoCard ul {
@@ -274,7 +283,7 @@
 
 /* PlayLog Button & Modal */
 .logButton {
-  background: linear-gradient(135deg, #3498db, #2980b9);
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
   color: white;
   border: none;
   padding: 12px 24px;
@@ -282,13 +291,16 @@
   font-size: 1.1rem;
   font-weight: bold;
   cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(176, 38, 255, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .logButton:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(52, 152, 219, 0.6);
+  box-shadow: 0 6px 20px rgba(0, 240, 255, 0.6);
+  background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));
 }
 
 .modalOverlay {

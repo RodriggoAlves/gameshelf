@@ -119,27 +119,30 @@
 }
 
 .statCard {
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.05);
-  border-radius: 12px;
+  background: rgba(10, 10, 15, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 240, 255, 0.1);
+  border-left: 4px solid var(--accent-cyan);
+  border-radius: var(--border-radius-md);
   padding: 1.5rem;
   flex: 1;
   text-align: center;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   cursor: pointer;
 }
 
 .statCard:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-  border-color: rgba(46, 204, 113, 0.3);
+  box-shadow: 0 10px 30px rgba(176, 38, 255, 0.15);
+  border-left-color: var(--accent-purple);
 }
 
 .statValue {
   font-size: 2.5rem;
   font-weight: 900;
-  color: #2ecc71;
+  color: var(--accent-cyan);
   margin-bottom: 0.5rem;
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
 }
 
 .statLabel {
@@ -252,16 +255,18 @@
 
 .favoriteCard {
   aspect-ratio: 3/4;
-  background: rgba(255,255,255,0.02);
-  border-radius: 12px;
+  background: rgba(10, 10, 15, 0.6);
+  backdrop-filter: blur(5px);
+  border-radius: var(--border-radius-md);
   overflow: hidden;
   position: relative;
-  transition: transform 0.2s;
-  border: 1px solid rgba(255,255,255,0.05);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0, 240, 255, 0.1);
 }
 .favoriteCard:hover {
   transform: translateY(-5px);
-  border-color: #2ecc71;
+  border-color: var(--accent-purple);
+  box-shadow: 0 5px 20px rgba(176, 38, 255, 0.2);
 }
 .favoriteCover {
   width: 100%;
@@ -288,14 +293,19 @@
 .recentItem {
   display: flex;
   gap: 1rem;
-  background: rgba(255,255,255,0.02);
-  padding: 10px;
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.05);
-  transition: background 0.2s;
+  background: rgba(10, 10, 15, 0.6);
+  backdrop-filter: blur(5px);
+  padding: 12px;
+  border-radius: var(--border-radius-md);
+  border: 1px solid rgba(0, 240, 255, 0.1);
+  transition: all 0.3s ease;
+  border-left: 3px solid transparent;
 }
 .recentItem:hover {
-  background: rgba(255,255,255,0.05);
+  background: rgba(0, 240, 255, 0.05);
+  border-left-color: var(--accent-cyan);
+  transform: translateX(5px);
+  box-shadow: 0 5px 15px rgba(0, 240, 255, 0.1);
 }
 
 .recentCover {
@@ -324,10 +334,14 @@
 
 .recentStatus {
   font-size: 0.8rem;
-  color: #2ecc71;
-  background: rgba(46, 204, 113, 0.1);
+  font-weight: 800;
+  color: var(--accent-cyan);
+  background: rgba(0, 240, 255, 0.15);
+  border: 1px solid rgba(0, 240, 255, 0.3);
   padding: 2px 8px;
-  border-radius: 4px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
   width: fit-content;
 }
 
