@@ -245,6 +245,8 @@
   .detailsSection {
     grid-template-columns: 1fr;
   }
+}
+
 /* PlayLog Button & Modal */
 .logButton {
   background: linear-gradient(135deg, #3498db, #2980b9);

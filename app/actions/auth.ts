@@ -6,6 +6,11 @@ import crypto from "crypto";
 import nodemailer from "nodemailer";
 import { isRateLimited, RATE_LIMITS } from "../../lib/rateLimit";
 
+// Escape HTML para prevenir XSS em templates de e-mail
+function escapeHtml(str: string): string {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+}
+
 const SESSION_COOKIE = "zerey_session";
 
 // Helper para obter IP do request (para rate limiting)
@@ -41,17 +46,21 @@ function verifyPassword(password: string, storedHash: string): boolean {
   return crypto.timingSafeEqual(hashBuffer, verifyBufferLegacy);
 }
 
-// VULN-10: Validar URLs de imagem para prevenir SSRF/XSS
+// Allowlist de domínios para URLs de imagem (previne SSRF/XSS)
+const ALLOWED_IMAGE_DOMAINS = [
+  'images.igdb.com',
+  'images.unsplash.com',
+  'api.dicebear.com',
+  'i.imgur.com',
+];
+
 function isValidImageUrl(url: string): boolean {
   if (!url || url.trim() === '') return true; // Permite limpar a URL
   if (url.startsWith('/avatars/')) return true; // Preset avatars locais
   try {
     const parsed = new URL(url);
-    if (!['http:', 'https:'].includes(parsed.protocol)) return false;
-    // Bloquear IPs locais (SSRF)
-    const hostname = parsed.hostname;
-    if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname.startsWith('192.168.') || hostname.startsWith('10.') || hostname.startsWith('172.')) return false;
-    return true;
+    if (parsed.protocol !== 'https:') return false; // Somente HTTPS
+    return ALLOWED_IMAGE_DOMAINS.includes(parsed.hostname);
   } catch {
     return false;
   }
@@ -64,8 +73,19 @@ export async function register(username: string, email: string, password: string
     return { error: "Muitas tentativas. Tente novamente mais tarde." };
   }
 
-  if (!username || !email || !password || username.length < 3 || password.length < 8) {
-    return { error: "Preencha todos os campos corretamente (senha mín. 8 caracteres)." };
+  if (!username || !email || !password || username.length < 3 || username.length > 30 || password.length < 8) {
+    return { error: "Preencha todos os campos corretamente (senha mín. 8 caracteres, username 3-30 caracteres)." };
+  }
+
+  // Validar formato do e-mail no servidor
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return { error: "Formato de e-mail inválido." };
+  }
+
+  // Sanitizar username: apenas alfanumérico, _, -
+  if (!/^[a-zA-Z0-9_-]+$/.test(username)) {
+    return { error: "Username deve conter apenas letras, números, _ ou -." };
   }
 
   // Validação de força de senha
@@ -73,33 +93,20 @@ export async function register(username: string, email: string, password: string
   if (!/[a-z]/.test(password)) return { error: "A senha deve conter ao menos uma letra minúscula." };
   if (!/[0-9]/.test(password)) return { error: "A senha deve conter ao menos um número." };
 
-  const existing = db.prepare("SELECT id FROM User WHERE username = ? OR email = ?").get(username, email);
-  if (existing) {
-    return { error: "Nome de usuário ou e-mail já está em uso." };
+  // Anti-enumeration: verificar username e email separadamente para dar feedback
+  // mas usando mensagem genérica para não expor quais existem
+  const existingUser = db.prepare("SELECT id FROM User WHERE username = ?").get(username);
+  const existingEmail = db.prepare("SELECT id FROM User WHERE email = ?").get(email);
+  if (existingUser || existingEmail) {
+    // Mensagem genérica para prevenir enumeração de usuários
+    return { error: "Não foi possível criar a conta. Verifique os dados informados ou tente outro username/e-mail." };
   }
 
   const userId = crypto.randomUUID();
   const passwordHash = hashPassword(password);
   
-  // Check if this is the very first user
-  const userCount = db.prepare("SELECT COUNT(*) as count FROM User").get() as { count: number };
-  
   try {
-    db.exec("BEGIN TRANSACTION");
-    
     db.prepare("INSERT INTO User (id, username, email, passwordHash) VALUES (?, ?, ?, ?)").run(userId, username, email, passwordHash);
-    
-    // If it's the first user, migrate the legacy data
-    if (userCount.count === 0) {
-      const oldId = 'default-user-id';
-      db.prepare("UPDATE UserGame SET userId = ? WHERE userId = ?").run(userId, oldId);
-      db.prepare("UPDATE Tag SET userId = ? WHERE userId = ?").run(userId, oldId);
-      db.prepare("UPDATE GameTag SET userId = ? WHERE userId = ?").run(userId, oldId);
-      db.prepare("UPDATE TimelineEvent SET userId = ? WHERE userId = ?").run(userId, oldId);
-      db.prepare("UPDATE PlaySession SET userId = ? WHERE userId = ?").run(userId, oldId);
-    }
-    
-    db.exec("COMMIT");
   } catch (err) {
     db.exec("ROLLBACK");
     console.error(err);
@@ -139,7 +146,7 @@ export async function register(username: string, email: string, password: string
   </div>
   
   <div style="background-color: #16161f; padding: 35px; border-radius: 16px; border: 1px solid rgba(46, 204, 113, 0.2); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-    <h2 style="margin-top: 0; color: #fff; font-size: 22px;">Olá, ${username}!</h2>
+    <h2 style="margin-top: 0; color: #fff; font-size: 22px;">Olá, ${escapeHtml(username)}!</h2>
     <p style="color: #d0d0d0; line-height: 1.7; font-size: 16px;">
       Bem-vindo(a) à plataforma <strong>Zerey</strong>. Para garantir a segurança da sua conta e concluir seu cadastro, precisamos que você verifique seu e-mail.
     </p>
@@ -233,7 +240,7 @@ async function createSession(userId: string) {
   cookieStore.set(SESSION_COOKIE, sessionId, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    sameSite: "strict",
     path: "/",
     expires: new Date(expiresAt)
   });
