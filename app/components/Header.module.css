@@ -39,6 +39,9 @@
   .header {
     padding: 1rem;
     justify-content: space-between;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background-color: var(--bg-primary);
   }
   
   .nav {

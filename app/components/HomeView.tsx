@@ -49,10 +49,6 @@ export default function HomeView({ popularGames, libraryIds }: { popularGames: G
     const carousel = carouselRef.current;
     if (!carousel) return;
     
-    // Apenas ativa o JS de auto-scroll em telas maiores (Desktop),
-    // pois no mobile usamos o scroll-snap nativo do CSS que conflita com o JS.
-    if (window.innerWidth <= 768) return;
-    
     let animationId: number;
     let isPaused = false;
     
@@ -158,29 +154,29 @@ export default function HomeView({ popularGames, libraryIds }: { popularGames: G
           </div>
         </section>
 
-        <section className={styles.roadmapSection} style={{ marginTop: '5rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <div className={styles.bentoHeader} style={{ marginBottom: '3rem' }}>
+        <section className={styles.roadmapSection}>
+          <div className={styles.roadmapHeader}>
             <h2>O Futuro do Zerey</h2>
             <p>Estamos apenas começando. Veja o que está no nosso horizonte.</p>
           </div>
 
-          <div className="roadmap-timeline" style={{ display: 'flex', flexDirection: 'column', gap: '2rem', maxWidth: '800px', width: '100%' }}>
+          <div className={styles.roadmapTimeline}>
             {features.map((feat, index) => {
               const IconComp = (LucideIcons as any)[feat.icon] || LucideIcons.Rocket;
               
               return (
-                <div key={index} className="roadmap-card" style={{ display: 'flex', gap: '1.5rem', background: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.05)', borderRadius: '16px', padding: '2rem', alignItems: 'flex-start' }}>
-                  <div style={{ background: 'rgba(46, 204, 113, 0.1)', padding: '1rem', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(46, 204, 113, 0.2)' }}>
-                    <IconComp size={28} style={{ color: '#2ecc71' }} />
+                <div key={index} className={styles.roadmapCard}>
+                  <div className={styles.roadmapIconWrapper}>
+                    <IconComp size={28} className={styles.roadmapIcon} />
                   </div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                      <h3 style={{ fontSize: '1.4rem', fontWeight: 'bold', margin: 0, color: '#fff' }}>{feat.title}</h3>
-                      <span style={{ fontSize: '0.75rem', fontWeight: 'bold', padding: '4px 10px', borderRadius: '20px', textTransform: 'uppercase', letterSpacing: '1px', background: 'rgba(46, 204, 113, 0.2)', color: '#2ecc71', border: '1px solid rgba(46, 204, 113, 0.3)' }}>
+                  <div className={styles.roadmapContent}>
+                    <div className={styles.roadmapCardHeader}>
+                      <h3 className={styles.roadmapCardTitle}>{feat.title}</h3>
+                      <span className={styles.roadmapBadge} data-status={feat.status}>
                         {feat.status}
                       </span>
                     </div>
-                    <p style={{ color: '#aaa', lineHeight: 1.5, margin: 0 }}>{feat.description}</p>
+                    <p className={styles.roadmapDesc}>{feat.description}</p>
                   </div>
                 </div>
               );
