@@ -94,7 +94,7 @@
 }
 
 .ratingBadge {
-  color: #46d369; /* Netflix match green */
+  color: #00f0ff; /* Netflix match green */
   font-weight: 800;
 }
 
@@ -370,15 +370,15 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  background: rgba(46, 204, 113, 0.1);
-  border: 1px solid rgba(46, 204, 113, 0.3);
+  background: rgba(0, 240, 255, 0.1);
+  border: 1px solid rgba(0, 240, 255, 0.3);
   padding: 12px;
   border-radius: 6px;
   cursor: pointer;
 }
 
 .formGroupCheckbox label {
-  color: #2ecc71;
+  color: #00f0ff;
   font-weight: bold;
   cursor: pointer;
 }
@@ -440,7 +440,7 @@
 }
 
 .revealBtn {
-  background: #2ecc71;
+  background: #00f0ff;
   border: none;
   padding: 8px 24px;
   color: #000;
@@ -452,7 +452,7 @@
 }
 
 .saveBtn {
-  background: #2ecc71;
+  background: #00f0ff;
   color: black;
   border: none;
   padding: 10px 20px;

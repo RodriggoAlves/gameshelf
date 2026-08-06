@@ -109,7 +109,7 @@
   right: 0;
   height: 36px;
   transform: translateY(-50%);
-  background: rgba(46, 204, 113, 0.15); /* Soft Zerey Green */
+  background: rgba(0, 240, 255, 0.15); /* Soft Zerey Green */
   z-index: 1;
 }
 
@@ -132,10 +132,10 @@
 
 /* Estilo do botão de dia quando é Início ou Fim */
 .isStartCell, .isEndCell {
-  background: #2ecc71 !important;
+  background: #00f0ff !important;
   color: black !important;
   font-weight: 700;
-  box-shadow: 0 4px 10px rgba(46, 204, 113, 0.4);
+  box-shadow: 0 4px 10px rgba(0, 240, 255, 0.4);
 }
 
 .jumpActions {
@@ -156,7 +156,7 @@
 .jumpBtn {
   background: none;
   border: none;
-  color: #2ecc71;
+  color: #00f0ff;
   cursor: pointer;
   font-weight: 600;
   transition: opacity 0.2s;

@@ -11,9 +11,13 @@ export default function LibraryButton({ gameId, isSavedInitial }: { gameId: numb
     <>
       <button 
         onClick={() => setShowModal(true)}
-        className={isSavedInitial ? styles.secondaryButton : styles.primaryButton}
+        className={isSavedInitial ? styles.secondaryButton : "button-primary"}
       >
-        {isSavedInitial ? "Editar Jogo na Biblioteca" : "Adicionar à Biblioteca"}
+        {isSavedInitial ? (
+          <>Editar Jogo</>
+        ) : (
+          <>▶ Jogar</>
+        )}
       </button>
 
       {showModal && (

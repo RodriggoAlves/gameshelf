@@ -233,7 +233,7 @@ export default function LibraryClient({
         {filteredItems.length === 0 ? (
           <div className={styles.emptyContainer}>{t.library.noGamesFound}</div>
         ) : viewMode === 'timeline' ? (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '30px', padding: '20px 4%', borderLeft: '3px solid var(--primary-color, #2ecc71)', marginLeft: '20px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '30px', padding: '20px 4%', borderLeft: '3px solid var(--primary-color, #00f0ff)', marginLeft: '20px' }}>
             {filteredItems.filter(i => ["Zerey", "Platinado", "100%"].includes(i.data.status))
               .sort((a, b) => {
                 const dateA = a.data.endDate ? new Date(a.data.endDate).getTime() : 0;
@@ -242,7 +242,7 @@ export default function LibraryClient({
               })
               .map(item => (
               <div key={item.game!.id} style={{ position: 'relative', display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
-                <div style={{ position: 'absolute', left: '-33px', top: '10px', width: '15px', height: '15px', borderRadius: '50%', background: 'white', border: '3px solid var(--primary-color, #2ecc71)' }}></div>
+                <div style={{ position: 'absolute', left: '-33px', top: '10px', width: '15px', height: '15px', borderRadius: '50%', background: 'white', border: '3px solid var(--primary-color, #00f0ff)' }}></div>
                 <div style={{ width: '120px', flexShrink: 0, borderRadius: '8px', overflow: 'hidden', boxShadow: '0 4px 10px rgba(0,0,0,0.5)' }}>
                   <img src={item.game!.background_image || ''} alt="" style={{ width: '100%', display: 'block', objectFit: 'cover' }} />
                 </div>

@@ -49,9 +49,9 @@ export function GenreRadar({ data }: { data: RadarData[] }) {
             <PolarAngleAxis dataKey="genre" tick={{ fill: '#888', fontSize: 12 }} />
             <Tooltip 
               contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #333', borderRadius: '8px' }}
-              itemStyle={{ color: '#2ecc71' }}
+              itemStyle={{ color: '#00f0ff' }}
             />
-            <Radar name="Jogos" dataKey="count" stroke="#2ecc71" fill="#2ecc71" fillOpacity={0.4} />
+            <Radar name="Jogos" dataKey="count" stroke="#00f0ff" fill="#00f0ff" fillOpacity={0.4} />
           </RadarChart>
         </ResponsiveContainer>
       </div>
@@ -115,7 +115,7 @@ export function ActivityHeatmap({ data }: { data: HeatmapDay[] }) {
     if (count <= 60) return '#104d26'; // Light green (up to 1h)
     if (count <= 120) return '#1b7d3f'; // Mid green (up to 2h)
     if (count <= 240) return '#22a953'; // Neon green (up to 4h)
-    return '#2ecc71'; // Bright neon green (4h+)
+    return '#00f0ff'; // Bright neon green (4h+)
   };
 
   return (

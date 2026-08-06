@@ -51,7 +51,7 @@ function VerifyAccountContent() {
 
       {status === "success" && (
         <>
-          <h1 className={styles.title} style={{ color: '#2ecc71' }}>Conta Verificada! 🎉</h1>
+          <h1 className={styles.title} style={{ color: '#00f0ff' }}>Conta Verificada! 🎉</h1>
           <p className={styles.subtitle} style={{ marginBottom: '20px' }}>
             Sua conta foi ativada com sucesso. Você está sendo redirecionado para sua biblioteca...
           </p>

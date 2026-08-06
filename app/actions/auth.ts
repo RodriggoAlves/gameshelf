@@ -137,18 +137,18 @@ export async function register(username: string, email: string, password: string
       html: `
 <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #0d0d12; color: #ffffff; padding: 40px; border-radius: 12px; border: 1px solid #222;">
   <div style="text-align: center; margin-bottom: 35px;">
-    <h1 style="color: #2ecc71; margin: 0; font-size: 36px; letter-spacing: -1.5px; font-weight: 900;">ZEREY</h1>
+    <h1 style="color: #00f0ff; margin: 0; font-size: 36px; letter-spacing: -1.5px; font-weight: 900;">ZEREY</h1>
     <p style="color: #888; font-size: 13px; margin-top: 5px; text-transform: uppercase; letter-spacing: 3px;">Gaming Library Platform</p>
   </div>
   
-  <div style="background-color: #16161f; padding: 35px; border-radius: 16px; border: 1px solid rgba(46, 204, 113, 0.2); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+  <div style="background-color: #16161f; padding: 35px; border-radius: 16px; border: 1px solid rgba(0, 240, 255, 0.2); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
     <h2 style="margin-top: 0; color: #fff; font-size: 22px;">Olá, ${escapeHtml(username)}!</h2>
     <p style="color: #d0d0d0; line-height: 1.7; font-size: 16px;">
       Bem-vindo(a) à plataforma <strong>Zerey</strong>. Para garantir a segurança da sua conta e concluir seu cadastro, precisamos que você verifique seu e-mail.
     </p>
     
     <div style="text-align: center; margin-top: 45px; margin-bottom: 25px;">
-      <a href="${verifyUrl}" style="background-color: #2ecc71; color: #000; padding: 16px 36px; text-decoration: none; border-radius: 10px; font-weight: 800; font-size: 16px; display: inline-block;">Verificar meu E-mail</a>
+      <a href="${verifyUrl}" style="background-color: #00f0ff; color: #000; padding: 16px 36px; text-decoration: none; border-radius: 10px; font-weight: 800; font-size: 16px; display: inline-block;">Verificar meu E-mail</a>
     </div>
     <p style="color: #888; font-size: 13px; text-align: center; margin-top: 20px;">
       Este link expirará em 24 horas.
@@ -324,7 +324,7 @@ export async function requestPasswordReset(email: string) {
       <h2>Recuperação de Senha</h2>
       <p>Você solicitou a redefinição da sua senha no Zerey.</p>
       <p>Clique no link abaixo para criar uma nova senha. Este link expira em 15 minutos.</p>
-      <a href="${resetUrl}" style="display:inline-block;padding:10px 20px;background:#2ecc71;color:black;text-decoration:none;border-radius:8px;font-weight:bold;">Redefinir Senha</a>
+      <a href="${resetUrl}" style="display:inline-block;padding:10px 20px;background:#00f0ff;color:black;text-decoration:none;border-radius:8px;font-weight:bold;">Redefinir Senha</a>
       <p>Se você não solicitou, ignore este e-mail.</p>
     `
   };

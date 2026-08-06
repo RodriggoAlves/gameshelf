@@ -10,7 +10,7 @@ export default function LibraryGameCard({ game, libraryData }: { game: Game, lib
     "Próximo Jogo": "#9b59b6",
     "Jogando": "#3498db",
     "Pausado": "#e67e22",
-    "Zerey": "#2ecc71",
+    "Zerey": "#00f0ff",
     "Platinado": "#f1c40f",
     "100%": "#1abc9c",
     "Dropado": "#e74c3c",

@@ -18,7 +18,7 @@
 }
 
 .selectedBox:hover {
-  border-color: var(--primary-color, #2ecc71);
+  border-color: var(--primary-color, #00f0ff);
   background: rgba(255, 255, 255, 0.1);
 }
 
@@ -86,7 +86,7 @@
 }
 
 .option.active {
-  background: rgba(46, 204, 113, 0.15);
-  color: #2ecc71;
+  background: rgba(0, 240, 255, 0.15);
+  color: #00f0ff;
   font-weight: 600;
 }

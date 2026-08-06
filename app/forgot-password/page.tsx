@@ -38,7 +38,7 @@ export default function ForgotPasswordPage() {
         
         <form onSubmit={handleSubmit} className={styles.form}>
           {error && <div className={styles.error}>{error}</div>}
-          {message && <div className={styles.success} style={{ color: '#2ecc71', background: 'rgba(46, 204, 113, 0.1)', padding: '12px', borderRadius: '8px', textAlign: 'center', marginBottom: '16px' }}>{message}</div>}
+          {message && <div className={styles.success} style={{ color: '#00f0ff', background: 'rgba(0, 240, 255, 0.1)', padding: '12px', borderRadius: '8px', textAlign: 'center', marginBottom: '16px' }}>{message}</div>}
           
           <div className={styles.inputGroup}>
             <label>{t.auth.email}</label>

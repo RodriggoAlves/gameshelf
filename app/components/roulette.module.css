@@ -24,7 +24,7 @@
 .modal h2 {
   margin: 0 0 20px 0;
   font-size: 1.2rem;
-  color: var(--primary-color, #2ecc71);
+  color: var(--primary-color, #00f0ff);
 }
 
 .cardContainer {
@@ -93,7 +93,7 @@
 }
 
 .btnSave {
-  background: var(--primary-color, #2ecc71);
+  background: var(--primary-color, #00f0ff);
   color: black;
   border: none;
   font-weight: bold;

@@ -63,12 +63,12 @@
 
 .inputGroup input:focus {
   outline: none;
-  border-color: #2ecc71;
-  background: rgba(46, 204, 113, 0.05);
+  border-color: #00f0ff;
+  background: rgba(0, 240, 255, 0.05);
 }
 
 .submitBtn {
-  background: #2ecc71;
+  background: #00f0ff;
   color: #0f1115;
   border: none;
   padding: 14px;
@@ -102,7 +102,7 @@
 }
 
 .link {
-  color: #2ecc71;
+  color: #00f0ff;
   text-decoration: none;
   font-weight: 600;
 }
@@ -118,11 +118,11 @@
 }
   
 .checkboxGroup { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: #ccc; margin-top: 0.5rem; }  
-.checkboxGroup input[type="checkbox"] { accent-color: #2ecc71; width: 16px; height: 16px; cursor: pointer; }
-.termsLink { color: #2ecc71; text-decoration: underline; cursor: pointer; }  
+.checkboxGroup input[type="checkbox"] { accent-color: #00f0ff; width: 16px; height: 16px; cursor: pointer; }
+.termsLink { color: #00f0ff; text-decoration: underline; cursor: pointer; }  
 .termsModal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 200; padding: 1rem; }  
 .termsContent { background: #1a1c23; border: 1px solid rgba(255,255,255,0.1); padding: 2rem; border-radius: 12px; width: 100%; max-width: 600px; max-height: 80vh; overflow-y: auto; color: #ddd; font-size: 0.9rem; line-height: 1.6; text-align: left; }
 .termsContent h2 { color: #fff; margin-top: 0; margin-bottom: 1rem; font-size: 1.2rem; }  
-.termsContent h3 { color: #2ecc71; margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1rem; }  
+.termsContent h3 { color: #00f0ff; margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1rem; }  
 .termsContent ul { margin-left: 1.5rem; margin-bottom: 1rem; }  
-.closeTermsBtn { background: #2ecc71; color: #0f1115; border: none; padding: 14px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 2rem; width: 100%; transition: all 0.2s; }
+.closeTermsBtn { background: #00f0ff; color: #0f1115; border: none; padding: 14px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 2rem; width: 100%; transition: all 0.2s; }

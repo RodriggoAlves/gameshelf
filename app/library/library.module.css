@@ -209,7 +209,7 @@
 }
 
 .searchBox input:focus {
-  border-color: var(--primary-color, #2ecc71);
+  border-color: var(--primary-color, #00f0ff);
 }
 
 .btnRouletteNav {
@@ -332,7 +332,7 @@
   letter-spacing: 1px;
 }
 
-.listBadge[data-status="Zerey"] { background: #2ecc71; color: black; }
+.listBadge[data-status="Zerey"] { background: #00f0ff; color: black; }
 .listBadge[data-status="Jogando"] { background: #3498db; color: white; }
 .listBadge[data-status="Quero Jogar"] { background: #95a5a6; color: white; }
 .listBadge[data-status="Próximo Jogo"] { background: #f1c40f; color: black; }
@@ -363,7 +363,7 @@
 }
 
 .selectFilter:focus {
-  border-color: var(--primary-color, #2ecc71);
+  border-color: var(--primary-color, #00f0ff);
 }
 
 /* EMPTY / FOCUS */
@@ -422,7 +422,7 @@
   font-weight: 900;
   letter-spacing: 5px;
   margin: 0;
-  background: linear-gradient(135deg, #2ecc71, #f1c40f);
+  background: linear-gradient(135deg, #00f0ff, #f1c40f);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }

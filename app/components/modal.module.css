@@ -126,10 +126,10 @@
 }
 
 .chip.active {
-  background: #2ecc71;
-  border-color: #2ecc71;
+  background: #00f0ff;
+  border-color: #00f0ff;
   color: black;
-  box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 240, 255, 0.3);
 }
 
 /* BIG STARS */
@@ -198,7 +198,7 @@
 .progressValue {
   font-size: 1.1rem;
   font-weight: 800;
-  color: #2ecc71;
+  color: #00f0ff;
 }
 .rangeSlider {
   -webkit-appearance: none;
@@ -214,9 +214,9 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #2ecc71;
+  background: #00f0ff;
   cursor: pointer;
-  box-shadow: 0 0 10px rgba(46, 204, 113, 0.5);
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
 }
 
 /* DETAILS BLOCKS */
@@ -238,7 +238,7 @@
 }
 
 .detailCard:focus-within {
-  border-color: rgba(46, 204, 113, 0.5);
+  border-color: rgba(0, 240, 255, 0.5);
   background: rgba(255, 255, 255, 0.05);
 }
 
@@ -321,7 +321,7 @@
 }
 
 .btnSave {
-  background: #2ecc71;
+  background: #00f0ff;
   color: #000;
   border: none;
   padding: 14px 32px;
@@ -329,12 +329,12 @@
   font-weight: 800;
   font-size: 1.05rem;
   cursor: pointer;
-  box-shadow: 0 8px 24px rgba(46, 204, 113, 0.4);
+  box-shadow: 0 8px 24px rgba(0, 240, 255, 0.4);
   transition: all 0.2s;
 }
 .btnSave:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 32px rgba(46, 204, 113, 0.5);
+  box-shadow: 0 12px 32px rgba(0, 240, 255, 0.5);
 }
 .btnSave:disabled {
   opacity: 0.5;
