@@ -165,3 +165,46 @@ export async function fetchGamesByIds(ids: number[]): Promise<Game[]> {
     genres: g.genres ? g.genres.map((gen: any) => ({ id: gen.id, name: gen.name })) : [],
   }));
 }
+
+export async function fetchUpcomingGames(): Promise<Game[]> {
+  const now = Math.floor(Date.now() / 1000);
+  const query = `
+    fields name, first_release_date, cover.image_id, total_rating, platforms.name, genres.name;
+    where first_release_date > ${now} & cover.image_id != null & (hypes > 3 | follows > 10);
+    sort first_release_date asc;
+    limit 24;
+  `;
+  const results = await igdbRequest("games", query);
+  return results.map((g: any) => ({
+    id: g.id,
+    name: g.name,
+    released: g.first_release_date ? new Date(g.first_release_date * 1000).toISOString() : "2024-01-01",
+    background_image: g.cover?.image_id ? `https://images.igdb.com/igdb/image/upload/t_cover_big/${g.cover.image_id}.jpg` : "",
+    hero_image: "",
+    rating: g.total_rating || 0,
+    platforms: g.platforms ? g.platforms.map((p: any) => ({ platform: { id: p.id, name: p.name } })) : [],
+    genres: g.genres ? g.genres.map((gen: any) => ({ id: gen.id, name: gen.name })) : [],
+  }));
+}
+
+export async function fetchRecentReleases(): Promise<Game[]> {
+  const now = Math.floor(Date.now() / 1000);
+  const twoMonthsAgo = now - (60 * 24 * 60 * 60);
+  const query = `
+    fields name, first_release_date, cover.image_id, total_rating, platforms.name, genres.name;
+    where first_release_date < ${now} & first_release_date > ${twoMonthsAgo} & cover.image_id != null;
+    sort total_rating_count desc;
+    limit 24;
+  `;
+  const results = await igdbRequest("games", query);
+  return results.map((g: any) => ({
+    id: g.id,
+    name: g.name,
+    released: g.first_release_date ? new Date(g.first_release_date * 1000).toISOString() : "2024-01-01",
+    background_image: g.cover?.image_id ? `https://images.igdb.com/igdb/image/upload/t_cover_big/${g.cover.image_id}.jpg` : "",
+    hero_image: "",
+    rating: g.total_rating || 0,
+    platforms: g.platforms ? g.platforms.map((p: any) => ({ platform: { id: p.id, name: p.name } })) : [],
+    genres: g.genres ? g.genres.map((gen: any) => ({ id: gen.id, name: gen.name })) : [],
+  }));
+}
