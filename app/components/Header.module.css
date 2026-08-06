@@ -79,6 +79,10 @@
     transform: translateY(-2px);
     color: #b026ff;
   }
+  
+  .desktopLang {
+    display: none;
+  }
 }
 
 /* Base styles for SVG icons (Desktop) */

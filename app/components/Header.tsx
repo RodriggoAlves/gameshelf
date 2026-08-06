@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useI18n } from "../contexts/I18nContext";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 import styles from "./Header.module.css";
 
 export function Header() {
@@ -28,6 +29,9 @@ export function Header() {
           <span>{t.nav.profile}</span>
         </Link>
       </nav>
+      <div className={styles.desktopLang}>
+        <LanguageSwitcher />
+      </div>
     </header>
   );
 }
