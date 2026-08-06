@@ -77,7 +77,7 @@ async function igdbRequest(endpoint: string, body: string) {
 
 export async function fetchPopularGames(): Promise<Game[]> {
   const query = `
-    fields name, first_release_date, cover.image_id, artworks.image_id, total_rating, platforms.name, genres.name;
+    fields name, first_release_date, cover.image_id, total_rating, platforms.name, genres.name;
     where cover.image_id != null & total_rating_count > 0;
     sort total_rating_count desc;
     limit 27;
@@ -90,7 +90,7 @@ export async function fetchPopularGames(): Promise<Game[]> {
     name: g.name,
     released: g.first_release_date ? new Date(g.first_release_date * 1000).toISOString() : "2024-01-01",
     background_image: g.cover?.image_id ? `https://images.igdb.com/igdb/image/upload/t_cover_big/${g.cover.image_id}.jpg` : "",
-    hero_image: g.artworks?.[0]?.image_id ? `https://images.igdb.com/igdb/image/upload/t_1080p/${g.artworks[0].image_id}.jpg` : "",
+    hero_image: "",
     rating: g.total_rating || 0,
     platforms: g.platforms ? g.platforms.map((p: any) => ({ platform: { id: p.id, name: p.name } })) : [],
     genres: g.genres ? g.genres.map((gen: any) => ({ id: gen.id, name: gen.name })) : [],
