@@ -91,7 +91,7 @@ async function sendHostingerEmail(to: string, subject: string, htmlContent: stri
       to: [to],
       subject: subject,
       html: htmlContent
-    });
+    } as any);
     
     console.log(`Email enviado com sucesso via Hostinger para: ${to}`);
     return true;
