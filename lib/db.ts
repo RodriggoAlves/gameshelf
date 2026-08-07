@@ -57,14 +57,16 @@ const initDb = async () => {
         "containsSpoilers" INTEGER DEFAULT 0,
         "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        PRIMARY KEY ("userId", "gameId")
+        PRIMARY KEY ("userId", "gameId"),
+        FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE
       );
 
       CREATE TABLE IF NOT EXISTS "Tag" (
         "id" SERIAL PRIMARY KEY,
         "userId" TEXT,
         "name" TEXT,
-        "color" TEXT
+        "color" TEXT,
+        FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE
       );
 
       CREATE TABLE IF NOT EXISTS "GameTag" (
@@ -72,6 +74,7 @@ const initDb = async () => {
         "gameId" INTEGER,
         "tagId" INTEGER,
         PRIMARY KEY ("userId", "gameId", "tagId"),
+        FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE,
         FOREIGN KEY ("tagId") REFERENCES "Tag"("id") ON DELETE CASCADE
       );
 
@@ -82,7 +85,8 @@ const initDb = async () => {
         "eventType" TEXT,
         "oldValue" TEXT,
         "newValue" TEXT,
-        "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE
       );
 
       CREATE TABLE IF NOT EXISTS "PlaySession" (
@@ -92,7 +96,8 @@ const initDb = async () => {
         "sessionDate" TEXT,
         "durationMinutes" INTEGER,
         "isCompletionDay" INTEGER DEFAULT 0,
-        "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE
       );
 
       CREATE TABLE IF NOT EXISTS "PasswordReset" (
@@ -108,6 +113,16 @@ const initDb = async () => {
         "expiresAt" TIMESTAMP,
         FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE
       );
+
+      -- Criar Índices B-Tree para ganho extremo de performance em Leituras
+      CREATE INDEX IF NOT EXISTS idx_usergame_userid ON "UserGame"("userId");
+      CREATE INDEX IF NOT EXISTS idx_usergame_gameid ON "UserGame"("gameId");
+      CREATE INDEX IF NOT EXISTS idx_tag_userid ON "Tag"("userId");
+      CREATE INDEX IF NOT EXISTS idx_gametag_userid ON "GameTag"("userId");
+      CREATE INDEX IF NOT EXISTS idx_gametag_gameid ON "GameTag"("gameId");
+      CREATE INDEX IF NOT EXISTS idx_gametag_tagid ON "GameTag"("tagId");
+      CREATE INDEX IF NOT EXISTS idx_timelineevent_userid ON "TimelineEvent"("userId");
+      CREATE INDEX IF NOT EXISTS idx_playsession_userid ON "PlaySession"("userId");
     `);
   } catch (err) {
     console.error('Error initializing PostgreSQL schema:', err);
