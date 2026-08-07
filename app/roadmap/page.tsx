@@ -1,9 +1,6 @@
-"use client";
 import Link from "next/link";
 import * as LucideIcons from "lucide-react";
 import styles from "./roadmap.module.css";
-import { Header } from "../components/Header";
-import { Footer } from "../components/Footer";
 
 const features = [
   {
@@ -41,7 +38,6 @@ const features = [
 export default function RoadmapPage() {
   return (
     <div className={styles.container}>
-      <Header />
       <main className={styles.main}>
         <section className={styles.roadmapSection}>
           <div className={styles.roadmapHeader}>
@@ -78,7 +74,6 @@ export default function RoadmapPage() {
           </div>
         </section>
       </main>
-      <Footer />
     </div>
   );
 }
