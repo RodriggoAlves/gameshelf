@@ -3,7 +3,7 @@
 import db from "../../lib/db";
 import { cookies, headers } from "next/headers";
 import crypto from "crypto";
-import nodemailer from "nodemailer";
+import { Configuration, AccountApi, SendApi } from "hostinger-mail-api-sdk";
 import { isRateLimited, RATE_LIMITS } from "../../lib/rateLimit";
 
 // Escape HTML para prevenir XSS em templates de e-mail
@@ -66,6 +66,41 @@ function isValidImageUrl(url: string): boolean {
   }
 }
 
+// Helper para envio de email via Hostinger API
+async function sendHostingerEmail(to: string, subject: string, htmlContent: string) {
+  try {
+    const config = new Configuration({
+      accessToken: process.env.HOSTINGER_API_KEY
+    });
+    
+    // Pega o ID da caixa de e-mail autorizada (suporte@zerey.com.br)
+    const accountApi = new AccountApi(config);
+    const accountRes = await accountApi.getCurrentAccount();
+    const mailboxes = accountRes.data?.data?.mailboxes || [];
+    
+    if (mailboxes.length === 0) {
+      throw new Error("Nenhuma caixa de e-mail encontrada para este token na Hostinger.");
+    }
+    
+    // Procura pela caixa específica ou usa a primeira disponível
+    const fromEmail = process.env.EMAIL_FROM || "suporte@zerey.com.br";
+    const mailbox = mailboxes.find((m: any) => m.address === fromEmail) || mailboxes[0];
+    
+    const sendApi = new SendApi(config);
+    await sendApi.sendEmail(mailbox.resourceId, {
+      to: [to],
+      subject: subject,
+      html: htmlContent
+    });
+    
+    console.log(`Email enviado com sucesso via Hostinger para: ${to}`);
+    return true;
+  } catch (error) {
+    console.error("Erro ao enviar email pela API da Hostinger:", error);
+    throw error;
+  }
+}
+
 export async function register(username: string, email: string, password: string) {
   // Rate Limiting: 3 registros por hora por IP
   const ip = await getClientIP();
@@ -119,22 +154,10 @@ export async function register(username: string, email: string, password: string
 
   // Send verification email asynchronously
   try {
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-      }
-    });
-
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
     const verifyUrl = `${siteUrl}/verify?token=${token}`;
     
-    const mailOptions = {
-      from: '"Zerey (Beta)" <suporte.zerey@gmail.com>',
-      to: email,
-      subject: "Ative sua conta no Zerey",
-      html: `
+    const htmlContent = `
 <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #0d0d12; color: #ffffff; padding: 40px; border-radius: 12px; border: 1px solid #222;">
   <div style="text-align: center; margin-bottom: 35px;">
     <h1 style="color: #00f0ff; margin: 0; font-size: 36px; letter-spacing: -1.5px; font-weight: 900;">ZEREY</h1>
@@ -159,11 +182,9 @@ export async function register(username: string, email: string, password: string
     <p style="color: #666; font-size: 13px; margin: 4px 0;">© ${new Date().getFullYear()} Zerey Platform. Todos os direitos reservados.</p>
   </div>
 </div>
-      `
-    };
+    `;
 
-    await transporter.sendMail(mailOptions);
-    console.log("Email de verificação enviado para:", email);
+    await sendHostingerEmail(email, "Ative sua conta no Zerey", htmlContent);
   } catch (err) {
     console.error("Erro ao preparar e-mail de verificação:", err);
   }
@@ -307,35 +328,22 @@ export async function requestPasswordReset(email: string) {
   
   await db.run('INSERT INTO "PasswordReset" (id, "userId", "expiresAt") VALUES ($1, $2, $3)', [token, user.id, expiresAt]);
 
-  const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS
-    }
-  });
-
   const resetUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/reset-password?token=${token}`;
 
-  const mailOptions = {
-    from: '"Zerey (Beta)" <suporte.zerey@gmail.com>',
-    to: email,
-    subject: "Redefinição de Senha - Zerey",
-    html: `
-      <h2>Recuperação de Senha</h2>
-      <p>Você solicitou a redefinição da sua senha no Zerey.</p>
-      <p>Clique no link abaixo para criar uma nova senha. Este link expira em 15 minutos.</p>
-      <a href="${resetUrl}" style="display:inline-block;padding:10px 20px;background:#00f0ff;color:black;text-decoration:none;border-radius:8px;font-weight:bold;">Redefinir Senha</a>
-      <p>Se você não solicitou, ignore este e-mail.</p>
-    `
-  };
+  const htmlContent = `
+    <h2>Recuperação de Senha</h2>
+    <p>Você solicitou a redefinição da sua senha no Zerey.</p>
+    <p>Clique no link abaixo para criar uma nova senha. Este link expira em 15 minutos.</p>
+    <a href="${resetUrl}" style="display:inline-block;padding:10px 20px;background:#00f0ff;color:black;text-decoration:none;border-radius:8px;font-weight:bold;">Redefinir Senha</a>
+    <p>Se você não solicitou, ignore este e-mail.</p>
+  `;
 
   try {
-    await transporter.sendMail(mailOptions);
+    await sendHostingerEmail(email, "Redefinição de Senha - Zerey", htmlContent);
     return { success: true };
   } catch (err) {
     console.error("Erro ao enviar e-mail:", err);
-    return { error: "Falha ao enviar e-mail. Configure EMAIL_USER e EMAIL_PASS no arquivo .env" };
+    return { error: "Falha ao enviar e-mail. Configure HOSTINGER_API_KEY no arquivo .env" };
   }
 }
 
