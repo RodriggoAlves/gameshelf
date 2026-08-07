@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Game } from "../../../../lib/api";
+import { Game } from "../../../lib/api";
 import styles from "./franchise-detail.module.css";
 import { ArrowLeft } from "lucide-react";
 
