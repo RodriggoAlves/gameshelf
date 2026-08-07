@@ -100,6 +100,7 @@
   position: relative;
   overflow: hidden;
   text-decoration: none;
+  aspect-ratio: 3/4;
 }
 
 .card::before {
