@@ -3,6 +3,7 @@
 import styles from "./Footer.module.css";
 import { useI18n } from "../contexts/I18nContext";
 import Link from "next/link";
+import Image from "next/image";
 
 export function Footer() {
   const { t } = useI18n();
@@ -11,7 +12,10 @@ export function Footer() {
     <footer className={styles.footer}>
       <div className={styles.container}>
         <div className={styles.brand}>
-          <h3>Zerey</h3>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1rem' }}>
+            <Image src="/logo.jpg" alt="Zerey Logo" width={40} height={40} style={{ borderRadius: '8px', objectFit: 'cover' }} />
+            <h3 style={{ margin: 0 }}>Zerey</h3>
+          </div>
           <p>Organize sua biblioteca de jogos, descubra novos títulos e compartilhe a sua experiência com a comunidade gamer.</p>
         </div>
         <div className={styles.links}>

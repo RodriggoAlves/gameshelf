@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useI18n } from "../contexts/I18nContext";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import styles from "./Header.module.css";
@@ -10,7 +11,10 @@ export function Header() {
 
   return (
     <header className={styles.header}>
-      <Link href="/" className={styles.logo}>Zerey</Link>
+      <Link href="/" className={styles.logo}>
+        <Image src="/logo.jpg" alt="Zerey Logo" width={32} height={32} style={{ borderRadius: '8px', objectFit: 'cover' }} />
+        Zerey
+      </Link>
       <nav className={styles.nav}>
         <Link href="/">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
