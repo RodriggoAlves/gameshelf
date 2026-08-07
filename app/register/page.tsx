@@ -270,13 +270,44 @@ export default function RegisterPage() {
       {showTerms && (
         <div className={styles.termsModal} onClick={() => setShowTerms(false)}>
           <div className={styles.termsContent} onClick={e => e.stopPropagation()}>
-            <h2>TERMO DE CIÊNCIA E ACEITE – BETA</h2>
-            <p>Ao prosseguir com o cadastro, você reconhece que:</p>
+            <h2>TERMO DE CIÊNCIA E ACEITE – PLATAFORMA EM FASE DE TESTES (BETA)</h2>
+            <p>Última atualização: 05 de agosto de 2026.</p>
+            <p>Ao prosseguir com o cadastro nesta plataforma, o usuário declara que leu, compreendeu e concorda integralmente com os termos e condições abaixo.</p>
+            
+            <h3>1. Objeto</h3>
+            <p>A presente plataforma encontra-se em fase de desenvolvimento e testes (versão Beta), sendo disponibilizada exclusivamente para fins de avaliação, validação de funcionalidades, identificação de falhas e coleta de feedback.</p>
+            <p>O usuário reconhece que o sistema poderá sofrer alterações, interrupções, indisponibilidades, correções, atualizações ou até mesmo ser descontinuado, sem aviso prévio.</p>
+            
+            <h3>2. Natureza Experimental</h3>
+            <p>O usuário declara estar ciente de que:</p>
             <ul>
               <li>A plataforma não constitui produto final;</li>
-              <li>Funcionalidades podem apresentar erros;</li>
-              <li>Não há garantia de disponibilidade contínua.</li>
+              <li>Funcionalidades podem apresentar erros, inconsistências ou comportamento inesperado;</li>
+              <li>Informações cadastradas poderão ser alteradas, removidas ou perdidas em decorrência de atualizações, correções ou falhas técnicas;</li>
+              <li>Não há garantia de disponibilidade contínua, estabilidade, desempenho ou funcionamento ininterrupto.</li>
             </ul>
+
+            <h3>3. Ausência de Garantias</h3>
+            <p>A plataforma é disponibilizada "no estado em que se encontra" ("as is"), sem garantias expressas ou implícitas de qualquer natureza, incluindo, mas não se limitando, à adequação para finalidade específica, disponibilidade, precisão, confiabilidade ou ausência de falhas.</p>
+            
+            <h3>4. Limitação de Responsabilidade</h3>
+            <p>Na máxima extensão permitida pela legislação aplicável, o desenvolvedor não será responsável por quaisquer danos diretos, indiretos, incidentais, consequenciais, lucros cessantes, perda de dados, interrupção de atividades ou quaisquer prejuízos decorrentes da utilização, impossibilidade de utilização ou funcionamento da plataforma.</p>
+            <p>O usuário concorda que utiliza a plataforma por sua própria conta e risco.</p>
+            
+            <h3>5. Proteção de Dados</h3>
+            <p>O usuário compromete-se a não inserir informações sensíveis, confidenciais, sigilosas ou dados cuja perda possa causar prejuízo.</p>
+            <p>Embora sejam adotadas boas práticas de desenvolvimento, não é garantida a preservação permanente das informações cadastradas durante o período de testes.</p>
+            
+            <h3>6. Desenvolvimento Independente</h3>
+            <p>O usuário declara estar ciente de que esta plataforma foi desenvolvida como projeto acadêmico e de aprendizado, por um estudante da área de tecnologia, possuindo caráter educacional e experimental.</p>
+            <p>Sua disponibilização possui como objetivo o aperfeiçoamento técnico, testes de funcionalidades e obtenção de experiência prática em desenvolvimento de software.</p>
+            
+            <h3>7. Atualizações</h3>
+            <p>Os presentes termos poderão ser alterados a qualquer momento, independentemente de comunicação prévia, sendo recomendada sua consulta periódica.</p>
+            
+            <h3>8. Aceite</h3>
+            <p>Ao selecionar a opção "Li e aceito os Termos de Uso" e concluir o cadastro, o usuário declara que leu integralmente este documento, compreendeu seu conteúdo, está ciente de que a plataforma encontra-se em fase de testes, e aceita as limitações de responsabilidade previstas neste termo.</p>
+            
             <button className={styles.closeTermsBtn} onClick={() => { setAcceptedTerms(true); setShowTerms(false); }}>
               Li e Aceito
             </button>
