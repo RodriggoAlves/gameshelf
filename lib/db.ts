@@ -114,7 +114,9 @@ const initDb = async () => {
         FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE
       );
 
-      -- Criar Índices B-Tree para ganho extremo de performance em Leituras
+      -- ═══════════════════════════════════════════════════════
+      -- FASE 1: Índices B-Tree (Performance)
+      -- ═══════════════════════════════════════════════════════
       CREATE INDEX IF NOT EXISTS idx_usergame_userid ON "UserGame"("userId");
       CREATE INDEX IF NOT EXISTS idx_usergame_gameid ON "UserGame"("gameId");
       CREATE INDEX IF NOT EXISTS idx_tag_userid ON "Tag"("userId");
@@ -123,7 +125,58 @@ const initDb = async () => {
       CREATE INDEX IF NOT EXISTS idx_gametag_tagid ON "GameTag"("tagId");
       CREATE INDEX IF NOT EXISTS idx_timelineevent_userid ON "TimelineEvent"("userId");
       CREATE INDEX IF NOT EXISTS idx_playsession_userid ON "PlaySession"("userId");
+
+      -- ═══════════════════════════════════════════════════════
+      -- FASE 2: Índices adicionais para Login e Buscas
+      -- ═══════════════════════════════════════════════════════
+      CREATE INDEX IF NOT EXISTS idx_user_email ON "User"("email");
+      CREATE INDEX IF NOT EXISTS idx_session_userid ON "Session"("userId");
+      CREATE INDEX IF NOT EXISTS idx_session_expiresat ON "Session"("expiresAt");
+      CREATE INDEX IF NOT EXISTS idx_playsession_gameid ON "PlaySession"("gameId");
+      CREATE INDEX IF NOT EXISTS idx_timelineevent_gameid ON "TimelineEvent"("gameId");
+
+      -- ═══════════════════════════════════════════════════════
+      -- FASE 3: Soft Delete e Colunas de Auditoria
+      -- Permite "desfazer" exclusões e manter histórico
+      -- ═══════════════════════════════════════════════════════
+      DO $$ BEGIN
+        -- Soft Delete: User
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='User' AND column_name='deletedAt') THEN
+          ALTER TABLE "User" ADD COLUMN "deletedAt" TIMESTAMP DEFAULT NULL;
+        END IF;
+        -- Soft Delete: UserGame
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='UserGame' AND column_name='deletedAt') THEN
+          ALTER TABLE "UserGame" ADD COLUMN "deletedAt" TIMESTAMP DEFAULT NULL;
+        END IF;
+        -- updatedAt em Tag (ausente na versão original)
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='Tag' AND column_name='updatedAt') THEN
+          ALTER TABLE "Tag" ADD COLUMN "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+        END IF;
+        -- updatedAt em User (para rastrear atualizações de perfil)
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='User' AND column_name='updatedAt') THEN
+          ALTER TABLE "User" ADD COLUMN "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+        END IF;
+      END $$;
+
+      -- ═══════════════════════════════════════════════════════
+      -- FASE 4: Índice temporal em TimelineEvent e PlaySession
+      -- Prepara o terreno para particionamento futuro por data
+      -- ═══════════════════════════════════════════════════════
+      CREATE INDEX IF NOT EXISTS idx_timelineevent_createdat ON "TimelineEvent"("createdAt");
+      CREATE INDEX IF NOT EXISTS idx_playsession_createdat ON "PlaySession"("createdAt");
     `);
+
+    // ═══════════════════════════════════════════════════════
+    // Limpeza automática de tokens expirados (Segurança)
+    // Remove sessões, tokens de reset e verificações vencidas
+    // ═══════════════════════════════════════════════════════
+    await client.query(`
+      DELETE FROM "Session" WHERE "expiresAt" < NOW();
+      DELETE FROM "PasswordReset" WHERE "expiresAt" < NOW();
+      DELETE FROM "AccountVerification" WHERE "expiresAt" < NOW();
+    `);
+    console.log('🧹 Limpeza de tokens expirados concluída.');
+
   } catch (err) {
     console.error('Error initializing PostgreSQL schema:', err);
   } finally {
