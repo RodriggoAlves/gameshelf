@@ -5,16 +5,39 @@ export const metadata = {
   description: "Explore coleções e franquias de jogos.",
 };
 
-export default function FranquiasPage() {
-  // Mocking some popular franchises to avoid complex IGDB queries just for initial render
-  const popularFranchises = [
-    { id: 24, name: "The Legend of Zelda", games_count: 53, cover_url: "https://images.igdb.com/igdb/image/upload/t_cover_big/co5z8s.jpg" },
-    { id: 27, name: "Super Mario", games_count: 122, cover_url: "https://images.igdb.com/igdb/image/upload/t_cover_big/co1x3p.jpg" },
-    { id: 14, name: "Final Fantasy", games_count: 133, cover_url: "https://images.igdb.com/igdb/image/upload/t_cover_big/co2k39.jpg" },
-    { id: 58, name: "Resident Evil", games_count: 49, cover_url: "https://images.igdb.com/igdb/image/upload/t_cover_big/co1qky.jpg" },
-    { id: 12, name: "Grand Theft Auto", games_count: 17, cover_url: "https://images.igdb.com/igdb/image/upload/t_cover_big/co2lbd.jpg" },
-    { id: 70, name: "Pokémon", games_count: 104, cover_url: "https://images.igdb.com/igdb/image/upload/t_cover_big/co3p2d.jpg" }
-  ];
+import { igdbRequest } from "../../../lib/api";
+
+export default async function FranquiasPage() {
+  let popularFranchises = [];
+  
+  try {
+    const igdbQuery = `
+      fields name, games, games.cover.image_id;
+      where name = ("The Legend of Zelda", "Super Mario", "Final Fantasy", "Resident Evil", "Grand Theft Auto", "Pokémon");
+      limit 6;
+    `;
+    const results = await igdbRequest("franchises", igdbQuery);
+    
+    if (results && Array.isArray(results)) {
+      popularFranchises = results.map((f: any) => {
+        let cover_url = null;
+        if (f.games && f.games.length > 0) {
+          const gameWithCover = f.games.find((g: any) => g.cover && g.cover.image_id);
+          if (gameWithCover) {
+            cover_url = `https://images.igdb.com/igdb/image/upload/t_cover_big/${gameWithCover.cover.image_id}.jpg`;
+          }
+        }
+        return {
+          id: f.id,
+          name: f.name,
+          games_count: f.games ? f.games.length : 0,
+          cover_url
+        };
+      }).filter((f: any) => f.games_count > 0);
+    }
+  } catch (error) {
+    console.error("Error fetching popular franchises:", error);
+  }
 
   return <FranquiasClient popularFranchises={popularFranchises} />;
 }
