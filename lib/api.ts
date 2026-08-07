@@ -46,7 +46,7 @@ async function getAccessToken(): Promise<string> {
   return cachedAccessToken;
 }
 
-async function igdbRequest(endpoint: string, body: string) {
+export async function igdbRequest(endpoint: string, body: string) {
   const token = await getAccessToken();
   const clientId = process.env.TWITCH_CLIENT_ID!;
 
@@ -206,5 +206,180 @@ export async function fetchRecentReleases(): Promise<Game[]> {
     rating: g.total_rating || 0,
     platforms: g.platforms ? g.platforms.map((p: any) => ({ platform: { id: p.id, name: p.name } })) : [],
     genres: g.genres ? g.genres.map((gen: any) => ({ id: gen.id, name: gen.name })) : [],
+  }));
+}
+
+export interface CalendarRelease {
+  id: number;
+  date: number;
+  human: string;
+  game: {
+    id: number;
+    name: string;
+    cover?: { image_id: string };
+    total_rating?: number;
+    genres?: { id: number; name: string }[];
+  };
+  platform?: { id: number; name: string };
+}
+
+export interface AdvancedSearchFilters {
+  genres?: number[];
+  platforms?: number[];
+  minRating?: number;
+  yearFrom?: number;
+  yearTo?: number;
+  gameModes?: number[];
+  query?: string;
+}
+
+export interface ComparisonGame extends Game {
+  summary?: string;
+  involved_companies?: string[];
+  game_modes?: { id: number; name: string }[];
+  themes?: { id: number; name: string }[];
+}
+
+export async function fetchReleaseCalendar(month: number, year: number): Promise<CalendarRelease[]> {
+  const startOfMonth = Math.floor(new Date(year, month - 1, 1).getTime() / 1000);
+  const endOfMonth = Math.floor(new Date(year, month, 1).getTime() / 1000);
+
+  const query = `
+    fields game.name, game.cover.image_id, game.total_rating, game.genres.name, date, human, platform.name;
+    where date >= ${startOfMonth} & date < ${endOfMonth};
+    sort date asc;
+    limit 100;
+  `;
+  const results = await igdbRequest("release_dates", query);
+  return results;
+}
+
+export async function searchGamesAdvanced(filters: AdvancedSearchFilters): Promise<Game[]> {
+  let whereClauses: string[] = ["cover.image_id != null"];
+  
+  if (filters.genres && filters.genres.length > 0) {
+    whereClauses.push(`genres = (${filters.genres.join(',')})`);
+  }
+  if (filters.platforms && filters.platforms.length > 0) {
+    whereClauses.push(`platforms = (${filters.platforms.join(',')})`);
+  }
+  if (filters.minRating) {
+    whereClauses.push(`total_rating >= ${filters.minRating}`);
+  }
+  if (filters.yearFrom) {
+    const fromStamp = Math.floor(new Date(filters.yearFrom, 0, 1).getTime() / 1000);
+    whereClauses.push(`first_release_date >= ${fromStamp}`);
+  }
+  if (filters.yearTo) {
+    const toStamp = Math.floor(new Date(filters.yearTo + 1, 0, 1).getTime() / 1000);
+    whereClauses.push(`first_release_date < ${toStamp}`);
+  }
+  if (filters.gameModes && filters.gameModes.length > 0) {
+    whereClauses.push(`game_modes = (${filters.gameModes.join(',')})`);
+  }
+
+  let query = `
+    fields name, first_release_date, cover.image_id, artworks.image_id, total_rating, platforms.name, genres.name;
+    where ${whereClauses.join(' & ')};
+    limit 20;
+  `;
+
+  if (filters.query) {
+    const safeQuery = filters.query.replace(/[\\";{}()\n\r]/g, '').substring(0, 100);
+    query = `search "${safeQuery}";\n` + query;
+  }
+
+  const results = await igdbRequest("games", query);
+  
+  return results.map((g: any) => ({
+    id: g.id,
+    name: g.name,
+    released: g.first_release_date ? new Date(g.first_release_date * 1000).toISOString() : "2024-01-01",
+    background_image: g.cover?.image_id ? `https://images.igdb.com/igdb/image/upload/t_cover_big/${g.cover.image_id}.jpg` : "",
+    hero_image: g.artworks?.[0]?.image_id ? `https://images.igdb.com/igdb/image/upload/t_1080p/${g.artworks[0].image_id}.jpg` : "",
+    rating: g.total_rating || 0,
+    platforms: g.platforms ? g.platforms.map((p: any) => ({ platform: { id: p.id, name: p.name } })) : [],
+    genres: g.genres ? g.genres.map((gen: any) => ({ id: gen.id, name: gen.name })) : [],
+  }));
+}
+
+export async function fetchFranchiseGames(franchiseId: number): Promise<{ name: string; games: Game[] } | null> {
+  if (!Number.isInteger(franchiseId) || franchiseId <= 0) return null;
+
+  const query = `
+    fields name, games;
+    where id = ${franchiseId};
+  `;
+  const franchiseResults = await igdbRequest("franchises", query);
+  if (!franchiseResults.length) return null;
+
+  const franchise = franchiseResults[0];
+  if (!franchise.games || franchise.games.length === 0) {
+    return { name: franchise.name, games: [] };
+  }
+
+  const games = await fetchGamesByIds(franchise.games);
+  return { name: franchise.name, games };
+}
+
+export async function fetchGamesForComparison(ids: [number, number]): Promise<ComparisonGame[]> {
+  if (ids.length !== 2) return [];
+  const query = `
+    fields name, first_release_date, cover.image_id, total_rating, platforms.name, genres.name, summary, involved_companies.company.name, game_modes.name, themes.name;
+    where id = (${ids.join(",")});
+    limit 2;
+  `;
+  const results = await igdbRequest("games", query);
+
+  return results.map((g: any) => ({
+    id: g.id,
+    name: g.name,
+    released: g.first_release_date ? new Date(g.first_release_date * 1000).toISOString() : "2024-01-01",
+    background_image: g.cover?.image_id ? `https://images.igdb.com/igdb/image/upload/t_cover_big/${g.cover.image_id}.jpg` : "",
+    rating: g.total_rating || 0,
+    platforms: g.platforms ? g.platforms.map((p: any) => ({ platform: { id: p.id, name: p.name } })) : [],
+    genres: g.genres ? g.genres.map((gen: any) => ({ id: gen.id, name: gen.name })) : [],
+    summary: g.summary || "",
+    involved_companies: g.involved_companies ? g.involved_companies.map((c: any) => c.company?.name).filter(Boolean) : [],
+    game_modes: g.game_modes ? g.game_modes.map((m: any) => ({ id: m.id, name: m.name })) : [],
+    themes: g.themes ? g.themes.map((t: any) => ({ id: t.id, name: t.name })) : [],
+  }));
+}
+
+export async function fetchGenresList(): Promise<{ id: number; name: string }[]> {
+  const query = `
+    fields name;
+    limit 100;
+  `;
+  const results = await igdbRequest("genres", query);
+  return results.map((g: any) => ({ id: g.id, name: g.name }));
+}
+
+export async function fetchPlatformsList(): Promise<{ id: number; name: string }[]> {
+  const query = `
+    fields name;
+    sort name asc;
+    limit 200;
+  `;
+  const results = await igdbRequest("platforms", query);
+  return results.map((p: any) => ({ id: p.id, name: p.name }));
+}
+
+export async function searchFranchises(queryStr: string): Promise<{ id: number; name: string; games_count: number }[]> {
+  const safeQuery = (queryStr || "")
+    .replace(/[\\";{}()\n\r]/g, '')
+    .substring(0, 100);
+
+  const query = `
+    search "${safeQuery}";
+    fields name, games;
+    limit 20;
+  `;
+  const results = await igdbRequest("franchises", query);
+  
+  return results.map((f: any) => ({
+    id: f.id,
+    name: f.name,
+    games_count: f.games ? f.games.length : 0
   }));
 }

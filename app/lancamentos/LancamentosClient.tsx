@@ -6,9 +6,10 @@ import { Game } from "../../lib/api";
 import styles from "./lancamentos.module.css";
 import QuickAddButton from "../components/QuickAddButton";
 import * as LucideIcons from "lucide-react";
+import CalendarView from "./CalendarView";
 
 export default function LancamentosClient({ upcoming, recent, libraryIds }: { upcoming: Game[], recent: Game[], libraryIds: number[] }) {
-  const [activeTab, setActiveTab] = useState<"upcoming" | "recent">("upcoming");
+  const [activeTab, setActiveTab] = useState<"upcoming" | "recent" | "calendar">("upcoming");
 
   const currentGames = activeTab === "upcoming" ? upcoming : recent;
 
@@ -35,43 +36,55 @@ export default function LancamentosClient({ upcoming, recent, libraryIds }: { up
           >
             Lançamentos Recentes
           </button>
+          <button 
+            className={`${styles.tab} ${activeTab === "calendar" ? styles.activeTab : ""}`}
+            onClick={() => setActiveTab("calendar")}
+          >
+            Calendário
+          </button>
         </div>
 
-        <div className={styles.grid}>
-          {currentGames.map(game => (
-            <Link href={`/game/${game.id}`} key={game.id} className={styles.gameCard}>
-              <QuickAddButton gameId={game.id} isSavedInitial={libraryIds.includes(game.id)} />
-              <div className={styles.gameImagePlaceholder}>
-                {game.background_image ? (
-                  <Image 
-                    src={game.background_image} 
-                    alt={game.name} 
-                    fill
-                    sizes="(max-width: 768px) 50vw, 300px"
-                    style={{ objectFit: 'cover' }} 
-                  />
-                ) : (
-                  <LucideIcons.Gamepad2 size={48} opacity={0.2} />
-                )}
+        {activeTab === "calendar" ? (
+          <CalendarView />
+        ) : (
+          <>
+            <div className={styles.grid}>
+              {currentGames.map(game => (
+                <Link href={`/game/${game.id}`} key={game.id} className={styles.gameCard}>
+                  <QuickAddButton gameId={game.id} isSavedInitial={libraryIds.includes(game.id)} />
+                  <div className={styles.gameImagePlaceholder}>
+                    {game.background_image ? (
+                      <Image 
+                        src={game.background_image} 
+                        alt={game.name} 
+                        fill
+                        sizes="(max-width: 768px) 50vw, 300px"
+                        style={{ objectFit: 'cover' }} 
+                      />
+                    ) : (
+                      <LucideIcons.Gamepad2 size={48} opacity={0.2} />
+                    )}
+                  </div>
+                  <div className={styles.gameInfo}>
+                    <h3 className={styles.gameTitle}>{game.name}</h3>
+                    <div className={styles.gameDate}>
+                      <LucideIcons.Calendar size={14} />
+                      {new Date(game.released).toLocaleDateString("pt-BR", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric"
+                      })}
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+            {currentGames.length === 0 && (
+              <div style={{ textAlign: "center", color: "#888", marginTop: "2rem" }}>
+                Nenhum jogo encontrado para este período.
               </div>
-              <div className={styles.gameInfo}>
-                <h3 className={styles.gameTitle}>{game.name}</h3>
-                <div className={styles.gameDate}>
-                  <LucideIcons.Calendar size={14} />
-                  {new Date(game.released).toLocaleDateString("pt-BR", {
-                    day: "2-digit",
-                    month: "short",
-                    year: "numeric"
-                  })}
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-        {currentGames.length === 0 && (
-          <div style={{ textAlign: "center", color: "#888", marginTop: "2rem" }}>
-            Nenhum jogo encontrado para este período.
-          </div>
+            )}
+          </>
         )}
       </main>
     </div>

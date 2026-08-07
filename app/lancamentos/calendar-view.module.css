@@ -1,0 +1,382 @@
+.container {
+  width: 100%;
+  margin-top: 1rem;
+  color: var(--text-primary);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding: 0 1rem;
+}
+
+.navButton {
+  background: rgba(10, 10, 15, 0.6);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  color: var(--text-primary);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.navButton:hover:not(:disabled) {
+  background: rgba(0, 240, 255, 0.1);
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+  transform: scale(1.05);
+}
+
+.navButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.monthTitle {
+  font-size: 1.8rem;
+  font-weight: 800;
+  text-transform: capitalize;
+  background: linear-gradient(to right, #fff, var(--accent-cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.calendarWrapper {
+  overflow: hidden;
+  position: relative;
+  min-height: 600px;
+}
+
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.weekday {
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  padding: 0.5rem 0;
+}
+
+.dayCell {
+  background: rgba(10, 10, 15, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--border-radius-md);
+  min-height: 120px;
+  padding: 0.5rem;
+  position: relative;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+  display: flex;
+  flex-direction: column;
+}
+
+.emptyCell {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.dayCell.hasGames {
+  background: rgba(10, 10, 15, 0.7);
+  border: 1px solid rgba(0, 240, 255, 0.15);
+  cursor: pointer;
+}
+
+.dayCell.hasGames:hover {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.2) inset, 0 0 10px rgba(0, 240, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.dayCell.isToday {
+  border: 1px solid var(--accent-purple);
+  box-shadow: 0 0 15px rgba(176, 38, 255, 0.2) inset;
+}
+
+.dayNumber {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.dayCell.hasGames .dayNumber {
+  color: #fff;
+}
+
+.dayCell.isToday .dayNumber {
+  color: var(--accent-purple);
+  font-weight: 800;
+}
+
+.gameThumbnails {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: auto;
+}
+
+.thumbnailWrapper {
+  width: 32px;
+  height: 48px;
+  position: relative;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.2s ease;
+}
+
+.dayCell.hasGames:hover .thumbnailWrapper {
+  border-color: var(--accent-cyan);
+}
+
+.thumbnailWrapper img {
+  object-fit: cover;
+}
+
+.moreGamesCount {
+  width: 32px;
+  height: 48px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: var(--accent-cyan);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+}
+
+/* Modal / Tooltip for clicked day */
+.dayModalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease forwards;
+}
+
+.dayModal {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--accent-cyan);
+  box-shadow: 0 0 40px rgba(0, 240, 255, 0.2);
+  border-radius: var(--border-radius-lg);
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+  animation: slideUp 0.3s ease forwards;
+}
+
+.dayModalHeader {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  background: rgba(10, 10, 15, 0.9);
+  backdrop-filter: blur(10px);
+  z-index: 2;
+}
+
+.dayModalTitle {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dayModalClose {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.dayModalClose:hover {
+  color: var(--accent-cyan);
+}
+
+.dayModalContent {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.gameListItem {
+  display: flex;
+  gap: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--border-radius-md);
+  padding: 0.75rem;
+  transition: all 0.2s;
+  text-decoration: none;
+  color: inherit;
+}
+
+.gameListItem:hover {
+  background: rgba(0, 240, 255, 0.05);
+  border-color: rgba(0, 240, 255, 0.3);
+  transform: translateX(5px);
+}
+
+.gameListImage {
+  width: 60px;
+  height: 85px;
+  position: relative;
+  border-radius: 4px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.gameListInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.gameListName {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 0.25rem;
+}
+
+.gameListGenres {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.gameListPlatforms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.platformBadge {
+  font-size: 0.65rem;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  color: #ddd;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.slideLeftEnter { animation: slideLeftIn 0.4s ease forwards; }
+.slideRightEnter { animation: slideRightIn 0.4s ease forwards; }
+
+@keyframes slideLeftIn {
+  from { opacity: 0; transform: translateX(50px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideRightIn {
+  from { opacity: 0; transform: translateX(-50px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Loading */
+.loaderContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 400px;
+  gap: 1rem;
+  color: var(--accent-cyan);
+}
+
+.loaderSpinner {
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .calendarGrid, .weekdays {
+    display: none;
+  }
+  
+  .listView {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .listDay {
+    background: rgba(10, 10, 15, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: var(--border-radius-md);
+    padding: 1rem;
+  }
+  
+  .listDayHeader {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent-cyan);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}
+
+.listView {
+  display: none;
+}
+@media (max-width: 768px) {
+  .listView {
+    display: flex;
+  }
+}

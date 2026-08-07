@@ -35,6 +35,20 @@ export function Header() {
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
           <span>{t.nav.library}</span>
         </Link>
+        <Link href="/franquias">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+          <span style={{ position: 'relative' }}>
+            Franquias
+            <span style={{ position: 'absolute', top: '-8px', right: '-12px', background: '#00f0ff', color: '#000', fontSize: '0.6rem', padding: '2px 4px', borderRadius: '4px', fontWeight: 'bold' }}>NOVO</span>
+          </span>
+        </Link>
+        <Link href="/comparar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12h20"></path><path d="M20 16l4-4-4-4"></path><path d="M4 8l-4 4 4 4"></path></svg>
+          <span style={{ position: 'relative' }}>
+            Comparar
+            <span style={{ position: 'absolute', top: '-8px', right: '-12px', background: '#b026ff', color: '#fff', fontSize: '0.6rem', padding: '2px 4px', borderRadius: '4px', fontWeight: 'bold' }}>NOVO</span>
+          </span>
+        </Link>
         <Link href="/profile">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
           <span>{t.nav.profile}</span>
