@@ -162,7 +162,8 @@ export async function register(username: string, email: string, password: string
       `
     };
 
-    transporter.sendMail(mailOptions).catch(console.error);
+    await transporter.sendMail(mailOptions);
+    console.log("Email de verificação enviado para:", email);
   } catch (err) {
     console.error("Erro ao preparar e-mail de verificação:", err);
   }
