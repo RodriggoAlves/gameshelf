@@ -89,6 +89,7 @@ async function sendHostingerEmail(to: string, subject: string, htmlContent: stri
     const sendApi = new SendApi(config);
     await sendApi.sendEmail(mailbox.resourceId, {
       to: [to],
+      displayName: "Zerey Suporte",
       subject: subject,
       html: htmlContent
     } as any);
