@@ -110,10 +110,18 @@ export default function CompararClient() {
     setIsComparing(false); // trigger re-fetch of comparison data
   };
 
-  const renderTags = (tags: string[], otherTags: string[] = []) => {
-    if (!tags || tags.length === 0) return <span>N/A</span>;
-    return tags.map(tag => {
-      const isMatch = otherTags.includes(tag);
+  const extractTagNames = (tags: any[] | undefined) => {
+    if (!tags || tags.length === 0) return [];
+    return tags.map(t => typeof t === 'string' ? t : (t.name || (t.platform && t.platform.name) || '')).filter(Boolean);
+  };
+
+  const renderTags = (tags: any[] | undefined, otherTags: any[] | undefined) => {
+    const names1 = extractTagNames(tags);
+    const names2 = extractTagNames(otherTags);
+
+    if (names1.length === 0) return <span>N/A</span>;
+    return names1.map(tag => {
+      const isMatch = names2.includes(tag);
       return (
         <span key={tag} className={`${styles.tag} ${isMatch ? styles.tagMatch : styles.tagDiff}`}>
           {tag}
@@ -245,7 +253,7 @@ export default function CompararClient() {
 
             <div className={styles.statRow}>
               <span className={styles.statLabel}>Desenvolvedoras</span>
-              <div className={styles.statValue}>{renderTags(game1.companies, game2.companies)}</div>
+              <div className={styles.statValue}>{renderTags((game1 as any).involved_companies, (game2 as any).involved_companies)}</div>
             </div>
 
             <div className={styles.statRow}>
@@ -286,7 +294,7 @@ export default function CompararClient() {
 
             <div className={styles.statRow}>
               <span className={styles.statLabel}>Desenvolvedoras</span>
-              <div className={styles.statValue}>{renderTags(game2.companies, game1.companies)}</div>
+              <div className={styles.statValue}>{renderTags((game2 as any).involved_companies, (game1 as any).involved_companies)}</div>
             </div>
 
             <div className={styles.statRow}>

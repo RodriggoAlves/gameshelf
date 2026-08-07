@@ -12,16 +12,26 @@ export async function GET(request: Request) {
   try {
     const igdbQuery = `
       search "${query}";
-      fields name, games;
+      fields name, games, games.cover.image_id;
       limit 20;
     `;
     const results = await igdbRequest("franchises", igdbQuery);
     
-    const franchises = results.map((f: any) => ({
-      id: f.id,
-      name: f.name,
-      games_count: f.games ? f.games.length : 0
-    })).filter((f: any) => f.games_count > 0);
+    const franchises = results.map((f: any) => {
+      let cover_url = null;
+      if (f.games && f.games.length > 0) {
+        const gameWithCover = f.games.find((g: any) => g.cover && g.cover.image_id);
+        if (gameWithCover) {
+          cover_url = `https://images.igdb.com/igdb/image/upload/t_cover_big/${gameWithCover.cover.image_id}.jpg`;
+        }
+      }
+      return {
+        id: f.id,
+        name: f.name,
+        games_count: f.games ? f.games.length : 0,
+        cover_url
+      };
+    }).filter((f: any) => f.games_count > 0);
 
     return NextResponse.json(franchises);
   } catch (error) {
