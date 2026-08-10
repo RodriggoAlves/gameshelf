@@ -101,10 +101,20 @@
     border-top: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: 0;
     padding: 0.6rem 0.5rem calc(0.6rem + env(safe-area-inset-bottom));
-    justify-content: space-around;
+    justify-content: flex-start; /* Alinhamento ao inicio para permitir scroll */
     z-index: 999;
     margin: 0;
     gap: 0;
+    
+    /* Permite rolar os ícones horizontalmente caso não caibam na tela */
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .nav::-webkit-scrollbar {
+    display: none;
   }
   
   .nav a {
@@ -113,10 +123,11 @@
     gap: 4px;
     font-size: 0.65rem;
     color: rgba(255, 255, 255, 0.5);
-    padding: 0.5rem;
+    padding: 0.5rem 0.3rem;
     border-radius: 12px;
     background: transparent;
-    min-width: 65px;
+    min-width: 60px; /* Reduzido levemente para caber mais */
+    flex-shrink: 0; /* Impede que os ícones sejam esmagados */
     font-weight: 500;
   }
   
