@@ -154,10 +154,10 @@ export async function register(username: string, email: string, password: string
   await db.run('INSERT INTO "AccountVerification" (id, "userId", "expiresAt") VALUES ($1, $2, $3)', [token, userId, expiresAt]);
 
   // Send verification email asynchronously
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+  const verifyUrl = `${siteUrl}/verify?token=${token}`;
+  
   try {
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-    const verifyUrl = `${siteUrl}/verify?token=${token}`;
-    
     const htmlContent = `
 <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #0d0d12; color: #ffffff; padding: 40px; border-radius: 12px; border: 1px solid #222;">
   <div style="text-align: center; margin-bottom: 35px;">
