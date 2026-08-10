@@ -5,6 +5,8 @@ export const metadata = {
   description: "Explore coleções e franquias de jogos.",
 };
 
+export const dynamic = "force-dynamic";
+
 import { igdbRequest } from "../../lib/api";
 
 export default async function FranquiasPage() {

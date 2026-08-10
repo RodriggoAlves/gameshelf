@@ -7,6 +7,8 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   };
 }
 
+export const dynamic = "force-dynamic";
+
 export default async function FranchiseDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id: paramId } = await params;
   const id = parseInt(paramId, 10);
