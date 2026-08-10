@@ -31,7 +31,7 @@ export default async function GamePage(props: { params: Promise<{ id: string }> 
     <div className={styles.container}>
       <div className={styles.heroSection}>
         <div className={styles.heroBackground}>
-          {bgImage && <img src={bgImage} alt="" className={styles.bgImg} />}
+          {bgImage && <img src={bgImage} alt="" className={styles.bgImg} fetchPriority="high" />}
           <div className={styles.vignetteTop} />
           <div className={styles.vignetteBottom} />
         </div>
@@ -128,7 +128,7 @@ export default async function GamePage(props: { params: Promise<{ id: string }> 
                 <div className={styles.screenshotGrid}>
                   {game.screenshots.map((url, i) => (
                     <div key={i} className={styles.screenshotWrapper}>
-                      <img src={url} alt={`Screenshot ${i + 1}`} className={styles.screenshot} />
+                      <img src={url} alt={`Screenshot ${i + 1}`} className={styles.screenshot} loading="lazy" />
                     </div>
                   ))}
                 </div>

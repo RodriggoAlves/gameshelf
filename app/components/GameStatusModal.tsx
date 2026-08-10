@@ -11,11 +11,15 @@ import styles from "./modal.module.css";
 export default function GameStatusModal({ 
   gameId, 
   onClose,
-  isSavedInitial 
+  isSavedInitial,
+  onSaveOptimistic,
+  onRemoveOptimistic
 }: { 
   gameId: number, 
   onClose: () => void,
-  isSavedInitial: boolean 
+  isSavedInitial: boolean,
+  onSaveOptimistic?: (saved: boolean) => void,
+  onRemoveOptimistic?: (saved: boolean) => void
 }) {
   const { t } = useI18n();
   const isSaved = isSavedInitial;
@@ -93,21 +97,28 @@ export default function GameStatusModal({
     e.preventDefault();
     e.stopPropagation();
 
+    // UX Zero-latency: Fecha imediatamente e reflete a UI. O trabalho de rede ocorre no background.
+    if (onSaveOptimistic) onSaveOptimistic(true);
+    onClose();
+
     startTransition(async () => {
       await addGameToLibrary(gameId, { 
         status, rating, progress, playtime, isFavorite, platform, startDate, endDate, 
         ownership, storefront, containsSpoilers, review 
       });
-      onClose();
     });
   };
 
   const handleRemoveCompletely = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    
+    // UX Zero-latency
+    if (onRemoveOptimistic) onRemoveOptimistic(false);
+    onClose();
+
     startTransition(async () => {
       await removeGameFromLibrary(gameId);
-      onClose();
     });
   };
 

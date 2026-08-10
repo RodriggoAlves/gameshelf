@@ -64,16 +64,17 @@ export default function HomeView({ popularGames, libraryIds }: { popularGames: G
         <section className={styles.featured}>
           <h2 className={styles.sectionTitle}>{t.home.featured_title}</h2>
           <div className={styles.carousel} ref={carouselRef}>
-            {popularGames.map((game) => (
+            {popularGames.map((game, index) => (
               <Link href={`/game/${game.id}`} key={game.id} className={styles.gameCard}>
                 <QuickAddButton gameId={game.id} isSavedInitial={libraryIds.includes(game.id)} />
-                <div className={styles.gameImagePlaceholder} style={{ position: 'relative', width: '100%', height: '100%', minHeight: '300px' }}>
+                <div className={styles.gameImagePlaceholder} style={{ position: 'relative', width: '100%', height: '100%', minHeight: '300px', backgroundColor: '#1a1a1a' }}>
                   {game.background_image ? (
                     <Image 
                       src={game.background_image} 
                       alt={game.name} 
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 300px"
+                      priority={index < 4}
                       style={{ objectFit: 'cover' }} 
                     />
                   ) : null}
