@@ -8,7 +8,7 @@ export const metadata = {
 import { igdbRequest } from "../../lib/api";
 
 export default async function FranquiasPage() {
-  let popularFranchises = [];
+  let popularFranchises: any[] = [];
   
   try {
     const igdbQuery = `
