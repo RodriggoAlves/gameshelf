@@ -147,7 +147,21 @@ export async function getGameLibraryData(gameId: number) {
 export async function getGameModalData(gameId: number) {
   const user = await getUser();
   if (!user) return null;
-  const libraryData = await db.get('SELECT * FROM "UserGame" WHERE "userId" = $1 AND "gameId" = $2', [user.id, gameId]);
+  const libraryDataRaw = await db.get('SELECT * FROM "UserGame" WHERE "userId" = $1 AND "gameId" = $2', [user.id, gameId]);
+  
+  // Converter tudo para serializável (evitar Date objects que crasham a Server Action)
+  let libraryData = null;
+  if (libraryDataRaw) {
+    libraryData = {
+      ...libraryDataRaw,
+      startDate: libraryDataRaw.startDate ? new Date(libraryDataRaw.startDate).toISOString() : null,
+      endDate: libraryDataRaw.endDate ? new Date(libraryDataRaw.endDate).toISOString() : null,
+      createdAt: libraryDataRaw.createdAt ? new Date(libraryDataRaw.createdAt).toISOString() : null,
+      updatedAt: libraryDataRaw.updatedAt ? new Date(libraryDataRaw.updatedAt).toISOString() : null,
+      deletedAt: libraryDataRaw.deletedAt ? new Date(libraryDataRaw.deletedAt).toISOString() : null,
+    };
+  }
+
   const gameInfo = await fetchGameDetails(gameId);
   return {
     libraryData,
