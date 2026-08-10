@@ -1,0 +1,1 @@
+require('dotenv').config({path:'.env.local'}); const {igdbRequest} = require('./lib/api.ts'); igdbRequest('games', 'search "Mario Hoops"; fields name, franchises.name, collections.name; limit 1;').then(console.log).catch(console.error);

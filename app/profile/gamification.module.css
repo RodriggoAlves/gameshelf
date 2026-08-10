@@ -22,8 +22,8 @@
 
 .xpRingProgress {
   fill: none;
-  stroke: #00f0ff;
-  filter: drop-shadow(0 0 4px rgba(0, 240, 255, 0.6));
+  stroke: #fff;
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.2));
 }
 
 .xpAvatar {
@@ -38,23 +38,21 @@
 .levelBadge {
   position: absolute;
   bottom: -10px;
-  background: #00f0ff;
+  background: #fff;
   color: #000;
   font-weight: bold;
   padding: 4px 12px;
   border-radius: 12px;
   font-size: 0.9rem;
   z-index: 3;
-  box-shadow: 0 4px 12px rgba(0, 240, 255, 0.4);
 }
 
-/* Base Cards */
+/* Base Cards - agora sem borda/bg pois o bentoGrid fará isso */
 .radarContainer, .badgesContainer, .heatmapContainer {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 16px;
-  padding: 20px;
-  backdrop-filter: blur(10px);
+  padding: 0px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .cardTitle {
@@ -90,13 +88,13 @@
 }
 
 .badgeUnlocked {
-  background: rgba(0, 240, 255, 0.1);
-  border: 1px solid rgba(0, 240, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .badgeUnlocked:hover {
   transform: translateY(-4px);
-  background: rgba(0, 240, 255, 0.15);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .badgeLocked {
@@ -117,7 +115,7 @@
 }
 
 .iconUnlocked {
-  color: #00f0ff;
+  color: #fff;
 }
 
 .iconLocked {

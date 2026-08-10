@@ -28,9 +28,8 @@
 }
 
 .navButton:hover:not(:disabled) {
-  background: rgba(0, 240, 255, 0.1);
-  border-color: var(--accent-cyan);
-  box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+  background: #333;
+  border-color: #fff;
   transform: scale(1.05);
 }
 
@@ -43,9 +42,7 @@
   font-size: 1.8rem;
   font-weight: 800;
   text-transform: capitalize;
-  background: linear-gradient(to right, #fff, var(--accent-cyan));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #fff;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -99,20 +96,19 @@
 }
 
 .dayCell.hasGames {
-  background: rgba(10, 10, 15, 0.7);
-  border: 1px solid rgba(0, 240, 255, 0.15);
+  background: #222;
+  border: 1px solid #444;
   cursor: pointer;
 }
 
 .dayCell.hasGames:hover {
-  border-color: var(--accent-cyan);
-  box-shadow: 0 0 15px rgba(0, 240, 255, 0.2) inset, 0 0 10px rgba(0, 240, 255, 0.2);
+  border-color: #fff;
   transform: translateY(-2px);
 }
 
 .dayCell.isToday {
-  border: 1px solid var(--accent-purple);
-  box-shadow: 0 0 15px rgba(176, 38, 255, 0.2) inset;
+  border: 1px solid #fff;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.1) inset;
 }
 
 .dayNumber {
@@ -127,7 +123,7 @@
 }
 
 .dayCell.isToday .dayNumber {
-  color: var(--accent-purple);
+  color: #fff;
   font-weight: 800;
 }
 
@@ -149,7 +145,7 @@
 }
 
 .dayCell.hasGames:hover .thumbnailWrapper {
-  border-color: var(--accent-cyan);
+  border-color: #fff;
 }
 
 .thumbnailWrapper img {
@@ -159,15 +155,15 @@
 .moreGamesCount {
   width: 32px;
   height: 48px;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.8);
   border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 0.75rem;
   font-weight: bold;
-  color: var(--accent-cyan);
-  border: 1px solid rgba(0, 240, 255, 0.2);
+  color: #fff;
+  border: 1px solid #666;
 }
 
 /* Modal / Tooltip for clicked day */
@@ -187,9 +183,9 @@
 }
 
 .dayModal {
-  background: var(--bg-tertiary);
-  border: 1px solid var(--accent-cyan);
-  box-shadow: 0 0 40px rgba(0, 240, 255, 0.2);
+  background: #111;
+  border: 1px solid #333;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
   border-radius: var(--border-radius-lg);
   width: 90%;
   max-width: 600px;
@@ -230,7 +226,7 @@
 }
 
 .dayModalClose:hover {
-  color: var(--accent-cyan);
+  color: #fff;
 }
 
 .dayModalContent {
@@ -253,8 +249,8 @@
 }
 
 .gameListItem:hover {
-  background: rgba(0, 240, 255, 0.05);
-  border-color: rgba(0, 240, 255, 0.3);
+  background: #222;
+  border-color: #666;
   transform: translateX(5px);
 }
 
@@ -332,7 +328,7 @@
   justify-content: center;
   height: 400px;
   gap: 1rem;
-  color: var(--accent-cyan);
+  color: #fff;
 }
 
 .loaderSpinner {
@@ -365,7 +361,7 @@
   .listDayHeader {
     font-size: 1.1rem;
     font-weight: 700;
-    color: var(--accent-cyan);
+    color: #fff;
     margin-bottom: 1rem;
     padding-bottom: 0.5rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);

@@ -30,8 +30,9 @@
 .timeline {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 3rem;
   position: relative;
+  align-items: center;
 }
 
 .timeline::before {
@@ -39,7 +40,8 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  left: 24px;
+  left: 50%;
+  transform: translateX(-50%);
   width: 2px;
   background: linear-gradient(to bottom, var(--accent-cyan), var(--accent-purple));
   opacity: 0.3;
@@ -48,8 +50,35 @@
 .gameRow {
   display: flex;
   align-items: center;
-  gap: 2rem;
   position: relative;
+  width: 100%;
+}
+
+.rowLeft {
+  flex-direction: row;
+}
+
+.rowRight {
+  flex-direction: row-reverse;
+}
+
+.timelineContent {
+  width: 50%;
+  display: flex;
+}
+
+.rowLeft .timelineContent {
+  justify-content: flex-end;
+  padding-right: 3rem;
+}
+
+.rowRight .timelineContent {
+  justify-content: flex-start;
+  padding-left: 3rem;
+}
+
+.timelineEmpty {
+  width: 50%;
 }
 
 .timelineDot {
@@ -57,10 +86,25 @@
   height: 16px;
   border-radius: 50%;
   background: var(--accent-cyan);
-  box-shadow: 0 0 10px var(--accent-cyan);
-  margin-left: 17px;
+  box-shadow: 0 0 15px var(--accent-cyan);
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 2;
-  flex-shrink: 0;
+}
+
+.dateBadge {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+  color: #fff;
+  padding: 20px 10px 10px 10px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-align: center;
+  letter-spacing: 1px;
 }
 
 .gameCard {
@@ -126,15 +170,29 @@
 
 @media (max-width: 768px) {
   .timeline::before {
-    display: none;
+    left: 20px;
+    transform: none;
   }
   
   .timelineDot {
-    display: none;
+    left: 20px;
+    transform: translateX(-50%);
   }
   
-  .gameRow {
-    gap: 0;
+  .gameRow, .rowLeft, .rowRight {
+    flex-direction: row;
+    width: 100%;
+  }
+  
+  .timelineContent, .rowLeft .timelineContent, .rowRight .timelineContent {
+    width: 100%;
+    padding-left: 50px;
+    padding-right: 0;
+    justify-content: flex-start;
+  }
+  
+  .timelineEmpty {
+    display: none;
   }
   
   .gameCard {

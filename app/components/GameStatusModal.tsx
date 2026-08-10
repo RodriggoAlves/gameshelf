@@ -154,41 +154,27 @@ export default function GameStatusModal({
           </div>
         ) : (
           <>
-            {/* HERO BACKGROUND */}
-            <div className={styles.heroBg} style={{ backgroundImage: `url(${gameMeta.cover})` }}></div>
-
-            <div className={styles.modalContent}>
+            <div className={styles.modalGrid}>
               
-              {/* BLOCO 1: HERO & STATUS */}
-              <div className={styles.heroInfo}>
+              {/* SIDEBAR COL (Capa, Título, Favoritar) */}
+              <div className={styles.sidebar}>
                 <img src={gameMeta.cover} alt={gameMeta.name} className={styles.heroCover} />
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '15px' }}>
-                  <h2 className={styles.heroTitle} style={{ margin: 0 }}>
-                    {gameMeta.name} <span className={styles.heroYear}>({gameMeta.year})</span>
-                  </h2>
-                  <button 
-                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); setIsFavorite(!isFavorite); }}
-                    style={{ 
-                      background: isFavorite ? 'rgba(255, 215, 0, 0.15)' : 'rgba(255, 255, 255, 0.1)', 
-                      border: isFavorite ? '1px solid gold' : '1px solid rgba(255,255,255,0.2)', 
-                      color: isFavorite ? 'gold' : '#fff',
-                      cursor: 'pointer', 
-                      fontSize: '14px', 
-                      fontWeight: 'bold',
-                      padding: '6px 12px',
-                      borderRadius: '20px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '5px',
-                      transition: 'all 0.2s',
-                      boxShadow: isFavorite ? '0 0 10px rgba(255, 215, 0, 0.3)' : 'none'
-                    }}
-                    title={isFavorite ? "Remover dos Favoritos" : "Adicionar aos Favoritos"}
-                  >
-                    {isFavorite ? '⭐ Favorito' : '☆ Favoritar'}
-                  </button>
+                <div className={styles.sidebarTitles}>
+                  <h2 className={styles.heroTitle}>{gameMeta.name}</h2>
+                  <span className={styles.heroYear}>{gameMeta.year}</span>
                 </div>
                 
+                <button 
+                  className={`${styles.favoriteBtn} ${isFavorite ? styles.favoriteActive : ''}`}
+                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); setIsFavorite(!isFavorite); }}
+                  title={isFavorite ? "Remover dos Favoritos" : "Adicionar aos Favoritos"}
+                >
+                  {isFavorite ? '⭐ Favorito' : '☆ Favoritar'}
+                </button>
+              </div>
+
+              {/* MAIN CONTENT COL */}
+              <div className={styles.mainScroll}>
                 <div className={styles.statusChips}>
                   <button className={`${styles.chip} ${status === 'Zerey' ? styles.active : ''}`} onClick={() => setStatus('Zerey')}>
                     {t.modal.statusZerey}
@@ -212,123 +198,115 @@ export default function GameStatusModal({
                     {t.modal.statusDropped}
                   </button>
                 </div>
-              </div>
 
-              {/* BLOCO 1.5: ESTRELAS */}
-              <div className={styles.starBlock}>
-                <span className={styles.starLabel}>{t.modal.yourVerdict}</span>
-                <StarRating value={rating} onChange={setRating} />
-              </div>
-
-              {/* BLOCO 2: A JORNADA (CALENDÁRIO) */}
-              <div className={styles.journeyCard}>
-                <div className={styles.journeyHeader}>
-                  <span style={{ fontSize: '20px' }}>🗓️</span>
-                  <h3>{t.modal.theJourney}</h3>
+                <div className={styles.starBlock}>
+                  <span className={styles.starLabel}>{t.modal.yourVerdict}</span>
+                  <StarRating value={rating} onChange={setRating} />
                 </div>
-                <CustomCalendar 
-                  startDate={startDate}
-                  endDate={endDate}
-                  onDateChange={(start, end) => {
-                    setStartDate(start);
-                    setEndDate(end);
-                  }}
-                />
-              </div>
 
-              {/* BLOCO 2.5: PROGRESSO & HORAS */}
-              <div className={styles.progressCard}>
-                <div style={{ display: 'flex', gap: '20px' }}>
-                  {/* PROGRESSO */}
-                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                    <div className={styles.progressHeader}>
-                      <span className={styles.progressLabel}>{t.modal.yourProgress}</span>
-                      <span className={styles.progressValue}>{progress}%</span>
+                <div className={styles.journeyCard}>
+                  <div className={styles.journeyHeader}>
+                    <span style={{ fontSize: '20px' }}>🗓️</span>
+                    <h3>{t.modal.theJourney}</h3>
+                  </div>
+                  <CustomCalendar 
+                    startDate={startDate}
+                    endDate={endDate}
+                    onDateChange={(start, end) => {
+                      setStartDate(start);
+                      setEndDate(end);
+                    }}
+                  />
+                </div>
+
+                <div className={styles.progressCard}>
+                  <div className={styles.progressRow}>
+                    <div className={styles.progressSection}>
+                      <div className={styles.progressHeader}>
+                        <span className={styles.progressLabel}>{t.modal.yourProgress}</span>
+                        <span className={styles.progressValue}>{progress}%</span>
+                      </div>
+                      <input 
+                        type="range" 
+                        min="0" max="100" 
+                        value={progress} 
+                        onChange={e => setProgress(Number(e.target.value))}
+                        className={styles.rangeSlider}
+                      />
                     </div>
-                    <input 
-                      type="range" 
-                      min="0" max="100" 
-                      value={progress} 
-                      onChange={e => setProgress(Number(e.target.value))}
-                      className={styles.rangeSlider}
+                    
+                    <div className={styles.hoursSection}>
+                      <span className={styles.progressLabel}>{t.modal.hours}</span>
+                      <div className={styles.hoursInputWrapper}>
+                        <input 
+                          type="number" 
+                          min="0" 
+                          value={playtime || ''} 
+                          onChange={e => setPlaytime(Number(e.target.value))}
+                          className={styles.cleanInput}
+                          placeholder="0"
+                        />
+                        <span className={styles.hoursSuffix}>h</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className={styles.detailsGrid}>
+                  <div className={styles.detailCard}>
+                    <label>{t.modal.platform}</label>
+                    <CustomSelect 
+                      options={availablePlatforms.length === 0 ? ["-"] : availablePlatforms}
+                      value={platform || "-"}
+                      onChange={val => setPlatform(val === "-" ? "" : val)}
                     />
                   </div>
-                  
-                  {/* HORAS */}
-                  <div style={{ width: '120px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    <span className={styles.progressLabel}>{t.modal.hours}</span>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '10px', padding: '6px 12px' }}>
-                      <input 
-                        type="number" 
-                        min="0" 
-                        value={playtime || ''} 
-                        onChange={e => setPlaytime(Number(e.target.value))}
-                        className={styles.cleanInput}
-                        style={{ textAlign: 'right', fontSize: '1.1rem', fontWeight: 'bold' }}
-                        placeholder="0"
-                      />
-                      <span style={{ color: '#888', fontWeight: 'bold' }}>h</span>
-                    </div>
+                  <div className={styles.detailCard}>
+                    <label>{t.modal.media}</label>
+                    <CustomSelect 
+                      options={[t.modal.digital, t.modal.physical, t.modal.subscription]}
+                      value={ownership || t.modal.digital}
+                      onChange={setOwnership}
+                    />
+                  </div>
+                  <div className={styles.detailCard}>
+                    <label>{t.modal.store}</label>
+                    <CustomSelect 
+                      options={["-", "PlayStation Store", "PlayStation Plus", "Steam", "Xbox Store", "Game Pass", "Nintendo eShop"]}
+                      value={storefront || "-"}
+                      onChange={val => setStorefront(val === "-" ? "" : val)}
+                    />
+                  </div>
+                </div>
+
+                <div className={styles.reviewCard}>
+                  <label className={styles.reviewLabel}>{t.modal.yourDiary}</label>
+                  <textarea 
+                    className={styles.reviewArea} 
+                    placeholder={t.modal.diaryPlaceholder}
+                    value={review}
+                    onChange={e => setReview(e.target.value)}
+                  />
+                  <div className={styles.spoilerRow}>
+                    <input type="checkbox" id="spoilers" checked={containsSpoilers} onChange={e => setContainsSpoilers(e.target.checked)} />
+                    <label htmlFor="spoilers">{t.modal.containsSpoilers}</label>
                   </div>
                 </div>
               </div>
 
-              {/* BLOCO 3: DETALHES TÉCNICOS */}
-              <div className={styles.detailsGrid}>
-                <div className={styles.detailCard}>
-                  <label>{t.modal.platform}</label>
-                  <CustomSelect 
-                    options={availablePlatforms.length === 0 ? ["-"] : availablePlatforms}
-                    value={platform || "-"}
-                    onChange={val => setPlatform(val === "-" ? "" : val)}
-                  />
-                </div>
-                <div className={styles.detailCard}>
-                  <label>{t.modal.media}</label>
-                  <CustomSelect 
-                    options={[t.modal.digital, t.modal.physical, t.modal.subscription]}
-                    value={ownership || t.modal.digital}
-                    onChange={setOwnership}
-                  />
-                </div>
-                <div className={styles.detailCard}>
-                  <label>{t.modal.store}</label>
-                  <CustomSelect 
-                    options={["-", "PlayStation Store", "PlayStation Plus", "Steam", "Xbox Store", "Game Pass", "Nintendo eShop"]}
-                    value={storefront || "-"}
-                    onChange={val => setStorefront(val === "-" ? "" : val)}
-                  />
-                </div>
-              </div>
-
-              {/* BLOCO 4: REVIEW */}
-              <div className={styles.reviewCard}>
-                <label style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#888', textTransform: 'uppercase' }}>{t.modal.yourDiary}</label>
-                <textarea 
-                  className={styles.reviewArea} 
-                  placeholder={t.modal.diaryPlaceholder}
-                  value={review}
-                  onChange={e => setReview(e.target.value)}
-                />
-                <div className={styles.spoilerRow}>
-                  <input type="checkbox" id="spoilers" checked={containsSpoilers} onChange={e => setContainsSpoilers(e.target.checked)} />
-                  <label htmlFor="spoilers" style={{ fontSize: '0.85rem', color: '#aaa', cursor: 'pointer' }}>{t.modal.containsSpoilers}</label>
-                </div>
-              </div>
-
-              {/* FOOTER */}
+              {/* FOOTER ACTIONS (Grid Area) */}
               <div className={styles.footerActions}>
                 {isSaved && (
-                  <div style={{ flex: 1 }}>
-                    <button className={styles.btnCancel} style={{ color: '#e74c3c', padding: 0 }} onClick={() => setIsRemoving(true)}>
-                      {t.modal.removeFromLibrary}
-                    </button>
-                  </div>
+                  <button className={styles.btnRemove} onClick={() => setIsRemoving(true)}>
+                    {t.modal.removeFromLibrary}
+                  </button>
                 )}
-                <button className={styles.btnCancel} onClick={handleClose}>{t.modal.cancel}</button>
-                <button className={styles.btnSave} onClick={handleSave} disabled={isPending}>
-                  {isPending ? t.modal.saving : t.modal.saveRecord}
-                </button>
+                <div className={styles.footerRight}>
+                  <button className={styles.btnCancel} onClick={handleClose}>{t.modal.cancel}</button>
+                  <button className={styles.btnSave} onClick={handleSave} disabled={isPending}>
+                    {isPending ? t.modal.saving : t.modal.saveRecord}
+                  </button>
+                </div>
               </div>
 
             </div>

@@ -16,6 +16,13 @@ const PRESET_AVATARS = [
   { name: "Cyber Android", url: "/avatars/android.jpg" }
 ];
 
+const PRESET_COVERS = [
+  { name: "Dark Setup", url: "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2000&auto=format&fit=crop" },
+  { name: "Minimalist Console", url: "https://images.unsplash.com/photo-1605901309584-818e25960b8f?q=80&w=2000&auto=format&fit=crop" },
+  { name: "Dark Geometry", url: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2000&auto=format&fit=crop" },
+  { name: "Black Texture", url: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2000&auto=format&fit=crop" }
+];
+
 import { XpRing, GenreRadar, BadgesGrid, ActivityHeatmap } from "./Gamification";
 
 export default function ProfileClient({ initialUser, stats, favorites = [], recent = [], badges = [], heatmapData = [], radarData = [] }: any) {
@@ -77,36 +84,36 @@ export default function ProfileClient({ initialUser, stats, favorites = [], rece
           <p style={{ color: '#888', marginTop: '4px' }}>Nível {stats.level} • {stats.xp} XP</p>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'flex-end' }}>
+        <div className={styles.headerActions}>
           <LanguageSwitcher />
-          <button onClick={handleLogout} style={{ background: 'transparent', border: '1px solid #e74c3c', color: '#e74c3c', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>
+          <button onClick={handleLogout} className={styles.logoutBtn}>
             {t.profile.logout}
           </button>
         </div>
       </div>
 
-      <div className={styles.statsRow}>
-        <Link href="/library" className={styles.statCard} style={{ textDecoration: 'none' }}>
-          <div className={styles.statValue}>{stats.gamesCount}</div>
-          <div className={styles.statLabel}>{t.profile.gamesInLibrary || "Jogos"}</div>
-        </Link>
-        <Link href="/library" className={styles.statCard} style={{ textDecoration: 'none' }}>
-          <div className={styles.statValue}>{stats.completed}</div>
-          <div className={styles.statLabel}>{t.profile.gamesCompleted || "Zerados"}</div>
-        </Link>
-        <Link href="/library" className={styles.statCard} style={{ textDecoration: 'none' }}>
-          <div className={styles.statValue}>{stats.playtime}h</div>
-          <div className={styles.statLabel}>{t.profile.playtime || "Horas"}</div>
-        </Link>
-      </div>
+      {/* BENTO GRID PRINCIPAL */}
+      <div className={styles.bentoGrid}>
+        
+        {/* STATS BENTO */}
+        <div className={styles.bentoStats}>
+          <Link href="/library" className={styles.statCard} style={{ textDecoration: 'none' }}>
+            <div className={styles.statValue}>{stats.gamesCount}</div>
+            <div className={styles.statLabel}>{t.profile.gamesInLibrary || "Jogos"}</div>
+          </Link>
+          <Link href="/library" className={styles.statCard} style={{ textDecoration: 'none' }}>
+            <div className={styles.statValue}>{stats.completed}</div>
+            <div className={styles.statLabel}>{t.profile.gamesCompleted || "Zerados"}</div>
+          </Link>
+          <Link href="/library" className={styles.statCard} style={{ textDecoration: 'none' }}>
+            <div className={styles.statValue}>{stats.playtime}h</div>
+            <div className={styles.statLabel}>{t.profile.playtime || "Horas"}</div>
+          </Link>
+        </div>
 
-      <div className={styles.gamificationRow}>
-        <ActivityHeatmap data={heatmapData} />
-      </div>
-
-      <div className={styles.hubGrid}>
+        {/* FAVORITES BENTO */}
         {favorites.length > 0 && (
-          <div className={styles.favoritesSection}>
+          <div className={styles.bentoFavorites}>
             <h2 className={styles.sectionTitle}>⭐ {t.profile.myFavorites || "Meus Favoritos"}</h2>
             <div className={styles.favoritesGrid}>
               {[0, 1, 2, 3].map(index => {
@@ -123,9 +130,13 @@ export default function ProfileClient({ initialUser, stats, favorites = [], rece
           </div>
         )}
 
-        <BadgesGrid badges={badges} />
+        {/* HEATMAP BENTO */}
+        <div className={styles.bentoHeatmap}>
+          <ActivityHeatmap data={heatmapData} />
+        </div>
 
-        <div className={styles.recentSection}>
+        {/* RECENT ACTIVITY BENTO */}
+        <div className={styles.bentoRecent}>
           <h2 className={styles.sectionTitle}>⏱️ {t.profile.recentActivity || "Atividade Recente"}</h2>
           <div className={styles.recentList}>
             {recent.length > 0 ? recent.map((item: any, i: number) => (
@@ -143,7 +154,16 @@ export default function ProfileClient({ initialUser, stats, favorites = [], rece
           </div>
         </div>
         
-        <GenreRadar data={radarData} />
+        {/* RADAR BENTO */}
+        <div className={styles.bentoRadar}>
+          <GenreRadar data={radarData} />
+        </div>
+
+        {/* BADGES BENTO */}
+        <div className={styles.bentoBadges}>
+          <BadgesGrid badges={badges} />
+        </div>
+
       </div>
 
       {editing && (
@@ -181,12 +201,33 @@ export default function ProfileClient({ initialUser, stats, favorites = [], rece
             )}
 
             {editing === "cover" && (
-              <p style={{ color: '#aaa', fontSize: '0.9rem', marginBottom: '1rem' }}>
-                {t.profile.pasteDirectLink}
-              </p>
+              <>
+                <p style={{ color: '#aaa', fontSize: '0.9rem', marginBottom: '1rem' }}>
+                  Escolha uma capa predefinida:
+                </p>
+                <div className={styles.coverGrid}>
+                  {PRESET_COVERS.map(cover => (
+                    <div 
+                      key={cover.name} 
+                      className={`${styles.presetCover} ${tempUrl === cover.url ? styles.selectedCover : ''}`}
+                      onClick={() => setTempUrl(cover.url)}
+                      title={cover.name}
+                    >
+                      <img src={cover.url} alt={cover.name} />
+                    </div>
+                  ))}
+                </div>
+                <div 
+                  style={{ margin: '1rem 0', textAlign: 'center', color: '#888', fontSize: '0.8rem', textTransform: 'uppercase', cursor: 'pointer' }}
+                  onClick={() => setTempUrl("")}
+                  title="Clique para colar seu próprio link"
+                >
+                  Ou cole um link personalizado
+                </div>
+              </>
             )}
 
-            {!(editing === "avatar" && PRESET_AVATARS.some(a => a.url === tempUrl)) && (
+            {!(editing === "avatar" && PRESET_AVATARS.some(a => a.url === tempUrl)) && !(editing === "cover" && PRESET_COVERS.some(c => c.url === tempUrl)) && (
               <input 
                 type="text" 
                 className={styles.input}

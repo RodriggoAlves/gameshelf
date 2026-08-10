@@ -111,23 +111,21 @@
 }
 
 .dashCard {
-  background: rgba(10, 10, 15, 0.6);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(0, 240, 255, 0.1);
-  border-left: 4px solid var(--accent-cyan);
-  border-radius: var(--border-radius-md);
+  background: #111;
+  border: 1px solid #333;
+  border-radius: 8px;
   padding: 16px 24px;
   display: flex;
   flex-direction: column;
   min-width: 150px;
   flex: 1;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .dashCard:hover {
   transform: translateY(-3px);
-  box-shadow: 0 5px 20px rgba(0, 240, 255, 0.15);
-  border-left-color: var(--accent-purple);
+  border-color: #555;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
 }
 
 .dashValue {
@@ -163,14 +161,13 @@
 }
 
 .filterGroup button {
-  background: rgba(10, 10, 15, 0.6);
-  backdrop-filter: blur(5px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: var(--text-secondary);
+  background: #111;
+  border: 1px solid #333;
+  color: #aaa;
   padding: 8px 18px;
   border-radius: 20px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   font-size: 0.9rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -178,16 +175,14 @@
 }
 
 .filterGroup button:hover {
-  border-color: var(--accent-cyan);
-  color: var(--accent-cyan);
-  box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+  border-color: #666;
+  color: #fff;
 }
 
 .filterGroup button.activeFilter {
-  background: rgba(0, 240, 255, 0.15);
-  color: var(--accent-cyan);
-  border-color: var(--accent-cyan);
-  box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+  background: #fff;
+  color: #000;
+  border-color: #fff;
 }
 
 .toolsGroup {
@@ -209,29 +204,26 @@
 }
 
 .searchBox input:focus {
-  border-color: var(--primary-color, #00f0ff);
+  border-color: #fff;
 }
 
 .btnRouletteNav {
-  background: rgba(176, 38, 255, 0.15);
-  backdrop-filter: blur(5px);
-  color: var(--accent-purple);
-  border: 1px solid var(--accent-purple);
+  background: #111;
+  color: #fff;
+  border: 1px solid #444;
   padding: 8px 20px;
   border-radius: 20px;
   cursor: pointer;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 1px;
-  transition: all 0.3s ease;
-  box-shadow: 0 0 10px rgba(176, 38, 255, 0.2);
+  transition: all 0.2s ease;
 }
 
 .btnRouletteNav:hover {
-  background: rgba(176, 38, 255, 0.3);
-  box-shadow: 0 0 20px rgba(176, 38, 255, 0.5);
+  background: #333;
   transform: translateY(-2px);
-  color: #fff;
+  border-color: #fff;
 }
 
 /* SWIMLANES (CAROUSELS) */
@@ -269,22 +261,19 @@
   display: flex;
   align-items: center;
   gap: 20px;
-  background: rgba(10, 10, 15, 0.6);
-  backdrop-filter: blur(5px);
-  border: 1px solid rgba(0, 240, 255, 0.1);
+  background: #111;
+  border: 1px solid #333;
   padding: 12px;
-  border-radius: 12px;
+  border-radius: 8px;
   text-decoration: none;
   color: white;
-  transition: all 0.3s ease;
-  border-left: 3px solid transparent;
+  transition: all 0.2s ease;
 }
 
 .listItem:hover {
-  background: rgba(0, 240, 255, 0.05);
+  background: #1a1a1a;
   transform: translateX(5px);
-  border-left-color: var(--accent-cyan);
-  box-shadow: 0 5px 15px rgba(0, 240, 255, 0.1);
+  border-color: #666;
 }
 
 .listImage {
@@ -332,10 +321,10 @@
   letter-spacing: 1px;
 }
 
-.listBadge[data-status="Zerey"] { background: #00f0ff; color: black; }
-.listBadge[data-status="Jogando"] { background: #3498db; color: white; }
-.listBadge[data-status="Quero Jogar"] { background: #95a5a6; color: white; }
-.listBadge[data-status="Próximo Jogo"] { background: #f1c40f; color: black; }
+.listBadge[data-status="Zerey"] { background: #fff; color: black; }
+.listBadge[data-status="Jogando"] { background: #444; color: white; }
+.listBadge[data-status="Quero Jogar"] { background: #222; color: white; border: 1px solid #555; }
+.listBadge[data-status="Próximo Jogo"] { background: #ccc; color: black; }
 
 .listProgress {
   flex: 1;
@@ -363,7 +352,7 @@
 }
 
 .selectFilter:focus {
-  border-color: var(--primary-color, #00f0ff);
+  border-color: #fff;
 }
 
 /* EMPTY / FOCUS */
@@ -422,9 +411,7 @@
   font-weight: 900;
   letter-spacing: 5px;
   margin: 0;
-  background: linear-gradient(135deg, #00f0ff, #f1c40f);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #fff;
 }
 
 .focusSubtitle {

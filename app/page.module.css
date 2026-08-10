@@ -59,10 +59,8 @@
   font-weight: 900;
   line-height: 1.05;
   margin-bottom: 1.5rem;
-  background: linear-gradient(to right, #fff, var(--accent-cyan));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  letter-spacing: -2.5px;
+  color: #fff;
+  letter-spacing: -2px;
   text-transform: uppercase;
 }
 
@@ -76,26 +74,22 @@
 }
 
 .ctaButton {
-  background: rgba(10, 10, 15, 0.6);
-  backdrop-filter: blur(12px);
-  color: var(--accent-cyan);
+  background: #fff;
+  color: #000;
   padding: 1rem 2.25rem;
-  border-radius: 9999px;
+  border-radius: 8px;
   font-size: 1.1rem;
   font-weight: 800;
-  border: 2px solid var(--accent-cyan);
-  box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
-  transition: all 0.3s ease;
+  border: none;
+  transition: all 0.2s ease;
   display: inline-block;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
 
 .ctaButton:hover {
-  background: rgba(0, 240, 255, 0.15);
+  background: #e0e0e0;
   transform: translateY(-3px);
-  box-shadow: 0 0 25px rgba(0, 240, 255, 0.5);
-  color: #fff;
 }
 
 .featured {
@@ -138,8 +132,8 @@
 
 .gameCard:hover {
   transform: translateY(-5px);
-  border-color: var(--accent-purple);
-  box-shadow: 0 8px 30px rgba(176, 38, 255, 0.2);
+  border-color: rgba(255,255,255,0.3);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8);
 }
 
 .gameImagePlaceholder {
@@ -213,9 +207,7 @@
   font-size: 2.5rem;
   font-weight: 900;
   margin-bottom: 1rem;
-  background: linear-gradient(to right, #fff, var(--accent-cyan));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #fff;
   letter-spacing: -1px;
   text-transform: uppercase;
 }
@@ -232,11 +224,9 @@
 }
 
 .bentoCard {
-  background: rgba(10, 10, 15, 0.6);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(0, 240, 255, 0.1);
-  border-left: 4px solid #00f0ff;
-  border-radius: 16px;
+  background: #111;
+  border: 1px solid #222;
+  border-radius: 12px;
   padding: 3rem 2.5rem;
   display: flex;
   flex-direction: column;
@@ -248,8 +238,8 @@
 
 .bentoCard:hover {
   transform: translateY(-5px);
-  border-left-color: #b026ff;
-  box-shadow: 0 10px 40px rgba(176, 38, 255, 0.15);
+  border-color: #444;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
 }
 
 .bentoCard::before {
@@ -259,7 +249,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(45deg, transparent, rgba(176, 38, 255, 0.05), transparent);
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.03), transparent);
   transform: translateX(-100%);
   transition: transform 0.6s ease;
   pointer-events: none;
@@ -274,34 +264,32 @@
 }
 
 .bentoIconWrapper {
-  background: rgba(0, 240, 255, 0.1);
+  background: #222;
   padding: 1rem;
-  border-radius: 12px;
+  border-radius: 8px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(0, 240, 255, 0.3);
-  box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+  border: 1px solid #333;
   transition: all 0.3s ease;
   margin-bottom: 1.5rem;
   width: max-content;
 }
 
 .bentoCard:hover .bentoIconWrapper {
-  background: rgba(176, 38, 255, 0.1);
-  border-color: rgba(176, 38, 255, 0.3);
-  box-shadow: 0 0 15px rgba(176, 38, 255, 0.2);
+  background: #333;
+  border-color: #555;
 }
 
 .bentoIcon {
   width: 28px;
   height: 28px;
-  color: #00f0ff;
+  color: #fff;
   transition: color 0.3s ease;
 }
 
 .bentoCard:hover .bentoIcon {
-  color: #b026ff;
+  color: #fff;
 }
 
 .bentoCard h3 {
@@ -377,15 +365,14 @@
   justify-content: space-between;
   width: 100%;
   max-width: 800px;
-  background: rgba(10, 10, 15, 0.8);
-  border: 1px solid rgba(255, 0, 85, 0.3);
+  background: #111;
+  border: 1px solid #333;
   padding: 1.5rem 2rem;
   border-radius: 8px;
   text-decoration: none;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 0 20px rgba(255, 0, 85, 0.1);
 }
 
 .glitchBanner::before {
@@ -395,19 +382,17 @@
   left: 0;
   width: 4px;
   height: 100%;
-  background: #ff0055;
-  box-shadow: 0 0 10px #ff0055;
+  background: #fff;
 }
 
 .glitchBanner:hover {
-  background: rgba(255, 0, 85, 0.1);
-  border-color: rgba(255, 0, 85, 0.6);
-  box-shadow: 0 0 30px rgba(255, 0, 85, 0.2);
+  background: #1a1a1a;
+  border-color: #555;
   transform: scale(1.02);
 }
 
 .glitchIcon {
-  color: #ff0055;
+  color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -421,13 +406,12 @@
 }
 
 .glitchWarning {
-  color: #ff0055;
+  color: #aaa;
   font-size: 0.8rem;
   font-weight: 800;
   letter-spacing: 2px;
   text-transform: uppercase;
   margin-bottom: 0.3rem;
-  animation: blink 2s infinite;
 }
 
 .glitchMessage {
@@ -435,12 +419,11 @@
   font-size: 1.1rem;
   font-weight: 600;
   letter-spacing: 1px;
-  font-family: monospace;
 }
 
 .glitchArrow {
-  color: #ff0055;
-  transition: transform 0.3s ease;
+  color: #fff;
+  transition: transform 0.2s ease;
 }
 
 .glitchBanner:hover .glitchArrow {
@@ -482,7 +465,7 @@
 }
 
 .homeBtn:hover {
-  background: #00f0ff;
+  background: #fff;
   color: #000;
 }
 
@@ -495,5 +478,17 @@
   .cardHeader {
     flex-direction: column;
     gap: 10px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .bentoGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .bentoGrid {
+    grid-template-columns: 1fr;
   }
 }

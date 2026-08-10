@@ -24,10 +24,10 @@ export function proxy(request: NextRequest) {
     }
   }
 
-  // Redirect away from auth routes if already logged in
-  if ((url === "/login" || url === "/register") && session?.value) {
-    return NextResponse.redirect(new URL("/library", request.url));
-  }
+  // Redirecionamento removido para evitar loop infinito quando a sessão não existe no banco
+  // if ((url === "/login" || url === "/register") && session?.value) {
+  //   return NextResponse.redirect(new URL("/library", request.url));
+  // }
 
   // Adicionar header de segurança anti-clickjacking para API
   if (url.startsWith("/api/")) {

@@ -24,9 +24,7 @@
   font-size: 3.5rem;
   font-weight: 900;
   margin-bottom: 1rem;
-  background: linear-gradient(to right, #fff, #00f0ff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #fff;
   letter-spacing: -1.5px;
   text-transform: uppercase;
 }
@@ -46,28 +44,26 @@
 }
 
 .tab {
-  background: rgba(10, 10, 15, 0.6);
-  border: 1px solid rgba(0, 240, 255, 0.2);
-  color: var(--text-secondary);
+  background: #111;
+  border: 1px solid #333;
+  color: #aaa;
   padding: 0.8rem 2rem;
   border-radius: 30px;
   font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
+  transition: all 0.2s ease;
 }
 
 .tab:hover {
-  background: rgba(0, 240, 255, 0.1);
+  background: #222;
   color: #fff;
 }
 
 .activeTab {
-  background: rgba(0, 240, 255, 0.15);
-  border-color: #00f0ff;
-  color: #fff;
-  box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+  background: #fff;
+  border-color: #fff;
+  color: #000;
 }
 
 .grid {
@@ -90,8 +86,8 @@
 
 .gameCard:hover {
   transform: translateY(-5px);
-  border-color: var(--accent-cyan);
-  box-shadow: 0 8px 30px rgba(0, 240, 255, 0.2);
+  border-color: #666;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8);
 }
 
 .gameImagePlaceholder {
@@ -122,7 +118,7 @@
 .gameDate {
   font-size: 0.85rem;
   font-weight: 600;
-  color: #00f0ff;
+  color: #ccc;
   margin-top: auto;
   display: flex;
   align-items: center;

@@ -6,25 +6,25 @@
   --text-primary: #f5f5f7;
   --text-secondary: #8a8a99;
   
-  /* Cyberpunk / Gamer Accents */
-  --accent-cyan: #00f0ff;
-  --accent-purple: #b026ff;
-  --accent-green: #00f0ff;
-  --accent-red: #ff0055;
+  /* Minimalist Accents */
+  --accent-cyan: #ffffff;
+  --accent-purple: #aaaaaa;
+  --accent-green: #ffffff;
+  --accent-red: #ff4444;
   
-  --accent-primary: var(--accent-cyan);
-  --accent-hover: #b026ff;
-  --accent-glow: rgba(0, 240, 255, 0.2);
-  --accent-glow-hover: rgba(176, 38, 255, 0.3);
+  --accent-primary: #ffffff;
+  --accent-hover: #cccccc;
+  --accent-glow: rgba(255, 255, 255, 0.05);
+  --accent-glow-hover: rgba(255, 255, 255, 0.1);
   
-  --border-color: rgba(0, 240, 255, 0.1);
+  --border-color: rgba(255, 255, 255, 0.1);
   --border-radius-md: 12px;
   --border-radius-lg: 16px;
   --transition-fast: 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
   
   /* Utilities */
-  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-  --neon-shadow: 0 0 15px var(--accent-glow);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+  --neon-shadow: 0 4px 12px rgba(0, 0, 0, 0.8);
 }
 
 * {

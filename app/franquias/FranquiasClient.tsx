@@ -40,45 +40,53 @@ export default function FranquiasClient({ popularFranchises }: { popularFranchis
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Coleções & Franquias</h1>
-      
-      <form onSubmit={handleSearch} className={styles.searchForm}>
-        <input 
-          type="text" 
-          className={styles.searchInput}
-          placeholder="Busque por uma franquia (ex: Final Fantasy)..." 
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
-        <button type="submit" className={styles.searchButton} disabled={isSearching}>
-          {isSearching ? "..." : <Search size={20} />}
-        </button>
-      </form>
+      <div className={styles.hero}>
+        <h1 className={styles.title}>Universos Lendários</h1>
+        <p className={styles.subtitle}>Explore as maiores franquias e coleções de jogos de todos os tempos. Descubra a ordem cronológica, detalhes de cada lançamento e expanda seu conhecimento.</p>
+        
+        <form onSubmit={handleSearch} className={styles.searchForm}>
+          <input 
+            type="text" 
+            className={styles.searchInput}
+            placeholder="Qual franquia você procura? (ex: Tomb Raider)" 
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+          <button type="submit" className={styles.searchButton} disabled={isSearching}>
+            {isSearching ? "..." : <Search size={20} />}
+          </button>
+        </form>
+      </div>
 
-      {results.length === 0 && !isSearching && (
-        <p className={styles.noResults}>Nenhuma franquia encontrada.</p>
-      )}
+      <div className={styles.contentWrapper}>
+        {results.length === 0 && !isSearching && (
+          <div className={styles.noResults}>
+            <p>Nenhuma franquia encontrada para a sua busca.</p>
+          </div>
+        )}
 
-      {results.length > 0 && (
-        <div className={styles.grid}>
-          {results.map(franchise => (
-            <Link href={`/franquias/${franchise.id}`} key={franchise.id} className={styles.card}>
-              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 0, opacity: 0.3 }}>
-                {franchise.cover_url ? (
-                  <Image src={franchise.cover_url} alt={franchise.name} fill style={{ objectFit: 'cover' }} />
-                ) : (
-                  <div style={{ width: '100%', height: '100%', background: '#222' }} />
-                )}
-                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'linear-gradient(to top, rgba(10,10,15,1), rgba(10,10,15,0))' }} />
-              </div>
-              <div style={{ position: 'relative', zIndex: 1, padding: '1.5rem', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'flex-end' }}>
-                <h3 className={styles.cardTitle} style={{ margin: 0, textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}>{franchise.name}</h3>
-                <span className={styles.cardCount} style={{ opacity: 0.8 }}>{franchise.games_count} jogos</span>
-              </div>
-            </Link>
-          ))}
-        </div>
-      )}
+        {results.length > 0 && (
+          <div className={styles.grid}>
+            {results.map(franchise => (
+              <Link href={`/franquias/${franchise.id}`} key={franchise.id} className={styles.card}>
+                <div className={styles.cardImageWrapper}>
+                  {franchise.cover_url ? (
+                    <Image src={franchise.cover_url} alt={franchise.name} fill style={{ objectFit: 'cover' }} />
+                  ) : (
+                    <div style={{ width: '100%', height: '100%', background: '#222' }} />
+                  )}
+                </div>
+                <div className={styles.cardGradient} />
+                
+                <div className={styles.cardContent}>
+                  <h3 className={styles.cardTitle}>{franchise.name}</h3>
+                  <span className={styles.cardCount}>{franchise.games_count} jogos</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

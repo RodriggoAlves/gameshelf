@@ -28,7 +28,7 @@ export function Header() {
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
           <span style={{ position: 'relative' }}>
             Lançamentos
-            <span style={{ position: 'absolute', top: '-8px', right: '-12px', background: '#ff0055', color: '#fff', fontSize: '0.6rem', padding: '2px 4px', borderRadius: '4px', fontWeight: 'bold' }}>NOVO</span>
+            <span style={{ position: 'absolute', top: '-8px', right: '-12px', background: '#fff', color: '#000', fontSize: '0.6rem', padding: '2px 4px', borderRadius: '4px', fontWeight: 'bold' }}>NOVO</span>
           </span>
         </Link>
         <Link href="/library">
@@ -39,14 +39,14 @@ export function Header() {
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
           <span style={{ position: 'relative' }}>
             Franquias
-            <span style={{ position: 'absolute', top: '-8px', right: '-12px', background: '#00f0ff', color: '#000', fontSize: '0.6rem', padding: '2px 4px', borderRadius: '4px', fontWeight: 'bold' }}>NOVO</span>
+            <span style={{ position: 'absolute', top: '-8px', right: '-12px', background: '#fff', color: '#000', fontSize: '0.6rem', padding: '2px 4px', borderRadius: '4px', fontWeight: 'bold' }}>NOVO</span>
           </span>
         </Link>
         <Link href="/comparar">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12h20"></path><path d="M20 16l4-4-4-4"></path><path d="M4 8l-4 4 4 4"></path></svg>
           <span style={{ position: 'relative' }}>
             Comparar
-            <span style={{ position: 'absolute', top: '-8px', right: '-12px', background: '#b026ff', color: '#fff', fontSize: '0.6rem', padding: '2px 4px', borderRadius: '4px', fontWeight: 'bold' }}>NOVO</span>
+            <span style={{ position: 'absolute', top: '-8px', right: '-12px', background: '#fff', color: '#000', fontSize: '0.6rem', padding: '2px 4px', borderRadius: '4px', fontWeight: 'bold' }}>NOVO</span>
           </span>
         </Link>
         <Link href="/profile">

@@ -278,11 +278,12 @@ export async function getUser() {
   }
 
   const session = await db.get('SELECT * FROM "Session" WHERE id = $1', [sessionId]);
-  if (!session) return null;
+  if (!session) {
+    return null;
+  }
 
   if (new Date(session.expiresAt) < new Date()) {
     await db.run('DELETE FROM "Session" WHERE id = $1', [sessionId]);
-    cookieStore.delete(SESSION_COOKIE);
     return null;
   }
 

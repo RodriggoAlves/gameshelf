@@ -61,7 +61,7 @@
 
 .conversationalInput:focus {
   outline: none;
-  border-bottom-color: var(--accent-cyan);
+  border-bottom-color: #fff;
 }
 
 .actionRow {
@@ -72,24 +72,23 @@
 }
 
 .primaryBtn {
-  background: var(--accent-cyan);
+  background: #fff;
   color: #000;
   border: none;
   padding: 12px 32px;
-  border-radius: 30px;
+  border-radius: 8px;
   font-size: 1.1rem;
   font-weight: 800;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.2s;
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
 .primaryBtn:hover {
-  background: #fff;
+  background: #e0e0e0;
   transform: translateY(-2px);
-  box-shadow: 0 5px 20px rgba(0, 240, 255, 0.4);
 }
 
 .primaryBtn:disabled {
@@ -134,12 +133,12 @@
 }
 
 .progressDot.active {
-  background: var(--accent-cyan);
-  box-shadow: 0 0 10px var(--accent-cyan);
+  background: #fff;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
 .progressDot.completed {
-  background: rgba(0, 240, 255, 0.5);
+  background: rgba(255, 255, 255, 0.5);
 }
 
 .error {
@@ -167,7 +166,7 @@
 }
 
 .link:hover {
-  color: var(--accent-cyan);
+  color: #fff;
 }
 
 @keyframes slideUpFade {
@@ -195,7 +194,7 @@
 }
 
 .checkboxGroup input[type="checkbox"] {
-  accent-color: var(--accent-cyan);
+  accent-color: #fff;
   width: 24px;
   height: 24px;
   cursor: pointer;
@@ -210,7 +209,7 @@
 }
 
 .termsLink {
-  color: var(--accent-cyan);
+  color: #fff;
   text-decoration: underline;
   cursor: pointer;
   margin-left: 5px;
@@ -243,11 +242,11 @@
 }
 
 .termsContent h2 { color: #fff; margin-bottom: 1rem; font-size: 1.5rem; }
-.termsContent h3 { color: var(--accent-cyan); margin-top: 2rem; margin-bottom: 0.5rem; font-size: 1.2rem; }
+.termsContent h3 { color: #fff; margin-top: 2rem; margin-bottom: 0.5rem; font-size: 1.2rem; }
 .termsContent ul { margin-left: 1.5rem; margin-bottom: 1rem; }
 
 .closeTermsBtn {
-  background: var(--accent-cyan);
+  background: #fff;
   color: #000;
   border: none;
   padding: 14px 20px;

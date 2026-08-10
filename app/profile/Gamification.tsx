@@ -48,10 +48,10 @@ export function GenreRadar({ data }: { data: RadarData[] }) {
             <PolarGrid stroke="#333" />
             <PolarAngleAxis dataKey="genre" tick={{ fill: '#888', fontSize: 12 }} />
             <Tooltip 
-              contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #333', borderRadius: '8px' }}
-              itemStyle={{ color: '#00f0ff' }}
+              contentStyle={{ backgroundColor: '#111', border: '1px solid #333', borderRadius: '8px' }}
+              itemStyle={{ color: '#fff' }}
             />
-            <Radar name="Jogos" dataKey="count" stroke="#00f0ff" fill="#00f0ff" fillOpacity={0.4} />
+            <Radar name="Jogos" dataKey="count" stroke="#fff" fill="#fff" fillOpacity={0.2} />
           </RadarChart>
         </ResponsiveContainer>
       </div>
@@ -111,11 +111,11 @@ export function ActivityHeatmap({ data }: { data: HeatmapDay[] }) {
   if (currentWeek.length > 0) weeks.push(currentWeek);
 
   const getColor = (count: number) => {
-    if (count === 0) return '#1e1e1e';
-    if (count <= 60) return '#104d26'; // Light green (up to 1h)
-    if (count <= 120) return '#1b7d3f'; // Mid green (up to 2h)
-    if (count <= 240) return '#22a953'; // Neon green (up to 4h)
-    return '#00f0ff'; // Bright neon green (4h+)
+    if (count === 0) return '#111'; // Vazio
+    if (count <= 60) return '#333'; // Até 1h
+    if (count <= 120) return '#666'; // Até 2h
+    if (count <= 240) return '#999'; // Até 4h
+    return '#fff'; // Mais de 4h
   };
 
   return (

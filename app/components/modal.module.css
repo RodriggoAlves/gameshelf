@@ -1,4 +1,4 @@
-/* ZEREY UNIQUE IDENTITY */
+/* ZEREY UNIQUE IDENTITY - MINIMALIST */
 
 .overlay {
   position: fixed;
@@ -17,119 +17,157 @@
 .modal {
   position: relative;
   width: 95%;
-  max-width: 700px; /* Mais estreito para fluxo vertical focado */
+  max-width: 900px; /* Wider for 2 columns */
   max-height: 90vh;
-  border-radius: 24px;
-  overflow-y: auto;
+  border-radius: 12px;
+  overflow: hidden; /* Hide overflow so we can scroll inner main */
   box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8);
   color: #fff;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   background: #0d0d12;
+  border: 1px solid #333;
 }
 
-/* Custom Scrollbar */
-.modal::-webkit-scrollbar {
-  width: 6px;
-}
-.modal::-webkit-scrollbar-track {
-  background: transparent;
-}
-.modal::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
-}
-
-/* HERO BACKGROUND */
-.heroBg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 400px;
-  background-size: cover;
-  background-position: center;
-  mask-image: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 100%);
-  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 100%);
-  z-index: 0;
-  pointer-events: none;
+/* LAYOUT GRID (PC) */
+.modalGrid {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  grid-template-rows: 1fr auto;
+  grid-template-areas: 
+    "sidebar main"
+    "sidebar footer";
+  height: 100%;
+  max-height: 90vh;
 }
 
-.modalContent {
-  position: relative;
-  z-index: 1;
-  padding: 40px;
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-}
-
-/* HEADER & HERO INFO */
-.heroInfo {
+/* SIDEBAR */
+.sidebar {
+  grid-area: sidebar;
+  padding: 30px;
+  background: #111;
+  border-right: 1px solid #333;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 16px;
-  margin-top: 20px;
+  gap: 20px;
+  overflow-y: auto;
 }
 
 .heroCover {
-  width: 120px;
-  height: 180px;
-  border-radius: 12px;
+  width: 180px;
+  height: 270px;
+  border-radius: 8px;
   object-fit: cover;
-  box-shadow: 0 16px 32px rgba(0,0,0,0.6);
-  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+  border: 1px solid #333;
+}
+
+.sidebarTitles {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .heroTitle {
   margin: 0;
-  font-size: 2.2rem;
-  font-weight: 800;
+  font-size: 1.8rem;
+  font-weight: 900;
   letter-spacing: -0.5px;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+  line-height: 1.1;
+  color: #fff;
 }
 
 .heroYear {
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 1.1rem;
+  color: #888;
+  font-size: 1rem;
   font-weight: 500;
+}
+
+.favoriteBtn {
+  background: #222;
+  border: 1px solid #444;
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  transition: all 0.2s;
+}
+
+.favoriteBtn:hover {
+  background: #333;
+  border-color: #666;
+}
+
+.favoriteActive {
+  background: #fff;
+  color: #000;
+  border-color: #fff;
+}
+
+/* MAIN CONTENT */
+.mainScroll {
+  grid-area: main;
+  padding: 30px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Custom Scrollbar for Main Scroll */
+.mainScroll::-webkit-scrollbar, .sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+.mainScroll::-webkit-scrollbar-track, .sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.mainScroll::-webkit-scrollbar-thumb, .sidebar::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 10px;
 }
 
 /* STATUS CHIPS */
 .statusChips {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-  background: rgba(255, 255, 255, 0.03);
-  padding: 12px;
-  border-radius: 20px;
-  border: 1px solid rgba(255,255,255,0.05);
+  gap: 8px;
+  background: #111;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #333;
 }
 
 .chip {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #ccc;
-  padding: 10px 20px;
-  border-radius: 30px;
-  font-size: 0.9rem;
+  background: #222;
+  border: 1px solid #444;
+  color: #aaa;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
+  flex: 1;
+  min-width: calc(33% - 10px);
+  text-align: center;
 }
 
 .chip:hover {
-  background: rgba(255, 255, 255, 0.15);
-  color: white;
+  background: #333;
+  color: #fff;
 }
 
 .chip.active {
-  background: #00f0ff;
-  border-color: #00f0ff;
-  color: black;
-  box-shadow: 0 4px 12px rgba(0, 240, 255, 0.3);
+  background: #fff;
+  border-color: #fff;
+  color: #000;
 }
 
 /* BIG STARS */
@@ -138,118 +176,131 @@
   flex-direction: column;
   align-items: center;
   gap: 12px;
-  padding: 24px;
-  background: rgba(255, 255, 255, 0.02);
-  border-radius: 20px;
-  border: 1px solid rgba(255,255,255,0.03);
+  padding: 20px;
+  background: #111;
+  border-radius: 8px;
+  border: 1px solid #333;
 }
 
 .starLabel {
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 2px;
-  color: rgba(255,255,255,0.4);
+  color: #888;
   font-weight: bold;
 }
 
 /* JOURNEY CALENDAR CARD */
 .journeyCard {
-  background: rgba(20, 20, 25, 0.8);
-  border: 1px solid rgba(255,255,255,0.05);
-  border-radius: 24px;
-  padding: 30px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  background: #111;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 24px;
 }
 
 .journeyHeader {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .journeyHeader h3 {
   margin: 0;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 /* PROGRESS SLIDER */
 .progressCard {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255,255,255,0.05);
-  border-radius: 20px;
+  background: #111;
+  border: 1px solid #333;
+  border-radius: 8px;
   padding: 24px;
+}
+
+.progressRow {
+  display: flex;
+  gap: 20px;
+}
+
+.progressSection {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
 }
+
 .progressHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
+
 .progressLabel {
   font-size: 0.85rem;
   font-weight: bold;
-  color: rgba(255,255,255,0.5);
+  color: #888;
   text-transform: uppercase;
+  letter-spacing: 1px;
 }
+
 .progressValue {
   font-size: 1.1rem;
   font-weight: 800;
-  color: #00f0ff;
+  color: #fff;
 }
+
 .rangeSlider {
   -webkit-appearance: none;
   width: 100%;
   height: 6px;
-  background: rgba(255, 255, 255, 0.1);
+  background: #333;
   border-radius: 4px;
   outline: none;
 }
 .rangeSlider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
-  background: #00f0ff;
+  background: #fff;
   cursor: pointer;
-  box-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
 }
 
-/* DETAILS BLOCKS */
-.detailsGrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-}
-
-.detailCard {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255,255,255,0.05);
-  padding: 16px;
-  border-radius: 16px;
+.hoursSection {
+  width: 120px;
   display: flex;
   flex-direction: column;
+  gap: 10px;
+}
+
+.hoursInputWrapper {
+  display: flex;
+  align-items: center;
   gap: 8px;
-  transition: all 0.2s;
+  background: #222;
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 8px 12px;
 }
 
-.detailCard:focus-within {
-  border-color: rgba(0, 240, 255, 0.5);
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.detailCard label {
-  font-size: 0.75rem;
+.cleanInput {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 1.1rem;
   font-weight: bold;
-  color: rgba(255,255,255,0.4);
-  text-transform: uppercase;
+  outline: none;
+  padding: 0;
+  width: 100%;
+  text-align: right;
 }
 
-.cleanSelect, .cleanInput {
+.cleanSelect {
   background: transparent;
   border: none;
   color: white;
@@ -263,29 +314,71 @@
   background: #111;
 }
 
+.hoursSuffix {
+  color: #888;
+  font-weight: bold;
+}
+
+/* DETAILS BLOCKS */
+.detailsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.detailCard {
+  background: #111;
+  border: 1px solid #333;
+  padding: 16px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: all 0.2s;
+}
+
+.detailCard:focus-within {
+  border-color: #fff;
+}
+
+.detailCard label {
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: #888;
+  text-transform: uppercase;
+}
+
 /* REVIEW BLOCK */
 .reviewCard {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255,255,255,0.05);
-  border-radius: 16px;
+  background: #111;
+  border: 1px solid #333;
+  border-radius: 8px;
   padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
+.reviewLabel {
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: #888;
+  text-transform: uppercase;
+}
+
 .reviewArea {
   background: transparent;
   border: none;
-  color: #e0e0e0;
+  color: #fff;
   font-size: 1rem;
   line-height: 1.6;
-  min-height: 120px;
+  min-height: 100px;
   resize: vertical;
   outline: none;
 }
+
 .reviewArea::placeholder {
-  color: rgba(255,255,255,0.2);
+  color: #555;
 }
 
 .spoilerRow {
@@ -293,51 +386,145 @@
   align-items: center;
   gap: 8px;
   padding-top: 12px;
-  border-top: 1px solid rgba(255,255,255,0.05);
+  border-top: 1px solid #333;
+}
+
+.spoilerRow label {
+  font-size: 0.85rem;
+  color: #aaa;
+  cursor: pointer;
 }
 
 /* FOOTER ACTIONS */
 .footerActions {
+  grid-area: footer;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
-  gap: 16px;
-  margin-top: 10px;
+  padding: 20px 30px;
+  background: #111;
+  border-top: 1px solid #333;
+}
+
+.footerRight {
+  display: flex;
+  gap: 12px;
+  margin-left: auto; /* Push to right if btnRemove is missing */
 }
 
 .btnCancel {
   background: transparent;
-  color: rgba(255, 255, 255, 0.5);
+  color: #888;
   border: none;
-  padding: 12px 24px;
-  border-radius: 12px;
+  padding: 10px 20px;
+  border-radius: 8px;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.2s;
 }
 .btnCancel:hover {
   color: white;
-  background: rgba(255,255,255,0.1);
+  background: #222;
+}
+
+.btnRemove {
+  background: transparent;
+  color: #e74c3c;
+  border: 1px solid rgba(231, 76, 60, 0.2);
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btnRemove:hover {
+  background: rgba(231, 76, 60, 0.1);
 }
 
 .btnSave {
-  background: #00f0ff;
+  background: #fff;
   color: #000;
   border: none;
-  padding: 14px 32px;
-  border-radius: 14px;
+  padding: 10px 24px;
+  border-radius: 8px;
   font-weight: 800;
-  font-size: 1.05rem;
   cursor: pointer;
-  box-shadow: 0 8px 24px rgba(0, 240, 255, 0.4);
   transition: all 0.2s;
 }
 .btnSave:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 32px rgba(0, 240, 255, 0.5);
+  background: #e0e0e0;
 }
 .btnSave:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-  transform: none;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .modal {
+    max-height: 100vh;
+    height: 100vh; /* Full screen on mobile */
+    width: 100%;
+    border-radius: 0;
+    border: none;
+  }
+  
+  .modalGrid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto; /* Sidebar(Header), Main, Footer */
+    grid-template-areas: 
+      "sidebar"
+      "main"
+      "footer";
+  }
+
+  .sidebar {
+    padding: 20px;
+    border-right: none;
+    border-bottom: 1px solid #333;
+    flex-direction: row; /* Horizontal layout for cover and titles on mobile */
+    align-items: center;
+    text-align: left;
+    overflow-y: visible;
+  }
+
+  .heroCover {
+    width: 80px;
+    height: 120px;
+  }
+
+  .sidebarTitles {
+    flex: 1;
+  }
+  
+  .heroTitle {
+    font-size: 1.4rem;
+  }
+
+  .favoriteBtn {
+    width: auto;
+    padding: 8px 12px;
+    font-size: 0.85rem;
+  }
+
+  .mainScroll {
+    padding: 20px;
+  }
+
+  .footerActions {
+    padding: 16px 20px;
+  }
+  
+  .detailsGrid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .progressRow {
+    flex-direction: column;
+  }
+  
+  .hoursSection {
+    width: 100%;
+  }
 }

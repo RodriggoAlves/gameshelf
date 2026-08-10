@@ -32,36 +32,46 @@ export default function FranchiseDetailClient({ franchise }: FranchiseDetailProp
       </div>
 
       <div className={styles.timeline}>
-        {franchise.games.map((game, index) => (
-          <div key={`${game.id}-${index}`} className={styles.gameRow}>
-            <div className={styles.timelineDot}></div>
-            <Link href={`/game/${game.id}`} className={styles.gameCard}>
-              <div className={styles.gameImageWrapper}>
-                {game.background_image ? (
-                  <Image 
-                    src={game.background_image} 
-                    alt={game.name} 
-                    fill
-                    style={{ objectFit: 'cover' }} 
-                  />
-                ) : (
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--text-secondary)' }}>Sem Capa</div>
-                )}
+        {franchise.games.map((game, index) => {
+          const isEven = index % 2 === 0;
+          const exactDate = game.released 
+            ? new Date(game.released).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' }) 
+            : 'Data desconhecida';
+
+          return (
+            <div key={`${game.id}-${index}`} className={`${styles.gameRow} ${isEven ? styles.rowLeft : styles.rowRight}`}>
+              <div className={styles.timelineContent}>
+                <Link href={`/game/${game.id}`} className={styles.gameCard}>
+                  <div className={styles.gameImageWrapper}>
+                    {game.background_image ? (
+                      <Image 
+                        src={game.background_image} 
+                        alt={game.name} 
+                        fill
+                        style={{ objectFit: 'cover' }} 
+                      />
+                    ) : (
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--text-secondary)' }}>Sem Capa</div>
+                    )}
+                    <div className={styles.dateBadge}>
+                      {exactDate}
+                    </div>
+                  </div>
+                  <div className={styles.gameInfo}>
+                    <h3 className={styles.gameTitle}>{game.name}</h3>
+                    <div className={styles.gameMeta}>
+                      <span className={styles.gameRating}>
+                        {game.rating ? `${Math.round(game.rating)} / 100` : 'S/ Nota'}
+                      </span>
+                    </div>
+                  </div>
+                </Link>
               </div>
-              <div className={styles.gameInfo}>
-                <h3 className={styles.gameTitle}>{game.name}</h3>
-                <div className={styles.gameMeta}>
-                  <span className={styles.gameYear}>
-                    {game.released ? new Date(game.released).getFullYear() : 'N/A'}
-                  </span>
-                  <span className={styles.gameRating}>
-                    {Math.round(game.rating)} / 100
-                  </span>
-                </div>
-              </div>
-            </Link>
-          </div>
-        ))}
+              <div className={styles.timelineDot}></div>
+              <div className={styles.timelineEmpty}></div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

@@ -6,11 +6,10 @@
   background-color: rgba(10, 10, 15, 0.6);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
-  border-bottom: 1px solid rgba(0, 240, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   position: sticky;
   top: 0;
   z-index: 50;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
 }
 
 .logo {
@@ -19,9 +18,7 @@
   gap: 10px;
   font-size: 1.5rem;
   font-weight: 900;
-  background: linear-gradient(to right, #fff, var(--accent-cyan));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #fff;
   letter-spacing: -1px;
   text-transform: uppercase;
 }
@@ -45,8 +42,7 @@
 }
 
 .nav a:hover {
-  color: var(--accent-cyan);
-  text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+  color: #fff;
 }
 
 @media (max-width: 768px) {
@@ -101,7 +97,7 @@
   .nav a:hover svg, .nav a:active svg {
     opacity: 1;
     transform: translateY(-2px);
-    color: #b026ff;
+    color: #fff;
   }
   
   .desktopLang {

@@ -33,9 +33,7 @@
   font-size: 3rem;
   font-weight: 900;
   margin-bottom: 1rem;
-  background: linear-gradient(to right, #fff, #00f0ff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #fff;
   letter-spacing: -2px;
   text-transform: uppercase;
 }
@@ -63,10 +61,8 @@
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 4px;
-  background: linear-gradient(to bottom, #00f0ff, #b026ff);
-  box-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
-  border-radius: 4px;
+  width: 2px;
+  background: #333;
 }
 
 .roadmapNode {
@@ -92,42 +88,38 @@
 }
 
 .roadmapDot {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   background: #111;
-  border: 4px solid #00f0ff;
+  border: 4px solid #fff;
   border-radius: 50%;
-  box-shadow: 0 0 20px rgba(0, 240, 255, 0.6);
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .roadmapNode:hover .roadmapDot {
-  background: #b026ff;
-  border-color: #b026ff;
-  box-shadow: 0 0 30px rgba(176, 38, 255, 0.8);
+  background: #fff;
 }
 
 .roadmapCard {
   width: 45%;
   display: flex;
   gap: 1.5rem;
-  background: rgba(10, 10, 15, 0.6);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(0, 240, 255, 0.1);
-  border-radius: 16px;
+  background: #111;
+  border: 1px solid #333;
+  border-radius: 8px;
   padding: 2rem;
   align-items: flex-start;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   position: relative;
   overflow: hidden;
 }
 
 .leftNode .roadmapCard {
-  border-right: 4px solid #00f0ff;
+  border-right: 4px solid #555;
 }
 
 .rightNode .roadmapCard {
-  border-left: 4px solid #00f0ff;
+  border-left: 4px solid #555;
 }
 
 .roadmapCard::before {
@@ -137,22 +129,23 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(45deg, transparent, rgba(0, 240, 255, 0.03), transparent);
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.05), transparent);
   transform: translateX(-100%);
   transition: transform 0.5s ease;
 }
 
 .roadmapNode:hover .roadmapCard {
   transform: translateY(-5px);
-  box-shadow: 0 10px 40px rgba(176, 38, 255, 0.15);
+  border-color: #666;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
 }
 
 .leftNode:hover .roadmapCard {
-  border-right-color: #b026ff;
+  border-right-color: #fff;
 }
 
 .rightNode:hover .roadmapCard {
-  border-left-color: #b026ff;
+  border-left-color: #fff;
 }
 
 .roadmapCard:hover::before {
@@ -160,30 +153,28 @@
 }
 
 .roadmapIconWrapper {
-  background: rgba(0, 240, 255, 0.1);
+  background: #222;
   padding: 1rem;
-  border-radius: 12px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(0, 240, 255, 0.3);
-  box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
-  transition: all 0.3s ease;
+  border: 1px solid #333;
+  transition: all 0.2s ease;
 }
 
 .roadmapCard:hover .roadmapIconWrapper {
-  background: rgba(176, 38, 255, 0.1);
-  border-color: rgba(176, 38, 255, 0.3);
-  box-shadow: 0 0 15px rgba(176, 38, 255, 0.2);
+  background: #333;
+  border-color: #555;
 }
 
 .roadmapIcon {
-  color: #00f0ff;
-  transition: color 0.3s ease;
+  color: #fff;
+  transition: color 0.2s ease;
 }
 
 .roadmapCard:hover .roadmapIcon {
-  color: #b026ff;
+  color: #fff;
 }
 
 .roadmapContent {
@@ -209,30 +200,30 @@
   font-size: 0.75rem;
   font-weight: 800;
   padding: 4px 12px;
-  border-radius: 20px;
+  border-radius: 4px;
   text-transform: uppercase;
   letter-spacing: 1.5px;
-  background: rgba(255, 255, 255, 0.1);
+  background: #222;
   color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid #444;
 }
 
 .roadmapBadge[data-status="Em Breve"] {
-  background: rgba(0, 240, 255, 0.15);
-  color: #00f0ff;
-  border-color: rgba(0, 240, 255, 0.3);
+  background: #333;
+  color: #fff;
+  border-color: #555;
 }
 
 .roadmapBadge[data-status="Planejado"] {
-  background: rgba(176, 38, 255, 0.15);
-  color: #b026ff;
-  border-color: rgba(176, 38, 255, 0.3);
+  background: #1a1a1a;
+  color: #ccc;
+  border-color: #333;
 }
 
 .roadmapBadge[data-status="Ideação"], .roadmapBadge[data-status="Pesquisa"] {
-  background: rgba(255, 0, 85, 0.15);
-  color: #ff0055;
-  border-color: rgba(255, 0, 85, 0.3);
+  background: #111;
+  color: #999;
+  border-color: #222;
 }
 
 .roadmapDesc {
@@ -261,10 +252,10 @@
   }
   .leftNode .roadmapCard {
     border-right: none;
-    border-left: 4px solid #00f0ff;
+    border-left: 4px solid #555;
   }
   .leftNode:hover .roadmapCard {
-    border-left-color: #b026ff;
+    border-left-color: #fff;
   }
 }
 
