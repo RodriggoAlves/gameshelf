@@ -191,6 +191,14 @@ export async function fetchGamesByIds(ids: number[]): Promise<Game[]> {
 }
 
 export async function fetchUpcomingGames(): Promise<Game[]> {
+  const { db } = await import("./db");
+  try {
+    const cached = await db.get('SELECT * FROM "SearchCache" WHERE query = $1 AND type = $2 AND "expiresAt" > CURRENT_TIMESTAMP', ['upcoming_games', 'system']);
+    if (cached && cached.resultData) {
+      return typeof cached.resultData === 'string' ? JSON.parse(cached.resultData) : cached.resultData;
+    }
+  } catch (err) {}
+
   const now = Math.floor(Date.now() / 1000);
   const query = `
     fields name, first_release_date, cover.image_id, total_rating, platforms.name, genres.name;
@@ -199,7 +207,7 @@ export async function fetchUpcomingGames(): Promise<Game[]> {
     limit 24;
   `;
   const results = await igdbRequest("games", query);
-  return results.map((g: any) => ({
+  const mapped = results.map((g: any) => ({
     id: g.id,
     name: g.name,
     released: g.first_release_date ? new Date(g.first_release_date * 1000).toISOString() : "2024-01-01",
@@ -209,9 +217,27 @@ export async function fetchUpcomingGames(): Promise<Game[]> {
     platforms: g.platforms ? g.platforms.map((p: any) => ({ platform: { id: p.id, name: p.name } })) : [],
     genres: g.genres ? g.genres.map((gen: any) => ({ id: gen.id, name: gen.name })) : [],
   }));
+
+  try {
+    await db.run(`
+      INSERT INTO "SearchCache" (query, type, "resultData", "expiresAt")
+      VALUES ($1, $2, $3, CURRENT_TIMESTAMP + INTERVAL '12 hours')
+      ON CONFLICT (query) DO UPDATE SET "resultData" = $3, "expiresAt" = CURRENT_TIMESTAMP + INTERVAL '12 hours'
+    `, ['upcoming_games', 'system', JSON.stringify(mapped)]);
+  } catch (err) {}
+
+  return mapped;
 }
 
 export async function fetchRecentReleases(): Promise<Game[]> {
+  const { db } = await import("./db");
+  try {
+    const cached = await db.get('SELECT * FROM "SearchCache" WHERE query = $1 AND type = $2 AND "expiresAt" > CURRENT_TIMESTAMP', ['recent_games', 'system']);
+    if (cached && cached.resultData) {
+      return typeof cached.resultData === 'string' ? JSON.parse(cached.resultData) : cached.resultData;
+    }
+  } catch (err) {}
+
   const now = Math.floor(Date.now() / 1000);
   const twoMonthsAgo = now - (60 * 24 * 60 * 60);
   const query = `
@@ -221,7 +247,7 @@ export async function fetchRecentReleases(): Promise<Game[]> {
     limit 24;
   `;
   const results = await igdbRequest("games", query);
-  return results.map((g: any) => ({
+  const mapped = results.map((g: any) => ({
     id: g.id,
     name: g.name,
     released: g.first_release_date ? new Date(g.first_release_date * 1000).toISOString() : "2024-01-01",
@@ -231,6 +257,16 @@ export async function fetchRecentReleases(): Promise<Game[]> {
     platforms: g.platforms ? g.platforms.map((p: any) => ({ platform: { id: p.id, name: p.name } })) : [],
     genres: g.genres ? g.genres.map((gen: any) => ({ id: gen.id, name: gen.name })) : [],
   }));
+
+  try {
+    await db.run(`
+      INSERT INTO "SearchCache" (query, type, "resultData", "expiresAt")
+      VALUES ($1, $2, $3, CURRENT_TIMESTAMP + INTERVAL '12 hours')
+      ON CONFLICT (query) DO UPDATE SET "resultData" = $3, "expiresAt" = CURRENT_TIMESTAMP + INTERVAL '12 hours'
+    `, ['recent_games', 'system', JSON.stringify(mapped)]);
+  } catch (err) {}
+
+  return mapped;
 }
 
 export interface CalendarRelease {
