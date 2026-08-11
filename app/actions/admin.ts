@@ -50,7 +50,15 @@ async function logAdminAction(adminId: string, action: string, entityType: strin
 }
 
 export async function getFeaturedContent(section: string) {
-  return await db.all('SELECT * FROM "FeaturedContent" WHERE section = $1 ORDER BY "orderIndex" ASC, "createdAt" DESC', [section]);
+  const rows = await db.all('SELECT * FROM "FeaturedContent" WHERE section = $1 ORDER BY "orderIndex" ASC, "createdAt" DESC', [section]);
+  // Remover ou converter Date objects para string para evitar erro do Next.js ao passar para Client Components
+  return rows.map((row: any) => ({
+    ...row,
+    startDate: row.startDate ? new Date(row.startDate).toISOString() : null,
+    endDate: row.endDate ? new Date(row.endDate).toISOString() : null,
+    createdAt: row.createdAt ? new Date(row.createdAt).toISOString() : null,
+    updatedAt: row.updatedAt ? new Date(row.updatedAt).toISOString() : null,
+  }));
 }
 
 export async function upsertFeaturedContent(data: {
