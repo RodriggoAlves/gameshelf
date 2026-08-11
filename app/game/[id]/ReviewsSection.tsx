@@ -67,14 +67,31 @@ function CommentThread({ reviewId, initialCount, currentUser }: { reviewId: numb
           )}
           {currentUser && (
             <form className={styles.commentForm} onSubmit={handleSend}>
-              <input 
-                type="text" 
-                placeholder="Escreva um comentário..." 
-                className={styles.commentInput} 
-                value={newComment} 
-                onChange={e => setNewComment(e.target.value)} 
+              <Image 
+                src={currentUser.avatarUrl || "https://api.dicebear.com/7.x/avataaars/svg?seed="+currentUser.id} 
+                alt={currentUser.username} 
+                width={40} height={40} 
+                className={styles.commentAvatar} 
               />
-              <button type="submit" className={styles.commentSubmit}>Enviar</button>
+              <div className={styles.commentInputWrapper}>
+                <textarea 
+                  placeholder="Adicione um comentário..." 
+                  className={styles.commentInputYoutube} 
+                  value={newComment} 
+                  onChange={e => {
+                    setNewComment(e.target.value);
+                    e.target.style.height = 'auto';
+                    e.target.style.height = (e.target.scrollHeight) + 'px';
+                  }} 
+                  rows={1}
+                />
+                {(newComment.length > 0) && (
+                  <div className={styles.commentActions}>
+                    <button type="button" className={styles.commentCancel} onClick={() => setNewComment("")}>Cancelar</button>
+                    <button type="submit" className={styles.commentSubmitYoutube} disabled={!newComment.trim()}>Comentar</button>
+                  </div>
+                )}
+              </div>
             </form>
           )}
         </div>

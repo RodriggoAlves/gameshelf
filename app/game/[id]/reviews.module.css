@@ -599,3 +599,64 @@
 .dropdownItem:hover { background: #333; color: #fff; }
 .dropdownItem.danger { color: #ef4444; }
 .dropdownItem.danger:hover { background: rgba(239, 68, 68, 0.1); }
+/* YouTube Style Comment Input */
+.commentForm { 
+  display: flex; 
+  gap: 1rem; 
+  margin-top: 1.5rem; 
+  align-items: flex-start;
+}
+.commentInputWrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.commentInputYoutube {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  color: #fff;
+  font-family: inherit;
+  font-size: 0.95rem;
+  padding: 0.5rem 0;
+  resize: none;
+  outline: none;
+  transition: border-color 0.2s;
+  overflow: hidden;
+}
+.commentInputYoutube:focus {
+  border-bottom: 2px solid #fff;
+}
+.commentActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+.commentCancel {
+  background: transparent;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 500;
+}
+.commentCancel:hover {
+  background: rgba(255,255,255,0.1);
+}
+.commentSubmitYoutube {
+  background: #3ea6ff;
+  color: #000;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.commentSubmitYoutube:disabled {
+  background: #333;
+  color: #888;
+  cursor: not-allowed;
+}
