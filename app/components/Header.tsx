@@ -4,9 +4,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { useI18n } from "../contexts/I18nContext";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import * as LucideIcons from "lucide-react";
 import styles from "./Header.module.css";
 
-export function Header() {
+export function Header({ isAdmin }: { isAdmin?: boolean }) {
   const { t } = useI18n();
 
   return (
@@ -16,6 +17,12 @@ export function Header() {
         Zerey
       </Link>
       <nav className={styles.nav}>
+        {isAdmin && (
+          <Link href="/admin" style={{ color: '#00f0ff', fontWeight: 600 }}>
+            <LucideIcons.Shield size={18} style={{ marginRight: '6px' }} />
+            <span>Admin</span>
+          </Link>
+        )}
         <Link href="/">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
           <span>{t.nav.home}</span>
