@@ -141,6 +141,30 @@ const initDb = async () => {
         FOREIGN KEY ("adminId") REFERENCES "User"("id") ON DELETE SET NULL
       );
 
+      CREATE TABLE IF NOT EXISTS "CachedGame" (
+        "id" INTEGER PRIMARY KEY,
+        "name" TEXT,
+        "coverUrl" TEXT,
+        "data" JSONB,
+        "lastSyncedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE TABLE IF NOT EXISTS "CachedFranchise" (
+        "id" INTEGER PRIMARY KEY,
+        "name" TEXT,
+        "gamesCount" INTEGER,
+        "coverUrl" TEXT,
+        "lastSyncedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE TABLE IF NOT EXISTS "SearchCache" (
+        "query" TEXT PRIMARY KEY,
+        "type" TEXT,
+        "resultData" JSONB,
+        "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        "expiresAt" TIMESTAMP
+      );
+
       -- ═══════════════════════════════════════════════════════
       -- FASE 1: Índices B-Tree (Performance)
       -- ═══════════════════════════════════════════════════════

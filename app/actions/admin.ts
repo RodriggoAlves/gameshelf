@@ -90,7 +90,6 @@ export async function upsertFeaturedContent(data: {
       WHERE id = $8
     `, [data.entityId, data.entityName, data.entityImage, data.orderIndex, data.isActive, data.startDate || null, data.endDate || null, data.id]);
   } else {
-    // Para INSERT RETURNING funcionar no SQLite/PG
     const result = await db.pool.query(`
       INSERT INTO "FeaturedContent" (section, "entityId", "entityName", "entityImage", "orderIndex", "isActive", "startDate", "endDate")
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id
@@ -98,6 +97,41 @@ export async function upsertFeaturedContent(data: {
     
     resultId = result.rows[0].id;
   }
+
+  // --- CACHE LOCAL DO CATÁLOGO ---
+  // Quando o admin salva, buscamos na IGDB a versão completa e salvamos no banco
+  try {
+    const entityIdInt = parseInt(data.entityId, 10);
+    if (!isNaN(entityIdInt)) {
+      if (data.section === 'FRANCHISES') {
+        const { igdbRequest } = await import('../../lib/api');
+        const igdbQuery = `fields name, games; where id = ${entityIdInt};`;
+        const res = await igdbRequest("franchises", igdbQuery);
+        if (res && res.length > 0) {
+          const f = res[0];
+          await db.run(`
+            INSERT INTO "CachedFranchise" (id, name, "gamesCount", "coverUrl")
+            VALUES ($1, $2, $3, $4)
+            ON CONFLICT (id) DO UPDATE SET name = $2, "gamesCount" = $3, "lastSyncedAt" = CURRENT_TIMESTAMP
+          `, [f.id, f.name, f.games ? f.games.length : 0, data.entityImage]);
+        }
+      } else {
+        const { fetchGamesByIds } = await import('../../lib/api');
+        const games = await fetchGamesByIds([entityIdInt]);
+        if (games && games.length > 0) {
+          const g = games[0];
+          await db.run(`
+            INSERT INTO "CachedGame" (id, name, "coverUrl", data)
+            VALUES ($1, $2, $3, $4)
+            ON CONFLICT (id) DO UPDATE SET name = $2, "coverUrl" = $3, data = $4, "lastSyncedAt" = CURRENT_TIMESTAMP
+          `, [g.id, g.name, g.background_image || data.entityImage, JSON.stringify(g)]);
+        }
+      }
+    }
+  } catch (err) {
+    console.error("Erro ao fazer cache da entidade do IGDB:", err);
+  }
+  // -------------------------------
 
   const newValue = JSON.stringify({ ...data, id: resultId });
   
@@ -185,4 +219,21 @@ export async function searchIGDBForAdmin(query: string, type: 'game' | 'franchis
       info: ""
     }));
   }
+}
+
+export async function getCachedGames(ids: number[]) {
+  if (!ids || ids.length === 0) return [];
+  const rows = await db.all(`SELECT * FROM "CachedGame" WHERE id = ANY($1::int[])`, [ids]);
+  return rows.map((r: any) => {
+    try {
+      return typeof r.data === 'string' ? JSON.parse(r.data) : r.data;
+    } catch {
+      return null;
+    }
+  }).filter(Boolean);
+}
+
+export async function getCachedFranchises(ids: number[]) {
+  if (!ids || ids.length === 0) return [];
+  return db.all(`SELECT * FROM "CachedFranchise" WHERE id = ANY($1::int[])`, [ids]);
 }

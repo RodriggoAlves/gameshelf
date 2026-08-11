@@ -127,6 +127,18 @@ export async function searchGames(queryStr: string): Promise<Game[]> {
     .replace(/[\\";{}()\n\r]/g, '') // Remove todos os caracteres especiais (VULN-14)
     .substring(0, 100); // Limita o tamanho
 
+  if (!safeQuery.trim()) return [];
+
+  const { db } = await import("./db");
+  try {
+    const cached = await db.get('SELECT * FROM "SearchCache" WHERE query = $1 AND type = $2 AND "expiresAt" > CURRENT_TIMESTAMP', [safeQuery.toLowerCase(), 'game']);
+    if (cached && cached.resultData) {
+      return typeof cached.resultData === 'string' ? JSON.parse(cached.resultData) : cached.resultData;
+    }
+  } catch (err) {
+    console.error("Cache read error:", err);
+  }
+
   const query = `
     search "${safeQuery}";
     fields name, first_release_date, cover.image_id, artworks.image_id, total_rating, platforms.name, genres.name;
@@ -134,7 +146,7 @@ export async function searchGames(queryStr: string): Promise<Game[]> {
     limit 20;
   `;
   const results = await igdbRequest("games", query);
-  return results.map((g: any) => ({
+  const mapped = results.map((g: any) => ({
     id: g.id,
     name: g.name,
     released: g.first_release_date ? new Date(g.first_release_date * 1000).toISOString() : "2024-01-01",
@@ -144,6 +156,18 @@ export async function searchGames(queryStr: string): Promise<Game[]> {
     platforms: g.platforms ? g.platforms.map((p: any) => ({ platform: { id: p.id, name: p.name } })) : [],
     genres: g.genres ? g.genres.map((gen: any) => ({ id: gen.id, name: gen.name })) : [],
   }));
+
+  try {
+    await db.run(`
+      INSERT INTO "SearchCache" (query, type, "resultData", "expiresAt")
+      VALUES ($1, $2, $3, CURRENT_TIMESTAMP + INTERVAL '1 day')
+      ON CONFLICT (query) DO UPDATE SET "resultData" = $3, "expiresAt" = CURRENT_TIMESTAMP + INTERVAL '1 day'
+    `, [safeQuery.toLowerCase(), 'game', JSON.stringify(mapped)]);
+  } catch (err) {
+    console.error("Cache write error:", err);
+  }
+
+  return mapped;
 }
 
 export async function fetchGamesByIds(ids: number[]): Promise<Game[]> {
@@ -370,6 +394,18 @@ export async function searchFranchises(queryStr: string): Promise<{ id: number; 
     .replace(/[\\";{}()\n\r]/g, '')
     .substring(0, 100);
 
+  if (!safeQuery.trim()) return [];
+
+  const { db } = await import("./db");
+  try {
+    const cached = await db.get('SELECT * FROM "SearchCache" WHERE query = $1 AND type = $2 AND "expiresAt" > CURRENT_TIMESTAMP', [safeQuery.toLowerCase(), 'franchise']);
+    if (cached && cached.resultData) {
+      return typeof cached.resultData === 'string' ? JSON.parse(cached.resultData) : cached.resultData;
+    }
+  } catch (err) {
+    console.error("Cache read error:", err);
+  }
+
   const query = `
     fields name, games;
     where name ~ *"${safeQuery}"*ig;
@@ -377,9 +413,21 @@ export async function searchFranchises(queryStr: string): Promise<{ id: number; 
   `;
   const results = await igdbRequest("franchises", query);
   
-  return results.map((f: any) => ({
+  const mapped = results.map((f: any) => ({
     id: f.id,
     name: f.name,
     games_count: f.games ? f.games.length : 0
   }));
+
+  try {
+    await db.run(`
+      INSERT INTO "SearchCache" (query, type, "resultData", "expiresAt")
+      VALUES ($1, $2, $3, CURRENT_TIMESTAMP + INTERVAL '1 day')
+      ON CONFLICT (query) DO UPDATE SET "resultData" = $3, "expiresAt" = CURRENT_TIMESTAMP + INTERVAL '1 day'
+    `, [safeQuery.toLowerCase(), 'franchise', JSON.stringify(mapped)]);
+  } catch (err) {
+    console.error("Cache write error:", err);
+  }
+
+  return mapped;
 }

@@ -1,7 +1,7 @@
-import { fetchPopularGames, fetchGamesByIds, Game } from "../lib/api";
+import { fetchPopularGames, Game } from "../lib/api";
 import HomeView from "./components/HomeView";
 import { getLibraryGames } from "./actions/library";
-import { getFeaturedContent } from "./actions/admin";
+import { getFeaturedContent, getCachedGames } from "./actions/admin";
 
 export default async function Home() {
   const libraryGames = await getLibraryGames();
@@ -13,7 +13,7 @@ export default async function Home() {
   let popularGames = [];
   if (activeCms.length > 0) {
     const ids = activeCms.map((c: any) => parseInt(c.entityId));
-    const fetched = await fetchGamesByIds(ids);
+    const fetched = await getCachedGames(ids);
     // Preservar a ordem configurada no painel
     popularGames = ids.map((id: number) => fetched.find(f => f.id === id)).filter(Boolean) as Game[];
   } else {
