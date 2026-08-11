@@ -3,7 +3,44 @@
 import db from "../../lib/db";
 import { requireAdmin } from "./auth";
 import { revalidatePath } from "next/cache";
-import { igdbRequest } from "../../lib/api";
+import { igdbRequest, fetchPopularGames } from "../../lib/api";
+
+export async function seedDefaultContent(section: string) {
+  const admin = await requireAdmin();
+  if (!admin) throw new Error("Unauthorized");
+
+  if (section === 'HOME_RECOMMENDED') {
+    const popular = await fetchPopularGames();
+    
+    // Inicia transação
+    const client = await db.pool.connect();
+    try {
+      await client.query('BEGIN');
+      await client.query('DELETE FROM "FeaturedContent" WHERE section = $1', ['HOME_RECOMMENDED']);
+      
+      let index = 1;
+      for (const game of popular) {
+        const image = game.cover?.image_id ? `https://images.igdb.com/igdb/image/upload/t_cover_big/${game.cover.image_id}.jpg` : '';
+        await client.query(
+          'INSERT INTO "FeaturedContent" (section, "entityId", "entityName", "entityImage", "orderIndex", "isActive") VALUES ($1, $2, $3, $4, $5, 1)',
+          ['HOME_RECOMMENDED', game.id.toString(), game.name, image, index++]
+        );
+      }
+      await client.query('COMMIT');
+    } catch (err) {
+      await client.query('ROLLBACK');
+      throw err;
+    } finally {
+      client.release();
+    }
+    
+    await logAdminAction(admin.id, 'SEED_DEFAULT', section, 'BATCH', 'null', 'Seeded with default IGDB data');
+    revalidatePath('/');
+    return { success: true };
+  }
+
+  throw new Error("Section not supported for seeding yet");
+}
 
 async function logAdminAction(adminId: string, action: string, entityType: string, entityId: string, oldValue: string, newValue: string) {
   await db.run(

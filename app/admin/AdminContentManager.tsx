@@ -3,7 +3,7 @@
 import { useState } from "react";
 import styles from "./admin.module.css";
 import * as LucideIcons from "lucide-react";
-import { searchIGDBForAdmin, upsertFeaturedContent, deleteFeaturedContent } from "../actions/admin";
+import { searchIGDBForAdmin, upsertFeaturedContent, deleteFeaturedContent, seedDefaultContent } from "../actions/admin";
 
 type ContentItem = {
   id: number;
@@ -108,13 +108,31 @@ export function AdminContentManager({ section, initialData, isFranchise = false 
     }
   };
 
+  const handleSeedDefaults = async (section: string) => {
+    if (!confirm("Isso apagará o conteúdo desta seção e preencherá com o conteúdo padrão do IGDB. Tem certeza?")) return;
+    try {
+      await seedDefaultContent(section);
+      alert("Conteúdo preenchido com sucesso! Recarregue a página para ver as mudanças.");
+      window.location.reload();
+    } catch (err: any) {
+      alert("Erro ao preencher com padrão: " + err.message);
+    }
+  };
+
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
         <h2 style={{ fontSize: '1.2rem', fontWeight: 600 }}>Gerenciar {section}</h2>
-        <button onClick={() => setIsModalOpen(true)} className={`${styles.btn} ${styles.btnPrimary}`}>
-          <LucideIcons.Plus size={16} /> Adicionar Novo
-        </button>
+        <div style={{ display: 'flex', gap: '10px' }}>
+          {section === 'HOME_RECOMMENDED' && (
+            <button className={`${styles.btn} ${styles.btnSecondary}`} onClick={() => handleSeedDefaults(section)}>
+              <LucideIcons.Download size={16} /> Preencher Padrão
+            </button>
+          )}
+          <button onClick={() => setIsModalOpen(true)} className={`${styles.btn} ${styles.btnPrimary}`}>
+            <LucideIcons.Plus size={16} /> Adicionar Novo
+          </button>
+        </div>
       </div>
 
       <div className={styles.contentList}>
