@@ -67,7 +67,7 @@ function CommentThread({ reviewId, initialCount, currentUser }: { reviewId: numb
           )}
           {currentUser && (
             <form className={styles.commentForm} onSubmit={handleSend}>
-              <Image 
+              <img 
                 src={currentUser.avatarUrl || "https://api.dicebear.com/7.x/avataaars/svg?seed="+currentUser.id} 
                 alt={currentUser.username} 
                 width={40} height={40} 
