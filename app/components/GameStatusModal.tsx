@@ -106,6 +106,7 @@ export default function GameStatusModal({
         status, rating, progress, playtime, isFavorite, platform, startDate, endDate, 
         ownership, storefront, containsSpoilers, review 
       });
+      router.refresh();
     });
   };
 
@@ -119,6 +120,7 @@ export default function GameStatusModal({
 
     startTransition(async () => {
       await removeGameFromLibrary(gameId);
+      router.refresh();
     });
   };
 
