@@ -53,7 +53,7 @@ function CommentThread({ reviewId, initialCount, currentUser }: { reviewId: numb
             comments.length === 0 ? <p style={{ color: '#888', fontSize: '0.9rem' }}>Nenhum comentário ainda.</p> : (
               comments.map(c => (
                 <div key={c.id} className={styles.commentCard}>
-                  <Image src={c.avatarUrl || "https://api.dicebear.com/7.x/avataaars/svg?seed="+c.userId} alt={c.username} width={32} height={32} className={styles.commentAvatar} />
+                  <img src={c.avatarUrl || "https://api.dicebear.com/7.x/avataaars/svg?seed="+c.userId} alt={c.username} width={32} height={32} className={styles.commentAvatar} />
                   <div className={styles.commentBody}>
                     <div className={styles.commentHeader}>
                       <span className={styles.commentUser}>{c.username} {c.role === 'ADMIN' && <span className={styles.roleBadge}>STAFF</span>}</span>
@@ -332,7 +332,7 @@ export default function ReviewsSection({
             <div key={review.id} className={styles.reviewCard}>
               <div className={styles.reviewHeader}>
                 <div className={styles.userMeta}>
-                  <Image 
+                  <img 
                     src={review.avatarUrl || "https://api.dicebear.com/7.x/avataaars/svg?seed="+review.userId} 
                     alt={review.username} 
                     width={40} 
