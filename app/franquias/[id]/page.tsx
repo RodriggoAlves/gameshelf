@@ -23,7 +23,7 @@ export default async function FranchiseDetailPage({ params }: { params: Promise<
       fields name, games;
       where id = ${id};
     `;
-    const results = await igdbRequest("collections", query);
+    const results = await igdbRequest("franchises", query);
 
     if (results && results.length > 0) {
       const franchise = results[0];
