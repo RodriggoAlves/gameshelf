@@ -419,3 +419,22 @@
     grid-template-columns: repeat(3, 1fr);
   }
 }
+/* Scroll Animations */
+.scrollAnim {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.7s cubic-bezier(0.25, 1, 0.5, 1), transform 0.7s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: opacity, transform;
+}
+.animateIn {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+/* Add a slight delay staggering effect for bento grid items if needed */
+.bentoStats.scrollAnim { transition-delay: 0.05s; }
+.bentoFavorites.scrollAnim { transition-delay: 0.1s; }
+.bentoHeatmap.scrollAnim { transition-delay: 0.15s; }
+.bentoRecent.scrollAnim { transition-delay: 0.2s; }
+.bentoRadar.scrollAnim { transition-delay: 0.25s; }
+.bentoBadges.scrollAnim { transition-delay: 0.3s; }

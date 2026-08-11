@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { updateUserProfile, logout } from "../actions/auth";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -31,6 +31,26 @@ export default function ProfileClient({ initialUser, stats, favorites = [], rece
   const [tempUrl, setTempUrl] = useState("");
   const router = useRouter();
   const { t } = useI18n();
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add(styles.animateIn);
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.05, rootMargin: "0px 0px -50px 0px" }
+    );
+    
+    document.querySelectorAll(`.${styles.scrollAnim}`).forEach((el) => {
+      observer.observe(el);
+    });
+    
+    return () => observer.disconnect();
+  }, []);
 
   async function handleSave() {
     if (!editing) return;
@@ -96,7 +116,7 @@ export default function ProfileClient({ initialUser, stats, favorites = [], rece
       <div className={styles.bentoGrid}>
         
         {/* STATS BENTO */}
-        <div className={styles.bentoStats}>
+        <div className={`${styles.bentoStats} ${styles.scrollAnim}`}>
           <Link href="/library" className={styles.statCard} style={{ textDecoration: 'none' }}>
             <div className={styles.statValue}>{stats.gamesCount}</div>
             <div className={styles.statLabel}>{t.profile.gamesInLibrary || "Jogos"}</div>
@@ -113,7 +133,7 @@ export default function ProfileClient({ initialUser, stats, favorites = [], rece
 
         {/* FAVORITES BENTO */}
         {favorites.length > 0 && (
-          <div className={styles.bentoFavorites}>
+          <div className={`${styles.bentoFavorites} ${styles.scrollAnim}`}>
             <h2 className={styles.sectionTitle}>⭐ {t.profile.myFavorites || "Meus Favoritos"}</h2>
             <div className={styles.favoritesGrid}>
               {[0, 1, 2, 3].map(index => {
@@ -131,12 +151,12 @@ export default function ProfileClient({ initialUser, stats, favorites = [], rece
         )}
 
         {/* HEATMAP BENTO */}
-        <div className={styles.bentoHeatmap}>
+        <div className={`${styles.bentoHeatmap} ${styles.scrollAnim}`}>
           <ActivityHeatmap data={heatmapData} />
         </div>
 
         {/* RECENT ACTIVITY BENTO */}
-        <div className={styles.bentoRecent}>
+        <div className={`${styles.bentoRecent} ${styles.scrollAnim}`}>
           <h2 className={styles.sectionTitle}>⏱️ {t.profile.recentActivity || "Atividade Recente"}</h2>
           <div className={styles.recentList}>
             {recent.length > 0 ? recent.map((item: any, i: number) => (
@@ -155,12 +175,12 @@ export default function ProfileClient({ initialUser, stats, favorites = [], rece
         </div>
         
         {/* RADAR BENTO */}
-        <div className={styles.bentoRadar}>
+        <div className={`${styles.bentoRadar} ${styles.scrollAnim}`}>
           <GenreRadar data={radarData} />
         </div>
 
         {/* BADGES BENTO */}
-        <div className={styles.bentoBadges}>
+        <div className={`${styles.bentoBadges} ${styles.scrollAnim}`}>
           <BadgesGrid badges={badges} />
         </div>
 
