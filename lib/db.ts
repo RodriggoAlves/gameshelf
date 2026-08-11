@@ -183,6 +183,10 @@ const initDb = async () => {
         IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='User' AND column_name='updatedAt') THEN
           ALTER TABLE "User" ADD COLUMN "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
         END IF;
+        -- role em User
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='User' AND column_name='role') THEN
+          ALTER TABLE "User" ADD COLUMN "role" TEXT DEFAULT 'USER';
+        END IF;
       END $$;
 
       -- ═══════════════════════════════════════════════════════
