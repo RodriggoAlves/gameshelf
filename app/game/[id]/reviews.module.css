@@ -380,3 +380,222 @@
 .writeReviewBtn:hover {
   opacity: 0.9;
 }
+/* V2 Additions */
+.flexRow {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.flexCol {
+  flex: 1;
+  min-width: 150px;
+}
+.selectInput, .textInput {
+  width: 100%;
+  padding: 0.75rem;
+  background: #222;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: #fff;
+  font-family: inherit;
+}
+
+/* Category Sliders */
+.categoryList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.categoryRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.categoryName {
+  width: 100px;
+  font-size: 0.9rem;
+  color: #ccc;
+}
+
+/* Tags */
+.tagsGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.tagChip {
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: #888;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all 0.2s;
+}
+.tagChip.positive.selected {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+  border-color: #10b981;
+}
+.tagChip.negative.selected {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  border-color: #ef4444;
+}
+
+/* Stats Header V2 */
+.statsAverages {
+  background: #111;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  min-width: 200px;
+  flex: 1;
+}
+.statsAverages h3 { margin-top: 0; margin-bottom: 1rem; font-size: 1rem; color: #ccc; }
+.avgRow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+.statsTags {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex: 1;
+  min-width: 250px;
+}
+.topTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.topTag.pos { background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2); }
+.topTag.neg { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); }
+
+/* Review Card V2 Extensions */
+.reviewCategories {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.5rem;
+  margin-top: 1rem;
+  background: #111;
+  padding: 1rem;
+  border-radius: 8px;
+}
+.rCat {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: #aaa;
+}
+.rCat span:last-child { color: #fbbf24; font-weight: bold; }
+.reviewSelectedTags {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.reviewSelectedTags span {
+  font-size: 0.75rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
+/* Comments Section */
+.commentsToggle {
+  background: none;
+  border: none;
+  color: #10b981;
+  cursor: pointer;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.commentsToggle:hover { text-decoration: underline; }
+.commentsArea {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px dashed var(--border);
+}
+.commentCard {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  background: #111;
+  padding: 1rem;
+  border-radius: 8px;
+}
+.commentAvatar { border-radius: 50%; }
+.commentBody { flex: 1; }
+.commentHeader { display: flex; justify-content: space-between; margin-bottom: 0.5rem; }
+.commentUser { font-weight: bold; font-size: 0.9rem; }
+.commentDate { font-size: 0.8rem; color: #888; }
+.commentText { font-size: 0.9rem; color: #ccc; white-space: pre-wrap; }
+.commentForm { display: flex; gap: 0.5rem; margin-top: 1rem; }
+.commentInput {
+  flex: 1;
+  background: #222;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 0.5rem 1rem;
+  color: #fff;
+  font-family: inherit;
+}
+.commentSubmit {
+  background: var(--primary);
+  color: #000;
+  border: none;
+  border-radius: 20px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* Dropdown / Report Menu */
+.menuWrapper {
+  position: relative;
+}
+.menuBtn {
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+.menuBtn:hover { color: #fff; }
+.dropdown {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background: #1a1a1a;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.5rem;
+  z-index: 10;
+  min-width: 150px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+.dropdownItem {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  color: #ccc;
+  padding: 0.5rem;
+  cursor: pointer;
+  border-radius: 4px;
+}
+.dropdownItem:hover { background: #333; color: #fff; }
+.dropdownItem.danger { color: #ef4444; }
+.dropdownItem.danger:hover { background: rgba(239, 68, 68, 0.1); }

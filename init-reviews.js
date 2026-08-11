@@ -58,6 +58,22 @@ async function run() {
         FOREIGN KEY ("parentId") REFERENCES "ReviewComment"("id") ON DELETE CASCADE
       );
 
+      CREATE TABLE IF NOT EXISTS "ReviewScore" (
+        "id" SERIAL PRIMARY KEY,
+        "reviewId" INTEGER NOT NULL,
+        "category" TEXT NOT NULL,
+        "score" INTEGER CHECK ("score" >= 0 AND "score" <= 10),
+        FOREIGN KEY ("reviewId") REFERENCES "GameReview"("id") ON DELETE CASCADE
+      );
+
+      CREATE TABLE IF NOT EXISTS "ReviewTag" (
+        "id" SERIAL PRIMARY KEY,
+        "reviewId" INTEGER NOT NULL,
+        "name" TEXT NOT NULL,
+        "type" TEXT NOT NULL,
+        FOREIGN KEY ("reviewId") REFERENCES "GameReview"("id") ON DELETE CASCADE
+      );
+
       CREATE TABLE IF NOT EXISTS "GameReviewStats" (
         "gameId" INTEGER PRIMARY KEY,
         "averageScore" DECIMAL(4,2) DEFAULT 0,
@@ -65,6 +81,8 @@ async function run() {
         "recommendationCount" INTEGER DEFAULT 0,
         "recommendationPercentage" DECIMAL(5,2) DEFAULT 0,
         "scoreDistribution" JSONB,
+        "categoryAverages" JSONB,
+        "topTags" JSONB,
         "lastCalculatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
 
@@ -83,6 +101,18 @@ async function run() {
       CREATE INDEX IF NOT EXISTS idx_gamereview_gameid ON "GameReview"("gameId");
       CREATE INDEX IF NOT EXISTS idx_gamereview_userid ON "GameReview"("userId");
       CREATE INDEX IF NOT EXISTS idx_reviewcomment_reviewid ON "ReviewComment"("reviewId");
+      CREATE INDEX IF NOT EXISTS idx_reviewscore_reviewid ON "ReviewScore"("reviewId");
+      CREATE INDEX IF NOT EXISTS idx_reviewtag_reviewid ON "ReviewTag"("reviewId");
+      
+      DO $$ BEGIN
+        -- Alterações da V2
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='GameReviewStats' AND column_name='categoryAverages') THEN
+          ALTER TABLE "GameReviewStats" ADD COLUMN "categoryAverages" JSONB;
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='GameReviewStats' AND column_name='topTags') THEN
+          ALTER TABLE "GameReviewStats" ADD COLUMN "topTags" JSONB;
+        END IF;
+      END $$;
     `);
     console.log("✅ Tabelas criadas com sucesso!");
   } catch (e) {

@@ -214,6 +214,22 @@ const initDb = async () => {
         FOREIGN KEY ("parentId") REFERENCES "ReviewComment"("id") ON DELETE CASCADE
       );
 
+      CREATE TABLE IF NOT EXISTS "ReviewScore" (
+        "id" SERIAL PRIMARY KEY,
+        "reviewId" INTEGER NOT NULL,
+        "category" TEXT NOT NULL,
+        "score" INTEGER CHECK ("score" >= 0 AND "score" <= 10),
+        FOREIGN KEY ("reviewId") REFERENCES "GameReview"("id") ON DELETE CASCADE
+      );
+
+      CREATE TABLE IF NOT EXISTS "ReviewTag" (
+        "id" SERIAL PRIMARY KEY,
+        "reviewId" INTEGER NOT NULL,
+        "name" TEXT NOT NULL,
+        "type" TEXT NOT NULL,
+        FOREIGN KEY ("reviewId") REFERENCES "GameReview"("id") ON DELETE CASCADE
+      );
+
       CREATE TABLE IF NOT EXISTS "GameReviewStats" (
         "gameId" INTEGER PRIMARY KEY,
         "averageScore" DECIMAL(4,2) DEFAULT 0,
@@ -221,6 +237,8 @@ const initDb = async () => {
         "recommendationCount" INTEGER DEFAULT 0,
         "recommendationPercentage" DECIMAL(5,2) DEFAULT 0,
         "scoreDistribution" JSONB,
+        "categoryAverages" JSONB,
+        "topTags" JSONB,
         "lastCalculatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
 
@@ -258,17 +276,26 @@ const initDb = async () => {
       CREATE INDEX IF NOT EXISTS idx_timelineevent_gameid ON "TimelineEvent"("gameId");
 
       -- ═══════════════════════════════════════════════════════
-      -- FASE 3: Índices para Sistema de Reviews (V1)
+      -- FASE 3: Índices para Sistema de Reviews (V1 e V2)
       -- ═══════════════════════════════════════════════════════
       CREATE INDEX IF NOT EXISTS idx_gamereview_gameid ON "GameReview"("gameId");
       CREATE INDEX IF NOT EXISTS idx_gamereview_userid ON "GameReview"("userId");
       CREATE INDEX IF NOT EXISTS idx_reviewcomment_reviewid ON "ReviewComment"("reviewId");
+      CREATE INDEX IF NOT EXISTS idx_reviewscore_reviewid ON "ReviewScore"("reviewId");
+      CREATE INDEX IF NOT EXISTS idx_reviewtag_reviewid ON "ReviewTag"("reviewId");
       
       -- ═══════════════════════════════════════════════════════
-      -- FASE 4: Soft Delete e Colunas de Auditoria
+      -- FASE 4: Soft Delete, Colunas de Auditoria e Ajustes V2
       -- Permite "desfazer" exclusões e manter histórico
       -- ═══════════════════════════════════════════════════════
       DO $$ BEGIN
+        -- Alterações da V2
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='GameReviewStats' AND column_name='categoryAverages') THEN
+          ALTER TABLE "GameReviewStats" ADD COLUMN "categoryAverages" JSONB;
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='GameReviewStats' AND column_name='topTags') THEN
+          ALTER TABLE "GameReviewStats" ADD COLUMN "topTags" JSONB;
+        END IF;
         -- Soft Delete: User
         IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='User' AND column_name='deletedAt') THEN
           ALTER TABLE "User" ADD COLUMN "deletedAt" TIMESTAMP DEFAULT NULL;
