@@ -28,7 +28,8 @@ const initDb = async () => {
         "avatarUrl" TEXT,
         "coverUrl" TEXT,
         "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        "isVerified" INTEGER DEFAULT 0
+        "isVerified" INTEGER DEFAULT 0,
+        "role" TEXT DEFAULT 'USER'
       );
 
       CREATE TABLE IF NOT EXISTS "Session" (
@@ -112,6 +113,32 @@ const initDb = async () => {
         "userId" TEXT,
         "expiresAt" TIMESTAMP,
         FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE
+      );
+
+      CREATE TABLE IF NOT EXISTS "FeaturedContent" (
+        "id" SERIAL PRIMARY KEY,
+        "section" TEXT,
+        "entityId" TEXT,
+        "entityName" TEXT,
+        "entityImage" TEXT,
+        "orderIndex" INTEGER DEFAULT 0,
+        "isActive" INTEGER DEFAULT 1,
+        "startDate" TIMESTAMP,
+        "endDate" TIMESTAMP,
+        "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE TABLE IF NOT EXISTS "AdminAuditLog" (
+        "id" SERIAL PRIMARY KEY,
+        "adminId" TEXT,
+        "action" TEXT,
+        "entityType" TEXT,
+        "entityId" TEXT,
+        "oldValue" TEXT,
+        "newValue" TEXT,
+        "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY ("adminId") REFERENCES "User"("id") ON DELETE SET NULL
       );
 
       -- ═══════════════════════════════════════════════════════

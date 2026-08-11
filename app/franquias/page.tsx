@@ -9,19 +9,48 @@ export const dynamic = "force-dynamic";
 
 import { igdbRequest } from "../../lib/api";
 
+import { getFeaturedContent } from "../actions/admin";
+
 export default async function FranquiasPage() {
   let popularFranchises: any[] = [];
   
   try {
+    const cmsFeatured = await getFeaturedContent('FRANCHISES');
+    const activeCms = cmsFeatured.filter((c: any) => c.isActive === 1);
+    
+    let franchiseNames = [
+      "The Legend of Zelda", "Super Mario", "Final Fantasy", "Resident Evil", 
+      "Grand Theft Auto", "Pokémon", "Call of Duty", "Assassin's Creed", 
+      "Halo", "Tomb Raider", "Sonic the Hedgehog", "Metal Gear Solid", 
+      "God of War", "Mortal Kombat", "Street Fighter", "The Elder Scrolls", 
+      "Fallout", "Mass Effect", "The Witcher", "Dark Souls"
+    ];
+
+    let whereClause = `name = ("${franchiseNames.join('", "')}")`;
+
+    if (activeCms.length > 0) {
+      const ids = activeCms.map((c: any) => c.entityId);
+      whereClause = `id = (${ids.join(',')})`;
+    }
+
+    // Usando endpoint 'franchises' invés de 'collections' para alinhar com o admin
     const igdbQuery = `
       fields name, games;
-      where name = ("The Legend of Zelda", "Super Mario", "Final Fantasy", "Resident Evil", "Grand Theft Auto", "Pokémon", "Call of Duty", "Assassin's Creed", "Halo", "Tomb Raider", "Sonic the Hedgehog", "Metal Gear Solid", "God of War", "Mortal Kombat", "Street Fighter", "The Elder Scrolls", "Fallout", "Mass Effect", "The Witcher", "Dark Souls");
+      where ${whereClause};
       limit 20;
     `;
-    const results = await igdbRequest("collections", igdbQuery);
+    const results = await igdbRequest("franchises", igdbQuery);
     
     if (results && Array.isArray(results)) {
-      popularFranchises = results.filter((f: any) => f.games && f.games.length > 0).map((f: any) => ({
+      // Se houver CMS, tentamos preservar a ordem configurada
+      let sortedResults = results;
+      if (activeCms.length > 0) {
+        sortedResults = activeCms
+          .map((c: any) => results.find((r: any) => r.id.toString() === c.entityId.toString()))
+          .filter(Boolean);
+      }
+
+      popularFranchises = sortedResults.filter((f: any) => f.games && f.games.length > 0).map((f: any) => ({
         id: f.id,
         name: f.name,
         games_count: f.games.length,

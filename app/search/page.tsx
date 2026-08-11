@@ -14,7 +14,19 @@ export default async function SearchPage(
   if (query.trim().length > 0) {
     results = await searchGames(query);
   } else {
-    results = await fetchPopularGames();
+    const { getFeaturedContent } = await import("../actions/admin");
+    const { fetchGamesByIds } = await import("../../lib/api");
+    
+    const cmsFeatured = await getFeaturedContent('SEARCH_FEATURED');
+    const activeCms = cmsFeatured.filter((c: any) => c.isActive === 1);
+    
+    if (activeCms.length > 0) {
+      const ids = activeCms.map((c: any) => parseInt(c.entityId));
+      const fetched = await fetchGamesByIds(ids);
+      results = ids.map((id: number) => fetched.find(f => f.id === id)).filter(Boolean);
+    } else {
+      results = await fetchPopularGames();
+    }
   }
   
   const libraryGames = await getLibraryGames();

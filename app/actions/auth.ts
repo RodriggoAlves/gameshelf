@@ -292,8 +292,16 @@ export async function getUser() {
     return null;
   }
 
-  const user = await db.get('SELECT id, username, "avatarUrl", "coverUrl" FROM "User" WHERE id = $1', [session.userId]);
+  const user = await db.get('SELECT id, username, "avatarUrl", "coverUrl", role FROM "User" WHERE id = $1', [session.userId]);
   return user || null;
+}
+
+export async function requireAdmin() {
+  const user = await getUser();
+  if (!user || user.role !== 'ADMIN') {
+    return null; // Return null instead of throwing to allow layout/pages to handle redirects gracefully
+  }
+  return user;
 }
 
 export async function updateUserProfile(data: { avatarUrl?: string; coverUrl?: string }) {
