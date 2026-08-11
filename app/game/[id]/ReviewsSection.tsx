@@ -320,9 +320,15 @@ export default function ReviewsSection({
                   </div>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                  <div className={styles.reviewScore}>
-                    <Star fill="#fbbf24" size={16} /> {review.score}/10
-                  </div>
+                  {review.score !== null ? (
+                    <div className={styles.reviewScore}>
+                      <Star fill="#fbbf24" size={16} /> {review.score}/10
+                    </div>
+                  ) : (
+                    <div className={styles.reviewScore} style={{ color: '#888', background: '#222' }}>
+                      Sem nota
+                    </div>
+                  )}
                   <DropdownMenu reviewId={review.id} isOwner={currentUser?.id === review.userId} />
                 </div>
               </div>
