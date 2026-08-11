@@ -16,7 +16,6 @@
     "hostinger-mail-api-sdk": "^1.17.2",
     "lucide-react": "^1.28.0",
     "next": "^16.3.0",
-    "nextjs-toploader": "^3.9.17",
     "pg": "^8.22.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
