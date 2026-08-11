@@ -15,7 +15,7 @@ export default async function Home() {
     const ids = activeCms.map((c: any) => parseInt(c.entityId));
     const fetched = await fetchGamesByIds(ids);
     // Preservar a ordem configurada no painel
-    popularGames = ids.map((id: number) => fetched.find(f => f.id === id)).filter(Boolean);
+    popularGames = ids.map((id: number) => fetched.find(f => f.id === id)).filter(Boolean) as Game[];
   } else {
     popularGames = await fetchPopularGames();
   }
