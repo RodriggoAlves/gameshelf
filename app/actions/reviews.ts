@@ -3,6 +3,7 @@
 import { db } from "../../lib/db";
 import { getUser } from "./auth";
 import { revalidatePath } from "next/cache";
+import { fetchGameDetails } from "../../lib/api";
 
 export interface ReviewData {
   gameId: number;
@@ -124,7 +125,6 @@ export async function saveReview(data: ReviewData) {
 
   try {
     // Validar lançamento do jogo
-    const { fetchGameDetails } = await import("../../lib/api");
     const gameInfo = await fetchGameDetails(data.gameId);
     if (gameInfo && gameInfo.released) {
       const releaseDate = new Date(gameInfo.released);
