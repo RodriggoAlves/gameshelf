@@ -183,7 +183,7 @@ export function AdminContentManager({ section, initialData, isFranchise = false 
               </button>
             </div>
             <div className={styles.modalBody}>
-              <form onSubmit={handleSearch}>
+              <form onSubmit={handleSearch} style={{ display: 'flex', gap: '8px' }}>
                 <input 
                   type="text" 
                   className={styles.searchInput}
@@ -191,7 +191,11 @@ export function AdminContentManager({ section, initialData, isFranchise = false 
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
                   autoFocus
+                  style={{ flex: 1 }}
                 />
+                <button type="submit" className={`${styles.btn} ${styles.btnPrimary}`} disabled={isSearching || !searchQuery.trim()}>
+                  {isSearching ? <LucideIcons.Loader size={16} /> : <LucideIcons.Search size={16} />}
+                </button>
               </form>
               
               <div className={styles.searchResults}>

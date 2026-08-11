@@ -155,9 +155,11 @@ export async function searchIGDBForAdmin(query: string, type: 'game' | 'franchis
   const admin = await requireAdmin();
   if (!admin) throw new Error("Unauthorized");
 
+  const safeQuery = (query || "").replace(/[\\";{}()\n\r]/g, '').substring(0, 100);
+
   if (type === 'game') {
     const igdbQuery = `
-      search "${query}";
+      search "${safeQuery}";
       fields name, cover.image_id, first_release_date;
       where category = (0,8,9);
       limit 10;
@@ -171,7 +173,7 @@ export async function searchIGDBForAdmin(query: string, type: 'game' | 'franchis
     }));
   } else {
     const igdbQuery = `
-      search "${query}";
+      search "${safeQuery}";
       fields name;
       limit 10;
     `;
