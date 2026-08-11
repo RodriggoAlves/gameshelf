@@ -11,6 +11,18 @@
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   z-index: 9999;
+  
+  /* Otimização: Atrasar a exibição da tela de loading em 150ms.
+     Se a página carregar mais rápido que isso (ex: Home Cacheada), o overlay nem aparece, 
+     evitando "piscadas" que dão a sensação falsa de lentidão. */
+  opacity: 0;
+  animation: fadeIn 0.3s ease-out forwards;
+  animation-delay: 0.15s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .spinner {
