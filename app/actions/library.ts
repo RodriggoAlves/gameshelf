@@ -4,6 +4,7 @@ import db from "../../lib/db";
 import { revalidatePath } from "next/cache";
 import { fetchGameDetails } from "../../lib/api";
 import { getUser } from "./auth";
+import { updateGameReviewStats } from "./reviews";
 
 async function getUserId(): Promise<string> {
   const user = await getUser();
@@ -109,17 +110,26 @@ export async function addGameToLibrary(gameId: number, rawData: { status: string
       const reviewScore = data.rating || null;
       const reviewText = data.review || "";
       
+      const statusMap: Record<string, string> = {
+        "Zerey": "Zerei",
+        "Platinado": "Platinado",
+        "100%": "100%",
+        "Jogando": "Estou Jogando",
+        "Dropado": "Abandonei"
+      };
+      const pStatus = statusMap[data.status] || data.status;
+
       // Upsert na tabela GameReview
       const existingReview = await db.get('SELECT "id" FROM "GameReview" WHERE "userId" = $1 AND "gameId" = $2', [userId, gameId]);
       if (existingReview) {
         await db.run('UPDATE "GameReview" SET "score" = $1, "reviewText" = $2, "progressStatus" = $3, "playedHours" = $4, "platform" = $5, "containsSpoiler" = $6, "updatedAt" = CURRENT_TIMESTAMP WHERE "id" = $7', 
-          [reviewScore, reviewText, data.status, data.playtime || 0, data.platform || "", data.containsSpoilers ? 1 : 0, existingReview.id]);
+          [reviewScore, reviewText, pStatus, data.playtime || 0, data.platform || "", data.containsSpoilers ? 1 : 0, existingReview.id]);
       } else {
         await db.run('INSERT INTO "GameReview" ("userId", "gameId", "score", "reviewText", "progressStatus", "playedHours", "platform", "containsSpoiler") VALUES ($1, $2, $3, $4, $5, $6, $7, $8)', 
-          [userId, gameId, reviewScore, reviewText, data.status, data.playtime || 0, data.platform || "", data.containsSpoilers ? 1 : 0]);
+          [userId, gameId, reviewScore, reviewText, pStatus, data.playtime || 0, data.platform || "", data.containsSpoilers ? 1 : 0]);
       }
       
-      import('./reviews').then(module => module.updateGameReviewStats(gameId).catch(console.error));
+      await updateGameReviewStats(gameId);
     }
 
     if (logEventPromises.length > 0) {
