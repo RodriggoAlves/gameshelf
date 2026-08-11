@@ -215,10 +215,11 @@ const initDb = async () => {
   }
 };
 
-// Executa a inicialização apenas se tivermos a URL real
-if (process.env.DATABASE_URL) {
-  initDb().catch(console.error);
-}
+// Executa a inicialização apenas manualmente ou num script de build, nunca no runtime serverless
+// para evitar estourar o limite de conexões (EMAXCONNSESSION) em plataformas como Vercel/Neon.
+// if (process.env.DATABASE_URL) {
+//   initDb().catch(console.error);
+// }
 
 export const db = {
   query: (text: string, params?: any[]) => pool.query(text, params),
