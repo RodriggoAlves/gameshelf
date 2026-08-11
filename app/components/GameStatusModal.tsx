@@ -298,19 +298,6 @@ export default function GameStatusModal({
                   </div>
                 </div>
 
-                <div className={styles.reviewCard}>
-                  <label className={styles.reviewLabel}>{t.modal.yourDiary}</label>
-                  <textarea 
-                    className={styles.reviewArea} 
-                    placeholder={t.modal.diaryPlaceholder}
-                    value={review}
-                    onChange={e => setReview(e.target.value)}
-                  />
-                  <div className={styles.spoilerRow}>
-                    <input type="checkbox" id="spoilers" checked={containsSpoilers} onChange={e => setContainsSpoilers(e.target.checked)} />
-                    <label htmlFor="spoilers">{t.modal.containsSpoilers}</label>
-                  </div>
-                </div>
               </div>
 
               {/* FOOTER ACTIONS (Grid Area) */}
