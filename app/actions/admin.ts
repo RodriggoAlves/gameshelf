@@ -161,7 +161,7 @@ export async function searchIGDBForAdmin(query: string, type: 'game' | 'franchis
     const igdbQuery = `
       search "${safeQuery}";
       fields name, cover.image_id, first_release_date;
-      where category = (0,8,9);
+      where version_parent = null;
       limit 10;
     `;
     const results = await igdbRequest("games", igdbQuery);
@@ -173,8 +173,8 @@ export async function searchIGDBForAdmin(query: string, type: 'game' | 'franchis
     }));
   } else {
     const igdbQuery = `
-      search "${safeQuery}";
       fields name;
+      where name ~ *"${safeQuery}"*ig;
       limit 10;
     `;
     const results = await igdbRequest("franchises", igdbQuery);

@@ -371,8 +371,8 @@ export async function searchFranchises(queryStr: string): Promise<{ id: number; 
     .substring(0, 100);
 
   const query = `
-    search "${safeQuery}";
     fields name, games;
+    where name ~ *"${safeQuery}"*ig;
     limit 20;
   `;
   const results = await igdbRequest("franchises", query);
