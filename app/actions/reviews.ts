@@ -118,7 +118,21 @@ export async function saveReview(data: ReviewData) {
   const user = await getUser();
   if (!user) return { success: false, error: "Usuário não autenticado." };
 
+  if (!data.progressStatus || ["Quero Jogar", "Próximo Jogo"].includes(data.progressStatus)) {
+    return { success: false, error: "Você precisa ter jogado o jogo para avaliá-lo." };
+  }
+
   try {
+    // Validar lançamento do jogo
+    const { fetchGameDetails } = await import("../../lib/api");
+    const gameInfo = await fetchGameDetails(data.gameId);
+    if (gameInfo && gameInfo.released) {
+      const releaseDate = new Date(gameInfo.released);
+      if (releaseDate > new Date() && user.role !== 'ADMIN') {
+        return { success: false, error: "Este jogo ainda não foi lançado. Avaliações bloqueadas." };
+      }
+    }
+
     const existing = await db.get('SELECT "id" FROM "GameReview" WHERE "userId" = $1 AND "gameId" = $2', [user.id, data.gameId]);
     let reviewId = existing?.id;
 

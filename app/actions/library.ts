@@ -64,6 +64,23 @@ export async function addGameToLibrary(gameId: number, rawData: { status: string
       );
     };
 
+    // Regras de Negócio:
+    const gameInfo = await fetchGameDetails(gameId);
+    if (gameInfo && gameInfo.released) {
+      const releaseDate = new Date(gameInfo.released);
+      if (releaseDate > new Date() && !["Quero Jogar", "Próximo Jogo"].includes(data.status)) {
+        throw new Error("Jogos não lançados só podem ter status 'Quero Jogar' ou 'Próximo Jogo'.");
+      }
+    }
+
+    if (data.status === "Platinado") {
+      data.progress = 100;
+    }
+
+    if (["Quero Jogar", "Próximo Jogo"].includes(data.status)) {
+      data.rating = 0;
+    }
+
     if (!existing) {
       await db.run(`
         INSERT INTO "UserGame" ("userId", "gameId", status, rating, progress, "isFavorite", platform, "startDate", "endDate", playtime, ownership, storefront, "containsSpoilers", review) 
@@ -169,7 +186,8 @@ export async function getGameModalData(gameId: number) {
     game: gameInfo ? {
       name: gameInfo.name,
       cover: gameInfo.background_image,
-      year: gameInfo.released ? new Date(gameInfo.released).getFullYear() : 'N/A'
+      year: gameInfo.released ? new Date(gameInfo.released).getFullYear() : 'N/A',
+      released: gameInfo.released
     } : null
   };
 }

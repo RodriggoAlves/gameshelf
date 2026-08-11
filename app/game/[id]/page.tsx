@@ -120,13 +120,14 @@ export default async function GamePage(props: { params: Promise<{ id: string }> 
               </div>
             )}
 
-            {/* SEÇÃO NOVA DE REVIEWS (V1) */}
-            <ReviewsSection 
-              gameId={game.id} 
-              stats={reviewStats} 
-              reviews={reviews} 
-              currentUser={user} 
-            />
+          {/* SEÇÃO NOVA DE REVIEWS (V1 e V2) */}
+          <ReviewsSection 
+            gameId={game.id} 
+            stats={reviewStats} 
+            reviews={reviews} 
+            currentUser={user}
+            isReleased={game.released ? new Date(game.released) <= new Date() : true}
+          />
           </div>
           
           <div className={styles.sideColumn}>

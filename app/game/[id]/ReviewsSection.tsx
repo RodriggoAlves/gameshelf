@@ -87,12 +87,14 @@ export default function ReviewsSection({
   gameId, 
   stats, 
   reviews, 
-  currentUser 
+  currentUser,
+  isReleased = true
 }: { 
   gameId: number; 
   stats: any; 
   reviews: any[]; 
-  currentUser: any 
+  currentUser: any;
+  isReleased?: boolean;
 }) {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -141,6 +143,9 @@ export default function ReviewsSection({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!currentUser) return alert("Você precisa estar logado para avaliar.");
+    if (!progressStatus || ["Quero Jogar", "Próximo Jogo"].includes(progressStatus)) {
+      return alert("Por favor, selecione um Status válido de que você jogou para avaliar o jogo.");
+    }
     
     setIsSubmitting(true);
     
@@ -219,9 +224,15 @@ export default function ReviewsSection({
       <div className={styles.actionsHeader}>
         <h2>Avaliações da Comunidade</h2>
         {currentUser && (
-          <button className={styles.writeReviewBtn} onClick={() => setIsFormOpen(true)}>
-            {userReview ? "Editar Avaliação" : "Avaliar Jogo"}
-          </button>
+          isReleased || currentUser.role === 'ADMIN' ? (
+            <button className={styles.writeReviewBtn} onClick={() => setIsFormOpen(true)}>
+              {userReview ? "Editar Avaliação" : "Avaliar Jogo"}
+            </button>
+          ) : (
+             <button className={styles.writeReviewBtn} disabled style={{ background: '#333', color: '#888', cursor: 'not-allowed' }}>
+              Avaliações abrem no lançamento
+            </button>
+          )
         )}
       </div>
 

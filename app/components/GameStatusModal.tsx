@@ -187,33 +187,41 @@ export default function GameStatusModal({
               {/* MAIN CONTENT COL */}
               <div className={styles.mainScroll}>
                 <div className={styles.statusChips}>
-                  <button className={`${styles.chip} ${status === 'Zerey' ? styles.active : ''}`} onClick={() => setStatus('Zerey')}>
-                    {t.modal.statusZerey}
-                  </button>
-                  <button className={`${styles.chip} ${status === 'Platinado' ? styles.active : ''}`} onClick={() => setStatus('Platinado')}>
-                    {t.modal.statusPlatinum}
-                  </button>
-                  <button className={`${styles.chip} ${status === '100%' ? styles.active : ''}`} onClick={() => setStatus('100%')}>
-                    {t.modal.status100}
-                  </button>
-                  <button className={`${styles.chip} ${status === 'Jogando' ? styles.active : ''}`} onClick={() => setStatus('Jogando')}>
-                    {t.modal.statusPlaying}
-                  </button>
+                  {(!gameMeta.released || new Date(gameMeta.released) <= new Date()) ? (
+                    <>
+                      <button className={`${styles.chip} ${status === 'Zerey' ? styles.active : ''}`} onClick={() => setStatus('Zerey')}>
+                        {t.modal.statusZerey}
+                      </button>
+                      <button className={`${styles.chip} ${status === 'Platinado' ? styles.active : ''}`} onClick={() => setStatus('Platinado')}>
+                        {t.modal.statusPlatinum}
+                      </button>
+                      <button className={`${styles.chip} ${status === '100%' ? styles.active : ''}`} onClick={() => setStatus('100%')}>
+                        {t.modal.status100}
+                      </button>
+                      <button className={`${styles.chip} ${status === 'Jogando' ? styles.active : ''}`} onClick={() => setStatus('Jogando')}>
+                        {t.modal.statusPlaying}
+                      </button>
+                    </>
+                  ) : null}
                   <button className={`${styles.chip} ${status === 'Quero Jogar' ? styles.active : ''}`} onClick={() => setStatus('Quero Jogar')}>
                     {t.modal.statusBacklog}
                   </button>
                   <button className={`${styles.chip} ${status === 'Próximo Jogo' ? styles.active : ''}`} onClick={() => setStatus('Próximo Jogo')}>
                     {t.modal.statusNext}
                   </button>
-                  <button className={`${styles.chip} ${status === 'Dropado' ? styles.active : ''}`} onClick={() => setStatus('Dropado')}>
-                    {t.modal.statusDropped}
-                  </button>
+                  {(!gameMeta.released || new Date(gameMeta.released) <= new Date()) ? (
+                    <button className={`${styles.chip} ${status === 'Dropado' ? styles.active : ''}`} onClick={() => setStatus('Dropado')}>
+                      {t.modal.statusDropped}
+                    </button>
+                  ) : null}
                 </div>
 
-                <div className={styles.starBlock}>
-                  <span className={styles.starLabel}>{t.modal.yourVerdict}</span>
-                  <StarRating value={rating} onChange={setRating} />
-                </div>
+                {!['Quero Jogar', 'Próximo Jogo'].includes(status) && (
+                  <div className={styles.starBlock}>
+                    <span className={styles.starLabel}>{t.modal.yourVerdict}</span>
+                    <StarRating value={rating} onChange={setRating} />
+                  </div>
+                )}
 
                 <div className={styles.journeyCard}>
                   <div className={styles.journeyHeader}>
