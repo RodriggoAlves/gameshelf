@@ -216,6 +216,13 @@ export default function GameStatusModal({
                   ) : null}
                 </div>
 
+                {!['Quero Jogar', 'Próximo Jogo'].includes(status) && (
+                  <div className={styles.starBlock}>
+                    <span className={styles.starLabel}>{t.modal.yourVerdict}</span>
+                    <StarRating value={rating} onChange={setRating} />
+                  </div>
+                )}
+
                 <div className={styles.journeyCard}>
                   <div className={styles.journeyHeader}>
                     <span style={{ fontSize: '20px' }}>🗓️</span>
@@ -291,6 +298,21 @@ export default function GameStatusModal({
                   </div>
                 </div>
 
+                {!['Quero Jogar', 'Próximo Jogo'].includes(status) && (
+                  <div className={styles.reviewCard}>
+                    <label className={styles.reviewLabel}>{t.modal.yourDiary} / Análise</label>
+                    <textarea 
+                      className={styles.reviewArea} 
+                      placeholder={t.modal.diaryPlaceholder}
+                      value={review}
+                      onChange={e => setReview(e.target.value)}
+                    />
+                    <div className={styles.spoilerRow}>
+                      <input type="checkbox" id="spoilers" checked={containsSpoilers} onChange={e => setContainsSpoilers(e.target.checked)} />
+                      <label htmlFor="spoilers">{t.modal.containsSpoilers}</label>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* FOOTER ACTIONS (Grid Area) */}

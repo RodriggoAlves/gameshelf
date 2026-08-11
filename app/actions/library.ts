@@ -32,7 +32,7 @@ import { z } from "zod";
 
 const GameDataSchema = z.object({
   status: z.enum(["Zerey", "Platinado", "100%", "Jogando", "Quero Jogar", "Próximo Jogo", "Dropado"]),
-  rating: z.coerce.number().min(0).max(5).catch(0).optional(),
+  rating: z.coerce.number().min(0).max(10).catch(0).optional(),
   progress: z.coerce.number().min(0).max(100).catch(0).optional(),
   isFavorite: z.boolean().optional(),
   platform: z.string().max(200).optional(),
@@ -102,6 +102,24 @@ export async function addGameToLibrary(gameId: number, rawData: { status: string
         UPDATE "UserGame" SET status = $1, rating = $2, progress = $3, "isFavorite" = $4, platform = $5, "startDate" = $6, "endDate" = $7, playtime = $8, ownership = $9, storefront = $10, "containsSpoilers" = $11, review = $12, "updatedAt" = CURRENT_TIMESTAMP
         WHERE "userId" = $13 AND "gameId" = $14
       `, [data.status, data.rating || null, data.progress || 0, isFav, data.platform || "", data.startDate || null, data.endDate || null, data.playtime || 0, data.ownership || "", data.storefront || "", data.containsSpoilers ? 1 : 0, data.review || "", userId, gameId]);
+    }
+
+    // Integração Automática com V2 de Reviews
+    if (!['Quero Jogar', 'Próximo Jogo'].includes(data.status)) {
+      const reviewScore = data.rating || null;
+      const reviewText = data.review || "";
+      
+      // Upsert na tabela GameReview
+      const existingReview = await db.get('SELECT "id" FROM "GameReview" WHERE "userId" = $1 AND "gameId" = $2', [userId, gameId]);
+      if (existingReview) {
+        await db.run('UPDATE "GameReview" SET "score" = $1, "reviewText" = $2, "progressStatus" = $3, "playedHours" = $4, "platform" = $5, "containsSpoiler" = $6, "updatedAt" = CURRENT_TIMESTAMP WHERE "id" = $7', 
+          [reviewScore, reviewText, data.status, data.playtime || 0, data.platform || "", data.containsSpoilers ? 1 : 0, existingReview.id]);
+      } else {
+        await db.run('INSERT INTO "GameReview" ("userId", "gameId", "score", "reviewText", "progressStatus", "playedHours", "platform", "containsSpoiler") VALUES ($1, $2, $3, $4, $5, $6, $7, $8)', 
+          [userId, gameId, reviewScore, reviewText, data.status, data.playtime || 0, data.platform || "", data.containsSpoilers ? 1 : 0]);
+      }
+      
+      import('./reviews').then(module => module.updateGameReviewStats(gameId).catch(console.error));
     }
 
     if (logEventPromises.length > 0) {
