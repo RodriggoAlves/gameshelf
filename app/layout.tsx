@@ -15,6 +15,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+import NextTopLoader from 'nextjs-toploader';
 import { getUser } from "./actions/auth";
 
 export const metadata: Metadata = {
@@ -33,6 +34,7 @@ export default async function RootLayout({
   return (
     <html lang="pt-BR" className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
       <body suppressHydrationWarning>
+        <NextTopLoader color="#fff" showSpinner={false} height={3} shadow="0 0 10px #fff,0 0 5px #fff" />
         <I18nProvider>
           <div className="app-wrapper">
             <Header isAdmin={isAdmin} />
