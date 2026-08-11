@@ -1,4 +1,4 @@
-import { fetchPopularGames, fetchGamesByIds } from "../lib/api";
+import { fetchPopularGames, fetchGamesByIds, Game } from "../lib/api";
 import HomeView from "./components/HomeView";
 import { getLibraryGames } from "./actions/library";
 import { getFeaturedContent } from "./actions/admin";
