@@ -216,13 +216,6 @@ export default function GameStatusModal({
                   ) : null}
                 </div>
 
-                {!['Quero Jogar', 'Próximo Jogo'].includes(status) && (
-                  <div className={styles.starBlock}>
-                    <span className={styles.starLabel}>{t.modal.yourVerdict}</span>
-                    <StarRating value={rating} onChange={setRating} />
-                  </div>
-                )}
-
                 <div className={styles.journeyCard}>
                   <div className={styles.journeyHeader}>
                     <span style={{ fontSize: '20px' }}>🗓️</span>
