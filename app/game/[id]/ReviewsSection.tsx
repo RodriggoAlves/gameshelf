@@ -94,7 +94,7 @@ export default function ReviewsSection({
               <div key={s} className={styles.distRow}>
                 <div className={styles.distLabel}>{s}</div>
                 <div className={styles.distBarWrapper}>
-                  <div className={styles.distBar} style={{ width: \`\${percent}%\` }} />
+                  <div className={styles.distBar} style={{ width: `${percent}%` }} />
                 </div>
                 <div className={styles.distCount}>{count}</div>
               </div>
